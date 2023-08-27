@@ -45,6 +45,7 @@ export const useStore = create<{
     if (prompt === existingPrompt) { return }
     set({
       prompt,
+      layout: getRandomLayoutName(),
       panels: [],
       captions: {},
     })
@@ -54,6 +55,7 @@ export const useStore = create<{
     if (font === existingFont) { return }
     set({
       font,
+      layout: getRandomLayoutName(),
       panels: [],
       captions: {}
     })
@@ -63,6 +65,7 @@ export const useStore = create<{
     if (preset.label === existingPreset.label) { return }
     set({
       preset,
+      layout: getRandomLayoutName(),
       panels: [],
       captions: {}
     })

@@ -30,8 +30,7 @@ export function Panel({
   const font = useStore(state => state.font)
   const preset = useStore(state => state.preset)
   const setGeneratingImages = useStore(state => state.setGeneratingImages)
-  const panelGenerationStatus = useStore(state => state.panelGenerationStatus)
-  const isLoading = panelGenerationStatus[panel] || false
+
   const panels = useStore(state => state.panels)
   const prompt = panels[panel] || ""
 
@@ -53,7 +52,6 @@ export function Panel({
     startTransition(async () => {
       // console.log("Panel prompt: "+ prompt)
       if (!prompt?.length) { return }
-      if (isLoading) { return }
 
       console.log("Loading panel..")
 
@@ -88,7 +86,7 @@ export function Panel({
         return
       }
     })
-  }, [prompt, font, width, height])
+  }, [prompt, width, height])
 
 
   const checkStatus = () => {
