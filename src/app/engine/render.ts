@@ -54,6 +54,11 @@ export async function newRender({
         segmentation: "disabled", // one day we will remove this param, to make it automatic
         width,
         height,
+
+        // no need to upscale right now as we generate tiny panels
+        // maybe later we can provide an "export" button to PDF
+        upscalingFactor: 1,
+
         cache: "ignore"
       } as Partial<RenderRequest>),
       cache: 'no-store',

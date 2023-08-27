@@ -11,26 +11,22 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { FontName, fontList, fonts } from "@/lib/fonts"
 import { Input } from "@/components/ui/input"
-import { Preset, PresetName, presets } from "@/app/engine/presets"
+import { defaultPreset, getPreset, presets } from "@/app/engine/presets"
 import { useState } from "react"
+import { useStore } from "@/app/store"
 
-export function TopMenu({
-  defaultPreset,
-  preset,
-  onChangePreset,
-  font,
-  onChangeFont,
-  prompt,
-  onChangePrompt,
-}: {
-  defaultPreset: PresetName
-  preset: Preset
-  onChangePreset: (newPresetName: PresetName) => void
-  font: FontName
-  onChangeFont: (newFontName: FontName) => void
-  prompt: string
-  onChangePrompt: (newPrompt: string) => void
-}) {
+export function TopMenu() {
+  const font = useStore(state => state.font)
+  const setFont = useStore(state => state.setFont)
+
+  const preset = useStore(state => state.preset)
+  const setPreset = useStore(state => state.setPreset)
+
+  const prompt = useStore(state => state.prompt)
+  const setPrompt = useStore(state => state.setPrompt)
+
+  const atLeastOnePanelIsBusy = useStore(state => state.atLeastOnePanelIsBusy)
+
   const [draft, setDraft] = useState("")
   return (
     <div className={cn(
@@ -45,7 +41,9 @@ export function TopMenu({
         <Label className="flex text-sm">Select a preset:</Label>
         <Select
           defaultValue={defaultPreset}
-          onValueChange={(value) => { onChangePreset(value as FontName) }}>
+          onValueChange={(value) => { setPreset(getPreset(value as FontName)) }}
+          disabled={atLeastOnePanelIsBusy}
+          >
           <SelectTrigger className="w-[180px]">
             <SelectValue className="text-sm" placeholder="Type" />
           </SelectTrigger>
@@ -60,18 +58,21 @@ export function TopMenu({
         <Input
           placeholder="Story"
           className="w-full bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800"
+          disabled={atLeastOnePanelIsBusy}
           onChange={(e) => {
             setDraft(e.target.value)
           }}
           onBlur={(e) => {
             if (draft !== prompt) {
-              onChangePrompt(draft)
+              if (draft.trim() !== prompt.trim()) {
+                setPrompt(draft.trim())
+              }
             }
           }}
           onKeyDown={({ key }) => {
             if (key === 'Enter') {
               if (draft.trim() !== prompt.trim()) {
-                onChangePrompt(draft.trim())
+                setPrompt(draft.trim())
               }
             }
           }}
@@ -82,7 +83,9 @@ export function TopMenu({
         <Label className="flex text-sm">Font:</Label>
         <Select
           defaultValue={fontList.includes(preset.font) ? preset.font : "cartoonist"}
-          onValueChange={(value) => { onChangeFont(value as FontName) }}>
+          onValueChange={(value) => { setFont(value as FontName) }}
+          disabled={atLeastOnePanelIsBusy}
+          >
           <SelectTrigger className="w-[144px]">
             <SelectValue className="text-sm" placeholder="Type" />
           </SelectTrigger>

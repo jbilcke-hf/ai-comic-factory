@@ -100,8 +100,8 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
-  sanglier: {
-    label: "Sanglier",
+  armorican: {
+    label: "Armorican",
     family: "european",
     color: "monochrome",
     font: "paeteround",

@@ -9,7 +9,7 @@ export function Progress({
   className = "",
 }: {
   isLoading: boolean
-  resetKey: string
+  resetKey?: string
   className?: string
 }) {
   const timeoutRef = useRef<any>()
@@ -43,7 +43,7 @@ export function Progress({
 
   return (
     <div className={cn(
-      `fixed flex w-10 h-10 top-16 right-6 z-50`,
+      `flex w-10 h-10`,
       `animation-all duration-300 text-md`,
       isLoading
         ? `scale-100 opacity-100`

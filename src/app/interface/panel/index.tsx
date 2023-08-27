@@ -1,36 +1,40 @@
 "use client"
 
 import { useEffect, useRef, useState, useTransition } from "react"
-
-import { Preset } from "@/app/engine/presets"
+// import AutoSizer from "react-virtualized-auto-sizer"
 
 import { RenderedScene } from "@/types"
+
+import { getRender, newRender } from "@/app/engine/render"
+import { useStore } from "@/app/store"
+
 import { cn } from "@/lib/utils"
-import { FontName } from "@/lib/fonts"
-import { getRender, newRender } from "../../engine/render"
 import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
+import { Progress } from "@/app/interface/progress"
 // import { Bubble } from "./bubble"
 
-export default function Panel({
-  prompt = "",
-  font,
-  preset,
+export function Panel({
+  panel,
   className = "",
   width = 1,
   height = 1,
   delay = 0,
 }: {
-  prompt?: string
-  font: FontName
-  preset: Preset
+  panel: number
   className?: string
   width?: number
   height?: number
   delay?: number
  }) {
+  const font = useStore(state => state.font)
+  const preset = useStore(state => state.preset)
+  const setGeneratingImages = useStore(state => state.setGeneratingImages)
+  const panelGenerationStatus = useStore(state => state.panelGenerationStatus)
+  const isLoading = panelGenerationStatus[panel] || false
+  const panels = useStore(state => state.panels)
+  const prompt = panels[panel] || ""
 
   const [_isPending, startTransition] = useTransition()
-  const [isLoading, setLoading] = useState<boolean>(false)
   const [rendered, setRendered] = useState<RenderedScene>(getInitialRenderedScene())
   const renderedRef = useRef<RenderedScene>()
 
@@ -42,14 +46,19 @@ export default function Panel({
     startTransition(async () => {
       // console.log("Panel prompt: "+ prompt)
       if (!prompt?.length) { return }
+      if (isLoading) { return }
 
       console.log("Loading panel..")
-      setLoading(true)
 
       // console.log("calling:\nconst newRendered = await newRender({ prompt, preset, width, height })")
       console.log({
-        prompt, preset, width, height
+        panel, prompt, width, height
       })
+
+      console.log("")
+      // important: update the status, and clear the scene
+      setGeneratingImages(panel, true)
+      setRendered(getInitialRenderedScene())
 
       const newRendered = await newRender({ prompt, width, height })
 
@@ -67,12 +76,11 @@ export default function Panel({
           error: "failed to fetch the data",
           segments: []
         })
-
-        setLoading(false)
+        setGeneratingImages(panel, false)
         return
       }
     })
-  }, [prompt, font, preset])
+  }, [prompt, font, width, height])
 
 
   const checkStatus = () => {
@@ -84,6 +92,7 @@ export default function Panel({
         return
       }
       try {
+        setGeneratingImages(panel, true)
         // console.log(`Checking job status API for job ${renderedRef.current?.renderId}`)
         const newRendered = await getRender(renderedRef.current.renderId)
         // console.log("got a response!", newRendered)
@@ -91,7 +100,7 @@ export default function Panel({
         if (JSON.stringify(renderedRef.current) !== JSON.stringify(newRendered)) {
           console.log("updated panel:", newRendered)
           setRendered(renderedRef.current = newRendered)
-          setLoading(true)
+          setGeneratingImages(panel, true)
         }
         // console.log("status:", newRendered.status)
 
@@ -100,7 +109,7 @@ export default function Panel({
           timeoutRef.current = setTimeout(checkStatus, 1000)
         } else {
           console.log("panel finished!")
-          setLoading(false)
+          setGeneratingImages(panel, false)
         }
       } catch (err) {
         console.error(err)
@@ -119,16 +128,27 @@ export default function Panel({
     }
   }, [])
 
+  if (isLoading) {
+    return (
+      <div className={cn(
+        `w-full h-full flex flex-col items-center justify-center`,
+        className
+      )}>
+       <Progress isLoading />
+      </div>
+    )
+  }
+
   return (
     <div className={cn(
       `w-full h-full`,
-      preset.color === "grayscale" ? "grayscale" : "",
+      { "grayscale": preset.color === "grayscale" },
       className
     )}>
-      {rendered.assetUrl ? <img
+      {rendered.assetUrl && <img
         src={rendered.assetUrl}
         className="w-full h-full object-cover"
-      /> : null}
+      />}
 
       {/*<Bubble className="absolute top-4 left-4">
         Hello, world!

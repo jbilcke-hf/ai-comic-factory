@@ -97,6 +97,8 @@ export const fontList = Object.keys(fonts)
 
 export type FontName = keyof typeof fonts
 
+export const defaultFont = "cartoonist" as FontName
+
 export const classNames = Object.values(fonts).map(font => font.className)
 
 export const className = classNames.join(" ")
