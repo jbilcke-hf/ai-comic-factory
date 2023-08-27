@@ -126,13 +126,15 @@ export function Panel({
  
   useEffect(() => {
     console.log("starting timeout")
+    clearTimeout(timeoutRef.current)
+    
     // normally it should reply in < 1sec, but we could also use an interval
     timeoutRef.current = setTimeout(checkStatus, delay)
 
     return () => {
       clearTimeout(timeoutRef.current)
     }
-  }, [])
+  }, [prompt, width, height])
 
   /*
   doing the captionning from the browser is expensive

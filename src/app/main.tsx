@@ -59,10 +59,17 @@ export default function Main() {
 
     // TODO call the LLM here!
     const panelPrompt = preset.imagePrompt(prompt).join(", ")
+    console.log("panelPrompt:", panelPrompt)
 
     // what we want is for it to invent a small "story"
-    setPanels([ panelPrompt, panelPrompt, panelPrompt, panelPrompt ])
-  }, [prompt, preset]) // important: we need to react to preset changes too
+    // we are going to use a LLM for this, but until then let's do this:
+    setPanels([
+      `introduction scene, ${panelPrompt}`,
+      panelPrompt,
+      panelPrompt,
+      `final scene, ${panelPrompt}`,
+    ])
+  }, [prompt, preset?.label]) // important: we need to react to preset changes too
 
   const LayoutElement = (layouts as any)[layout]
 
