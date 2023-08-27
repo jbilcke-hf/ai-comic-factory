@@ -59,7 +59,10 @@ export async function newRender({
         // no need to upscale right now as we generate tiny panels
         // maybe later we can provide an "export" button to PDF
         upscalingFactor: 2,
-        analyze: true,
+
+        // analyzing doesn't work yet, it seems..
+        analyze: false, // analyze: true,
+
         cache: "ignore"
       } as Partial<RenderRequest>),
       cache: 'no-store',

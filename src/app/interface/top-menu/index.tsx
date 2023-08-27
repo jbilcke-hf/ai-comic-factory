@@ -121,7 +121,8 @@ export function TopMenu() {
         <Select
           defaultValue={fontList.includes(preset.font) ? preset.font : "cartoonist"}
           onValueChange={(value) => { setFont(value as FontName) }}
-          disabled={atLeastOnePanelIsBusy}
+          // disabled={atLeastOnePanelIsBusy}
+          disabled={true}
           >
           <SelectTrigger className="flex-grow">
             <SelectValue className="text-sm" placeholder="Type" />
