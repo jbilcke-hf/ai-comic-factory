@@ -1,12 +1,11 @@
 import { Panel } from "@/app/interface/panel"
 import { pick } from "@/lib/pick"
-import { useStore } from "@/app/store"
 
 export function Layout1() {
   return (
     <div
       // the "fixed" width ensure our comic keeps a consistent ratio
-      className="grid grid-cols-2 grid-rows-3 gap-4 w-[1160px] h-screen">
+      className="w-full h-full grid grid-cols-2 grid-rows-3 gap-2">
       <div className="bg-stone-100">
         <Panel
           panel={0}
@@ -43,11 +42,11 @@ export function Layout2() {
   return (
     <div
       // the "fixed" width ensure our comic keeps a consistent ratio
-      className="grid grid-cols-2 grid-rows-3 gap-4 w-[1160px] h-screen">
-      <div className="bg-gray-100 row-span-2 col-span-1">
+      className="w-full h-full grid grid-cols-2 grid-rows-3 gap-2">
+      <div className="bg-gray-100 row-span-3 col-span-1">
         <Panel
           panel={0}
-          width={1024}
+          width={512}
           height={1024}
         />
       </div>
@@ -65,11 +64,11 @@ export function Layout2() {
           height={512}
         />
       </div>
-      <div className="bg-zinc-100 row-span-2">
+      <div className="bg-zinc-100 row-span-1 col-span-1">
         <Panel
           panel={3}
           width={1024}
-          height={1024}
+          height={512}
         />
       </div>
     </div>
@@ -80,34 +79,36 @@ export function Layout3() {
   return (
     <div
       // the "fixed" width ensure our comic keeps a consistent ratio
-      className="grid grid-cols-2 grid-rows-3 gap-4 w-[1160px] h-screen">
-      <div className="bg-zinc-100 row-span-2">
+      className="w-full h-full grid grid-cols-5 grid-rows-2 gap-2">
+      <div className="bg-zinc-100 col-span-3">
         <Panel
           panel={0}
           width={1024}
-          height={1024}
+          height={512}
         />
       </div>
-      <div className="bg-stone-100">
+      <div className="bg-zinc-100 col-span-2 row-span-2">
         <Panel
           panel={1}
-          width={1024}
-          height={512}
-        />
-      </div>
-      <div className="bg-slate-100">
-        <Panel
-          panel={2}
-          width={1024}
-          height={512}
-        />
-      </div>
-      <div className="bg-gray-100 row-span-2 col-span-1">
-        <Panel
-          panel={3}
-          width={1024}
+          width={512}
           height={1024}
         />
+      </div>
+      <div className="col-span-3 grid grid-cols-2 gap-2">
+        <div className="bg-stone-100">
+          <Panel
+            panel={2}
+            width={512}
+            height={758}
+          />
+        </div>
+        <div className="bg-slate-100">
+          <Panel
+            panel={3}
+            width={512}
+            height={758}
+          />
+        </div>
       </div>
     </div>
   )
@@ -117,29 +118,67 @@ export function Layout4() {
   return (
     <div
       // the "fixed" width ensure our comic keeps a consistent ratio
-      className="grid grid-cols-2 grid-rows-3 gap-4 w-[1160px] h-screen">
-      <div className="bg-slate-100">
+      className="w-full h-full grid grid-cols-2 grid-rows-3 gap-2">
+      <div className="bg-slate-100 row-span-2">
         <Panel
           panel={0}
-          width={1024}
-          height={512}
+          width={768}
+          height={1024}
         />
       </div>
-      <div className="bg-gray-100 row-span-2 col-span-1">
+      <div className="bg-gray-100 row-span-1 col-span-1">
         <Panel
           panel={1}
           width={1024}
-          height={1024}
+          height={512}
         />
       </div>
       <div className="bg-zinc-100 row-span-2">
         <Panel
           panel={2}
           width={1024}
-          height={1024}
+          height={512}
         />
       </div>
       <div className="bg-stone-100">
+        <Panel
+          panel={3}
+          width={768}
+          height={1024}
+        />
+      </div>
+    </div>
+  )
+}
+
+
+export function Layout5() {
+  return (
+    <div
+      // the "fixed" width ensure our comic keeps a consistent ratio
+      className="w-full h-full grid grid-cols-3 grid-rows-2 gap-2">
+      <div className="bg-zinc-100 col-span-1 row-span-1">
+        <Panel
+          panel={0}
+          width={512}
+          height={768}
+        />
+      </div>
+      <div className="bg-zinc-100 col-span-1 row-span-1">
+        <Panel
+          panel={1}
+          width={512}
+          height={768}
+        />
+      </div>
+      <div className="bg-stone-100 row-span-2 col-span-1">
+        <Panel
+          panel={2}
+          width={512}
+          height={1024}
+        />
+      </div>
+      <div className="bg-slate-100 row-span-1 col-span-2">
         <Panel
           panel={3}
           width={1024}
@@ -150,7 +189,45 @@ export function Layout4() {
   )
 }
 
-export const layouts = { Layout1, Layout2, Layout3, Layout4 }
+export function Layout6() {
+  return (
+    <div
+      // the "fixed" width ensure our comic keeps a consistent ratio
+      className="w-full h-full grid grid-cols-3 grid-rows-2 gap-2">
+      <div className="bg-zinc-100 col-span-2 row-span-1">
+        <Panel
+          panel={0}
+          width={1024}
+          height={512}
+        />
+      </div>
+      <div className="bg-zinc-100 col-span-1 row-span-1">
+        <Panel
+          panel={1}
+          width={512}
+          height={768}
+        />
+      </div>
+      <div className="bg-stone-100 row-span-1 col-span-1">
+        <Panel
+          panel={2}
+          width={512}
+          height={768}
+        />
+      </div>
+      <div className="bg-slate-100 row-span-1 col-span-2">
+        <Panel
+          panel={3}
+          width={1024}
+          height={512}
+        />
+      </div>
+    </div>
+  )
+}
+
+// export const layouts = { Layout1, Layout2, Layout3, Layout4, Layout5, Layout6 }
+export const layouts = { Layout1, Layout4, Layout6 }
 
 export type LayoutName = keyof typeof layouts 
 

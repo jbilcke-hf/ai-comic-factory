@@ -10,6 +10,7 @@ import { TopMenu } from "./interface/top-menu"
 import { FontName, defaultFont } from "@/lib/fonts"
 import { getRandomLayoutName, layouts } from "./layouts"
 import { useStore } from "./store"
+import { Zoom } from "./interface/zoom"
 
 export default function Main() {
   const [_isPending, startTransition] = useTransition()
@@ -32,6 +33,8 @@ export default function Main() {
   const setLayout = useStore(state => state.setLayout)
 
   const setPanels = useStore(state => state.setPanels)
+
+  const zoomLevel = useStore(state => state.zoomLevel)
 
   // react to URL params
   useEffect(() => {
@@ -64,13 +67,30 @@ export default function Main() {
   const LayoutElement = (layouts as any)[layout]
 
   return (
-    <div className={cn(
-      ``
-    )}>
+    <div>
       <TopMenu />
-      <div className="flex flex-col items-center w-screen h-screen pt-16 overflow-y-scroll">
-        <LayoutElement />
+      <div className={cn(
+        `flex items-start w-screen h-screen pt-[120px] px-16 md:pt-[72px] overflow-y-scroll`,
+        `transition-all duration-200 ease-in-out`
+      )}>
+        <div className="flex flex-col items-center w-full">
+          <div
+            // we are trying to reach a "book" look
+            // we are using aspect-[297/210] because it matches A4 (297mm x 210mm)
+            className={cn(
+              `flex flex-col items-center justify-start aspect-[210/297]`,
+              `transition-all duration-100 ease-in-out`,
+              `p-4`,
+              `border border-stone-200`,
+              `shadow-2xl`
+            )}
+            style={{ width: `${zoomLevel}%` }}
+            >
+            <LayoutElement />
+          </div>
+        </div>
       </div>
+      <Zoom />
     </div>
   )
 }

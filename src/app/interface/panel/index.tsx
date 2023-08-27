@@ -143,6 +143,10 @@ export function Panel({
     <div className={cn(
       `w-full h-full`,
       { "grayscale": preset.color === "grayscale" },
+      `border-2 border-stone-900`,
+      `shadow-sm`,
+      `rounded-sm`,
+      `overflow-hidden`,
       className
     )}>
       {rendered.assetUrl && <img

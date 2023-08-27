@@ -3,7 +3,7 @@ import { create } from "zustand"
 
 import { FontName } from "@/lib/fonts"
 import { Preset, getPreset } from "@/app/engine/presets"
-import { LayoutName } from "../layouts"
+import { LayoutName, getRandomLayoutName } from "../layouts"
 
 export const useStore = create<{
   prompt: string
@@ -11,6 +11,7 @@ export const useStore = create<{
   preset: Preset
   panels: string[]
   layout: LayoutName
+  zoomLevel: number
   isGeneratingLogic: boolean
   panelGenerationStatus: Record<number, boolean>
   isGeneratingText: boolean
@@ -20,6 +21,7 @@ export const useStore = create<{
   setPreset: (preset: Preset) => void
   setPanels: (panels: string[]) => void
   setLayout: (layout: LayoutName) => void
+  setZoomLevel: (zoomLevel: number) => void
   setGeneratingLogic: (isGeneratingLogic: boolean) => void
   setGeneratingImages: (panelId: number, value: boolean) => void
   setGeneratingText: (isGeneratingText: boolean) => void
@@ -28,7 +30,8 @@ export const useStore = create<{
   font: "cartoonist",
   preset: getPreset("japanese_manga"),
   panels: [],
-  layout: "Layout1",
+  layout: getRandomLayoutName(),
+  zoomLevel: 50,
   isGeneratingLogic: false,
   panelGenerationStatus: {},
   isGeneratingText: false,
@@ -38,6 +41,7 @@ export const useStore = create<{
   setPreset: (preset: Preset) => set({ preset }),
   setPanels: (panels: string[]) => set({ panels }),
   setLayout: (layout: LayoutName) => set({ layout }),
+  setZoomLevel: (zoomLevel: number) =>  set({ zoomLevel }),
   setGeneratingLogic: (isGeneratingLogic: boolean) => set({ isGeneratingLogic }),
   setGeneratingImages: (panelId: number, value: boolean) => {
 

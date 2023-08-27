@@ -85,6 +85,8 @@ export const presets: Record<string, Preset> = {
       "single panel",
       "american comic",
       "comicbook style",
+      "1950",
+      "50s",
       "color comicbook",
       "color drawing"
     ],
@@ -109,10 +111,13 @@ export const presets: Record<string, Preset> = {
     imagePrompt: (prompt: string) => [
       `color album panel`,
       `about ${prompt}`,
+      "romans",
+      "gauls",
+      "french comic panel",
+      "franco-belgian style",
       "bande dessinée",
       "single panel",
       "comical",
-      "franco-belgian comic",
       "comic album",
       "color drawing"
     ],
