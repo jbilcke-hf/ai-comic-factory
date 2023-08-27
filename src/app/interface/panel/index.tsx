@@ -35,6 +35,8 @@ export function Panel({
   const panels = useStore(state => state.panels)
   const prompt = panels[panel] || ""
 
+  const zoomLevel = useStore(state => state.zoomLevel)
+
   // const setCaption = useStore(state => state.setCaption)
   // const captions = useStore(state => state.captions)
   // const caption = captions[panel] || ""
@@ -160,10 +162,21 @@ export function Panel({
   }, [rendered.assetUrl, caption])
   */
 
-  if (isLoading) {
+  const frameClassName = cn(
+    `w-full h-full`,
+    `border-stone-900`,
+    `transition-all duration-200 ease-in-out`,
+    zoomLevel > 70 ? `border-2` : zoomLevel > 40 ? `border` : `border border-transparent`,
+    `shadow-sm`,
+    `rounded-sm`,
+    `overflow-hidden`,
+  )
+
+  if (prompt && !rendered.assetUrl) {
     return (
       <div className={cn(
-        `w-full h-full flex flex-col items-center justify-center`,
+        frameClassName,
+        `flex flex-col items-center justify-center`,
         className
       )}>
        <Progress isLoading />
@@ -173,12 +186,8 @@ export function Panel({
 
   return (
     <div className={cn(
-      `w-full h-full`,
+      frameClassName,
       { "grayscale": preset.color === "grayscale" },
-      `border-2 border-stone-900`,
-      `shadow-sm`,
-      `rounded-sm`,
-      `overflow-hidden`,
       className
     )}>
       {rendered.assetUrl && <img

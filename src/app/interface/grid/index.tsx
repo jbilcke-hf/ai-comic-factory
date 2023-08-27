@@ -1,0 +1,26 @@
+"use client"
+
+import { ReactNode } from "react"
+
+import { cn } from "@/lib/utils"
+import { useStore } from "@/app/store"
+
+export function Grid({ children, className }: { children: ReactNode; className: string }) {
+  const zoomLevel = useStore(state => state.zoomLevel)
+  return (
+    <div
+      // the "fixed" width ensure our comic keeps a consistent ratio
+      className={cn(
+        `w-full h-full grid`,
+        className
+      )}
+      style={{
+        gap: `${Math.round((zoomLevel / 100) * 8)}px`
+      }}
+      >
+      {children}
+    </div>
+  )
+}
+
+

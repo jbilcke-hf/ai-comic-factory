@@ -75,16 +75,23 @@ export default function Main() {
       )}>
         <div className="flex flex-col items-center w-full">
           <div
-            // we are trying to reach a "book" look
-            // we are using aspect-[297/210] because it matches A4 (297mm x 210mm)
+
             className={cn(
-              `flex flex-col items-center justify-start aspect-[210/297]`,
+              `flex flex-col items-center justify-start`,
+
+              // we are trying to reach a "book" look
+              // we are using aspect-[297/210] because it matches A4 (297mm x 210mm)
+              // `aspect-[210/297]`,
+              `aspect-[250/297]`,
+
               `transition-all duration-100 ease-in-out`,
-              `p-4`,
               `border border-stone-200`,
               `shadow-2xl`
             )}
-            style={{ width: `${zoomLevel}%` }}
+            style={{
+              width: `${zoomLevel}%`,
+              padding: `${Math.round((zoomLevel / 100) * 16)}px`
+            }}
             >
             <LayoutElement />
           </div>
