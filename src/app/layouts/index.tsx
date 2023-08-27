@@ -218,7 +218,7 @@ export function Layout6() {
 }
 
 // export const layouts = { Layout1, Layout2, Layout3, Layout4, Layout5, Layout6 }
-export const layouts = { Layout1, Layout4, Layout6 }
+export const layouts = { Layout1 }
 
 export type LayoutName = keyof typeof layouts 
 
