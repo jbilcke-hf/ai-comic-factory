@@ -11,6 +11,7 @@ import { useStore } from "@/app/store"
 import { cn } from "@/lib/utils"
 import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
 import { Progress } from "@/app/interface/progress"
+import { see } from "@/app/engine/caption"
 // import { Bubble } from "./bubble"
 
 export function Panel({
@@ -33,6 +34,10 @@ export function Panel({
   const isLoading = panelGenerationStatus[panel] || false
   const panels = useStore(state => state.panels)
   const prompt = panels[panel] || ""
+
+  // const setCaption = useStore(state => state.setCaption)
+  // const captions = useStore(state => state.captions)
+  // const caption = captions[panel] || ""
 
   const [_isPending, startTransition] = useTransition()
   const [rendered, setRendered] = useState<RenderedScene>(getInitialRenderedScene())
@@ -72,6 +77,7 @@ export function Panel({
           renderId: "",
           status: "error",
           assetUrl: "",
+          alt: "",
           maskUrl: "",
           error: "failed to fetch the data",
           segments: []
@@ -128,6 +134,32 @@ export function Panel({
     }
   }, [])
 
+  /*
+  doing the captionning from the browser is expensive
+  a simpler solution is to caption directly during SDXL generation
+
+  useEffect(() => {
+    if (!rendered.assetUrl) { return }
+    // the asset url can evolve with time (link to a better resolution image)
+    // however it would be costly to ask for the caption, the low resolution is enough for the semantic resolution
+    // so we just do nothing if we already have the caption
+    if (caption) { return }
+    startTransition(async () => {
+      try {
+        const newCaption = await see({
+          prompt: "please caption the following image",
+          imageBase64: rendered.assetUrl 
+        })
+        if (newCaption) {
+          setCaption(newCaption)
+        }
+      } catch (err) {
+        console.error(`failed to generate the caption:`, err)
+      }
+    })
+  }, [rendered.assetUrl, caption])
+  */
+
   if (isLoading) {
     return (
       <div className={cn(
@@ -152,6 +184,7 @@ export function Panel({
       {rendered.assetUrl && <img
         src={rendered.assetUrl}
         className="w-full h-full object-cover"
+        alt={rendered.alt}
       />}
 
       {/*<Bubble className="absolute top-4 left-4">

@@ -1,3 +1,5 @@
+"use client"
+
 import { Panel } from "@/app/interface/panel"
 import { pick } from "@/lib/pick"
 

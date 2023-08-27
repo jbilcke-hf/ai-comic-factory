@@ -29,6 +29,7 @@ export async function newRender({
     renderId: "",
     status: "error",
     assetUrl: "",
+    alt: prompt || "",
     maskUrl: "",
     error: "failed to fetch the data",
     segments: []
@@ -58,7 +59,7 @@ export async function newRender({
         // no need to upscale right now as we generate tiny panels
         // maybe later we can provide an "export" button to PDF
         upscalingFactor: 2,
-
+        analyze: true,
         cache: "ignore"
       } as Partial<RenderRequest>),
       cache: 'no-store',
@@ -95,6 +96,7 @@ export async function getRender(renderId: string) {
     renderId: "",
     status: "error",
     assetUrl: "",
+    alt: "",
     maskUrl: "",
     error: "failed to fetch the data",
     segments: []
