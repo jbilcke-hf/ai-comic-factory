@@ -18,7 +18,10 @@ export function BottomBar() {
       isGeneratingStory ? `scale-0 opacity-0` : ``,
     )}>
       <div>
-        <Button onClick={download} disabled={!prompt?.length}>{
+        <Button onClick={download} 
+          //disabled={!prompt?.length}
+          disabled
+        >{
           remainingImages ? `${remainingImages} remaining..` : `Download`
         }</Button>
       </div>
