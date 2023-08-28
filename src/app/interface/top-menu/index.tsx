@@ -34,6 +34,7 @@ export function TopMenu() {
   const [draft, setDraft] = useState("")
   return (
     <div className={cn(
+      `print:hidden`,
       `z-10 fixed top-0 left-0 right-0`,
       `flex flex-col md:flex-row w-full justify-between items-center`,
       `backdrop-blur-xl`,

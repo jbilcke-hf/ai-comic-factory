@@ -170,6 +170,7 @@ export function Panel({
     `shadow-sm`,
     `rounded-sm`,
     `overflow-hidden`,
+    `print:shadow-none`,
   )
 
   if (prompt && !rendered.assetUrl) {

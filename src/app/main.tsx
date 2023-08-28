@@ -108,6 +108,7 @@ export default function Main() {
       <div className={cn(
         `flex items-start w-screen h-screen pt-[120px] px-16 md:pt-[72px] overflow-y-scroll`,
         `transition-all duration-200 ease-in-out`,
+        `print:pt-2 print:px-2`,
 
         fonts.actionman.className
       )}>
@@ -115,6 +116,7 @@ export default function Main() {
           <div
             ref={pageRef}
             className={cn(
+              `comic-page`,
               `flex flex-col items-center justify-start`,
 
               // we are trying to reach a "book" look
@@ -124,7 +126,9 @@ export default function Main() {
 
               `transition-all duration-100 ease-in-out`,
               `border border-stone-200`,
-              `shadow-2xl`
+              `shadow-2xl`,
+              `print:shadow-none`,
+              `print:width-screen`
             )}
             style={{
               width: `${zoomLevel}%`,
@@ -138,6 +142,7 @@ export default function Main() {
       <Zoom />
       <BottomBar />
       <div className={cn(
+        `print:hidden`,
         `z-20 fixed inset-0`,
         `flex flex-row items-center justify-center`,
         `transition-all duration-300 ease-in-out`,

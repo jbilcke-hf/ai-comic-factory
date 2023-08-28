@@ -9,6 +9,7 @@ export function Zoom() {
 
   return (
     <div className={cn(
+      `print:hidden`,
       // `fixed flex items-center justify-center bottom-8 top-32 right-8 z-10 h-screen`,
       `fixed flex flex-col items-center bottom-8 top-32 md:top-20 right-6 z-10`,
       `animation-all duration-300 ease-in-out`,
