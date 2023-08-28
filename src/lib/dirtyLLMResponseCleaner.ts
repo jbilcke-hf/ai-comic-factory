@@ -10,5 +10,10 @@ export function dirtyLLMResponseCleaner(input: string) {
     .replaceAll("[2]", "")
     .replaceAll("[3]", "")
     .replaceAll("[4]", "")
+    .replaceAll("[panel 0]", "")
+    .replaceAll("[panel 1]", "")
+    .replaceAll("[panel 2]", "")
+    .replaceAll("[panel 3]", "")
+    .replaceAll("[panel 4]", "")
   )
 }
