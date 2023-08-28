@@ -40,6 +40,7 @@
     "date-fns": "^2.30.0",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.10",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.260.0",
     "next": "13.4.10",
     "pick": "^0.0.1",

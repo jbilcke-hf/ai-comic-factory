@@ -5,11 +5,14 @@ import { cn } from "@/lib/utils"
 export function Zoom() {
   const zoomLevel = useStore((state) => state.zoomLevel)
   const setZoomLevel = useStore((state) => state.setZoomLevel)
+  const isGeneratingStory = useStore((state) => state.isGeneratingStory)
 
   return (
     <div className={cn(
       // `fixed flex items-center justify-center bottom-8 top-32 right-8 z-10 h-screen`,
-      `fixed flex flex-col items-center bottom-8 top-32 md:top-20 right-6 z-10`
+      `fixed flex flex-col items-center bottom-8 top-32 md:top-20 right-6 z-10`,
+      `animation-all duration-300 ease-in-out`,
+      isGeneratingStory ? `scale-0 opacity-0` : ``,
     )}>
       <div className="font-mono text-xs pb-1 text-stone-700">
         Zoom

@@ -7,6 +7,7 @@ import { useStore } from "@/app/store"
 
 export function Grid({ children, className }: { children: ReactNode; className: string }) {
   const zoomLevel = useStore(state => state.zoomLevel)
+
   return (
     <div
       // the "fixed" width ensure our comic keeps a consistent ratio
@@ -22,5 +23,4 @@ export function Grid({ children, className }: { children: ReactNode; className: 
     </div>
   )
 }
-
 

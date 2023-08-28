@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useTransition } from "react"
+import { useEffect, useRef, useTransition } from "react"
 import { useSearchParams } from "next/navigation"
 
 import { PresetName, defaultPreset, getPreset } from "@/app/engine/presets"
@@ -12,6 +12,7 @@ import { getRandomLayoutName, layouts } from "./layouts"
 import { useStore } from "./store"
 import { Zoom } from "./interface/zoom"
 import { getStory } from "./queries/getStory"
+import { BottomBar } from "./interface/bottom-bar"
 
 export default function Main() {
   const [_isPending, startTransition] = useTransition()
@@ -39,6 +40,15 @@ export default function Main() {
   const setPanels = useStore(state => state.setPanels)
 
   const zoomLevel = useStore(state => state.zoomLevel)
+
+  const setPage = useStore(state => state.setPage)
+  const pageRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const element = pageRef.current
+    if (!element) { return }
+    setPage(element)
+  }, [pageRef.current])
 
   // react to URL params
   useEffect(() => {
@@ -103,7 +113,7 @@ export default function Main() {
       )}>
         <div className="flex flex-col items-center w-full">
           <div
-
+            ref={pageRef}
             className={cn(
               `flex flex-col items-center justify-start`,
 
@@ -126,6 +136,7 @@ export default function Main() {
         </div>
       </div>
       <Zoom />
+      <BottomBar />
       <div className={cn(
         `z-20 fixed inset-0`,
         `flex flex-row items-center justify-center`,
