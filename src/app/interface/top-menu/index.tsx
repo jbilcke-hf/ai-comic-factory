@@ -15,6 +15,7 @@ import { FontName, fontList, fonts } from "@/lib/fonts"
 import { Input } from "@/components/ui/input"
 import { defaultPreset, getPreset, presets } from "@/app/engine/presets"
 import { useStore } from "@/app/store"
+import { Button } from "@/components/ui/button"
 
 export function TopMenu() {
   const font = useStore(state => state.font)
@@ -26,7 +27,9 @@ export function TopMenu() {
   const prompt = useStore(state => state.prompt)
   const setPrompt = useStore(state => state.setPrompt)
 
+  const isGeneratingStory = useStore(state => state.isGeneratingStory)
   const atLeastOnePanelIsBusy = useStore(state => state.atLeastOnePanelIsBusy)
+  const isBusy = isGeneratingStory || atLeastOnePanelIsBusy
 
   const [draft, setDraft] = useState("")
   return (
@@ -48,7 +51,7 @@ export function TopMenu() {
           <Select
             defaultValue={defaultPreset}
             onValueChange={(value) => { setPreset(getPreset(value as FontName)) }}
-            disabled={atLeastOnePanelIsBusy}
+            disabled={isBusy}
             >
             <SelectTrigger className="flex-grow">
               <SelectValue className="text-sm" placeholder="Type" />
@@ -97,13 +100,6 @@ export function TopMenu() {
           onChange={(e) => {
             setDraft(e.target.value)
           }}
-          onBlur={(e) => {
-            if (draft !== prompt) {
-              if (draft.trim() !== prompt.trim()) {
-                setPrompt(draft.trim())
-              }
-            }
-          }}
           onKeyDown={({ key }) => {
             if (key === 'Enter') {
               if (draft.trim() !== prompt.trim()) {
@@ -113,6 +109,16 @@ export function TopMenu() {
           }}
           value={draft}
          />
+        <Button
+          onClick={() => {
+            if (draft.trim() !== prompt.trim()) {
+              setPrompt(draft.trim())
+            }
+          }}
+          disabled={!draft?.trim().length || isBusy}
+        >
+          Generate
+        </Button>
       </div>
       <div className={cn(
           `transition-all duration-200 ease-in-out`,
@@ -122,7 +128,7 @@ export function TopMenu() {
         <Select
           defaultValue={fontList.includes(preset.font) ? preset.font : "actionman"}
           onValueChange={(value) => { setFont(value as FontName) }}
-          // disabled={atLeastOnePanelIsBusy}
+          // disabled={isBusy}
           disabled={true}
           >
           <SelectTrigger className="flex-grow">
