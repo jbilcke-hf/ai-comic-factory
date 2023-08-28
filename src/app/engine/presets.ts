@@ -28,7 +28,7 @@ export const presets: Record<string, Preset> = {
     label: "Japanese",
     family: "asian",
     color: "grayscale",
-    font: "komika",
+    font: "actionman",
     llmPrompt: "japanese manga",
     imagePrompt: (prompt: string) => [
       `japanese manga about ${prompt}`,
@@ -54,7 +54,7 @@ export const presets: Record<string, Preset> = {
     label: "Franco-Belgian",
     family: "european",
     color: "color",
-    font: "paeteround",
+    font: "actionman",
     llmPrompt: "Franco-Belgian comic (a \"bande dessinée\"), in the style of Franquin, Moebius etc",
     imagePrompt: (prompt: string) => [
       `franco-belgian color comic about ${prompt}`,
@@ -106,7 +106,7 @@ export const presets: Record<string, Preset> = {
     label: "Armorican",
     family: "european",
     color: "monochrome",
-    font: "paeteround",
+    font: "actionman",
     llmPrompt: "new color album",
     imagePrompt: (prompt: string) => [
       `color album panel`,
