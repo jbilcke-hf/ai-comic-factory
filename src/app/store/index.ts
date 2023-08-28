@@ -30,7 +30,7 @@ export const useStore = create<{
   setGeneratingText: (isGeneratingText: boolean) => void
 }>((set, get) => ({
   prompt: "",
-  font: "cartoonist",
+  font: "actionman",
   preset: getPreset("japanese_manga"),
   panels: [],
   captions: {},

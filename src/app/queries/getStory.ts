@@ -69,6 +69,15 @@ export const getStory = async ({
     return captions.map(caption => caption.split(":").pop()?.trim() || "")
   } catch (err) {
     console.log(`failed to read LLM response: ${err}`)
-    return []
+
+    // in case of failure, it might be because the LLM hallucinated a completely different response,
+    // such as markdown. There is no real solution.. but we can try a fallback:
+
+    const candidateList = (
+      tmp.split("*")
+      .map(item => item.replaceAll("[", "[").replaceAll("]", "]").trim())
+    )
+
+    return candidateList
   }
 }

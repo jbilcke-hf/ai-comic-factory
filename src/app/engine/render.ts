@@ -50,7 +50,7 @@ export async function newRender({
         prompt,
         // negativePrompt, unused for now
         nbFrames: 1,
-        nbSteps: 20, // 20 = fast, 30 = better, 50 = best
+        nbSteps: 25, // 20 = fast, 30 = better, 50 = best
         actionnables: [],
         segmentation: "disabled", // one day we will remove this param, to make it automatic
         width,
