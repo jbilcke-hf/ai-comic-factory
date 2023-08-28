@@ -14,7 +14,7 @@ export const useStore = create<{
   captions: Record<string, string>
   layout: LayoutName
   zoomLevel: number
-  isGeneratingLogic: boolean
+  isGeneratingStory: boolean
   panelGenerationStatus: Record<number, boolean>
   isGeneratingText: boolean
   atLeastOnePanelIsBusy: boolean
@@ -25,7 +25,7 @@ export const useStore = create<{
   setLayout: (layout: LayoutName) => void
   setCaption: (panelId: number, caption: string) => void
   setZoomLevel: (zoomLevel: number) => void
-  setGeneratingLogic: (isGeneratingLogic: boolean) => void
+  setGeneratingStory: (isGeneratingStory: boolean) => void
   setGeneratingImages: (panelId: number, value: boolean) => void
   setGeneratingText: (isGeneratingText: boolean) => void
 }>((set, get) => ({
@@ -36,7 +36,7 @@ export const useStore = create<{
   captions: {},
   layout: getRandomLayoutName(),
   zoomLevel: 50,
-  isGeneratingLogic: false,
+  isGeneratingStory: false,
   panelGenerationStatus: {},
   isGeneratingText: false,
   atLeastOnePanelIsBusy: false,
@@ -81,7 +81,7 @@ export const useStore = create<{
   },
   setLayout: (layout: LayoutName) => set({ layout }),
   setZoomLevel: (zoomLevel: number) =>  set({ zoomLevel }),
-  setGeneratingLogic: (isGeneratingLogic: boolean) => set({ isGeneratingLogic }),
+  setGeneratingStory: (isGeneratingStory: boolean) => set({ isGeneratingStory }),
   setGeneratingImages: (panelId: number, value: boolean) => {
 
     const panelGenerationStatus: Record<number, boolean> = {

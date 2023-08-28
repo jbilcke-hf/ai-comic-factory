@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+
 import {
   Select,
   SelectContent,
@@ -12,7 +14,6 @@ import { cn } from "@/lib/utils"
 import { FontName, fontList, fonts } from "@/lib/fonts"
 import { Input } from "@/components/ui/input"
 import { defaultPreset, getPreset, presets } from "@/app/engine/presets"
-import { useState } from "react"
 import { useStore } from "@/app/store"
 
 export function TopMenu() {
@@ -119,7 +120,7 @@ export function TopMenu() {
       )}>
         <Label className="flex text-sm w-24">Font:</Label>
         <Select
-          defaultValue={fontList.includes(preset.font) ? preset.font : "cartoonist"}
+          defaultValue={fontList.includes(preset.font) ? preset.font : "actionman"}
           onValueChange={(value) => { setFont(value as FontName) }}
           // disabled={atLeastOnePanelIsBusy}
           disabled={true}

@@ -78,16 +78,16 @@ export const digitalstrip = localFont({
 export const fonts = {
   indieflower,
   thegirlnextdoor,
-  komika,
+  // komika,
   actionman,
   karantula,
   manoskope,
-  paeteround,
-  qarmic,
-  archrival,
-  cartoonist,
-  toontime,
-  vtc,
+  // paeteround,
+  // qarmic,
+ //  archrival,
+  // cartoonist,
+  // toontime,
+  // vtc,
   digitalstrip
 }
 
