@@ -164,11 +164,14 @@ export function Panel({
 
   const frameClassName = cn(
     `w-full h-full`,
-    `border-stone-900`,
+    `border-stone-800`,
     `transition-all duration-200 ease-in-out`,
-    zoomLevel > 70 ? `border-2` : zoomLevel > 40 ? `border` : `border border-transparent`,
+    zoomLevel > 140 ? `border-[2px] md:border-[4px] rounded-sm md:rounded-md` :
+    zoomLevel > 120 ? `border-[1.5px] md:border-[3px] rounded-xs md:rounded-sm` :
+    zoomLevel > 90 ? `border-[1px] md:border-[2px] rounded-xs md:rounded-sm` :
+    zoomLevel > 40 ? `border-[0.5px] md:border-[1px] rounded-none md:rounded-xs` :
+    `border-transparent md:border-[0.5px] rounded-none md:rounded-none`,
     `shadow-sm`,
-    `rounded-sm`,
     `overflow-hidden`,
     `print:shadow-none`,
   )

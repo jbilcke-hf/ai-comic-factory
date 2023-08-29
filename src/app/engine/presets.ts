@@ -74,8 +74,64 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
-  american_comic: {
-    label: "American",
+  american_comic_90: {
+    label: "American (modern)",
+    family: "american",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "american comic",
+    imagePrompt: (prompt: string) => [
+      `american comic about ${prompt}`,
+      "single panel",
+      "modern american comic",
+      "comicbook style",
+      "2010s",
+      "digital print",
+      "color comicbook",
+      "color drawing"
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "action",
+      "grayscale",
+      "monochrome",
+      "photo",
+      "painting",
+      "3D render"
+    ],
+  },
+  american_comic_40: {
+    label: "American (1940)",
+    family: "american",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "american comic",
+    imagePrompt: (prompt: string) => [
+      `american comic about ${prompt}`,
+      "single panel",
+      "american comic",
+      "comicbook style",
+      "1940",
+      "40s",
+      "color comicbook",
+      "color drawing"
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "action",
+      "grayscale",
+      "monochrome",
+      "photo",
+      "painting",
+      "3D render"
+    ],
+  },
+  american_comic_50: {
+    label: "American (1950)",
     family: "american",
     color: "color",
     font: "actionman",
@@ -102,6 +158,122 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
+  american_comic_60: {
+    label: "American (1960)",
+    family: "american",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "american comic",
+    imagePrompt: (prompt: string) => [
+      `american comic about ${prompt}`,
+      "single panel",
+      "american comic",
+      "comicbook style",
+      "1960",
+      "60s",
+      "color comicbook",
+      "color drawing"
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "action",
+      "grayscale",
+      "monochrome",
+      "photo",
+      "painting",
+      "3D render"
+    ],
+  },
+
+  /*
+  pulp_sf: {
+    label: "Pulp SF",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new pulp science fiction",
+    imagePrompt: (prompt: string) => [
+      `color comic panel`,
+      `${prompt}`,
+      "pulp science fiction",
+      "vintage",
+      "1940",
+      "1950",
+      "single panel",
+      "comic album"
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "photo",
+      "painting",
+      "3D render"
+    ],
+  },
+  */
+  humanoid: {
+    label: "Humanoid",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new album by moebius",
+    imagePrompt: (prompt: string) => [
+      `color comic panel`,
+      `${prompt}`,
+      "style of Moebius",
+      "by Moebius",
+      "french comic panel",
+      "franco-belgian style",
+      "bande dessinée",
+      "single panel",
+      "comic album"
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "photo",
+      "painting",
+      "3D render"
+    ],
+  },
+  milou: {
+    label: "Haddock",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new album by Hergé",
+    imagePrompt: (prompt: string) => [
+      `color comic panel`,
+      `${prompt}`,
+      "style of Hergé",
+      "by Hergé",
+      "tintin style",
+      "french comic panel",
+      "franco-belgian style",
+      "color panel",
+      "bande dessinée",
+      "single panel",
+      "comic album"
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "photo",
+      "painting",
+      "3D render"
+    ],
+  },
   armorican: {
     label: "Armorican",
     family: "european",
@@ -109,7 +281,7 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "new color album",
     imagePrompt: (prompt: string) => [
-      `color album panel`,
+      `color comic panel`,
       `about ${prompt}`,
       "romans",
       "gauls",

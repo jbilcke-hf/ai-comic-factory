@@ -39,7 +39,7 @@ export const useStore = create<{
   panels: [],
   captions: {},
   layout: getRandomLayoutName(),
-  zoomLevel: 50,
+  zoomLevel: 60,
   page: undefined as unknown as HTMLDivElement,
   isGeneratingStory: false,
   panelGenerationStatus: {},

@@ -106,13 +106,16 @@ export default function Main() {
     <div>
       <TopMenu />
       <div className={cn(
-        `flex items-start w-screen h-screen pt-[120px] px-16 md:pt-[72px] overflow-y-scroll`,
+        `flex items-start w-screen h-screen pt-[120px] md:pt-[72px] overflow-y-scroll`,
         `transition-all duration-200 ease-in-out`,
-        `print:pt-2 print:px-2`,
-
+        zoomLevel > 105 ? `px-0` : `pl-2 pr-16 md:pl-16 md:pr-16`,
+        `print:pt-0 print:px-0 print:pl-0 print:pr-0`,
         fonts.actionman.className
       )}>
-        <div className="flex flex-col items-center w-full">
+        <div className={cn(
+          `flex flex-col w-full`,
+          zoomLevel > 105 ? `items-start` : `items-center`
+        )}>
           <div
             ref={pageRef}
             className={cn(
@@ -128,11 +131,13 @@ export default function Main() {
               `border border-stone-200`,
               `shadow-2xl`,
               `print:shadow-none`,
+              `print:border-0`,
               `print:width-screen`
             )}
             style={{
               width: `${zoomLevel}%`,
               padding: `${Math.round((zoomLevel / 100) * 16)}px`
+              // marginLeft: `${zoomLevel > 100 ? `100`}`
             }}
             >
             <LayoutElement />

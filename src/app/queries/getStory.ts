@@ -29,7 +29,7 @@ export const getStory = async ({
       role: "user",
       content: `The story is: ${prompt}`,
     }
-  ])
+  ]) + "```json\n["
 
 
   let result = ""

@@ -97,11 +97,14 @@ export function TopMenu() {
         <Input
           placeholder="Story"
           className="w-full bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800"
-          disabled={atLeastOnePanelIsBusy}
+          // disabled={atLeastOnePanelIsBusy}
           onChange={(e) => {
             setDraft(e.target.value)
           }}
           onKeyDown={({ key }) => {
+            if (isBusy) {
+              return
+            }
             if (key === 'Enter') {
               if (draft.trim() !== prompt.trim()) {
                 setPrompt(draft.trim())
@@ -112,6 +115,9 @@ export function TopMenu() {
          />
         <Button
           onClick={() => {
+            if (isBusy) {
+              return
+            }
             if (draft.trim() !== prompt.trim()) {
               setPrompt(draft.trim())
             }

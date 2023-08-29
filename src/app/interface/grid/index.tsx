@@ -16,7 +16,7 @@ export function Grid({ children, className }: { children: ReactNode; className: 
         className
       )}
       style={{
-        gap: `${Math.round((zoomLevel / 100) * 8)}px`
+        gap: `${(zoomLevel / 100) * 0.7}vw`
       }}
       >
       {children}

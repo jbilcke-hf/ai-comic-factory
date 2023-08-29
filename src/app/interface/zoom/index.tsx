@@ -22,7 +22,7 @@ export function Zoom() {
         <VerticalSlider
           defaultValue={[zoomLevel]}
           min={30}
-          max={200}
+          max={250}
           step={1}
           onValueChange={value => setZoomLevel(value[0] || 10)}
           value={[zoomLevel]}
