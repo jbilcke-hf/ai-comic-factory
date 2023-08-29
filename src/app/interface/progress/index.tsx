@@ -24,7 +24,7 @@ export function Progress({
 
     // normally it takes 45, and we will try to go below,
     // but to be safe let's set the counter a 1 min
-    const nbSeconds = 32 // 1 min
+    const nbSeconds = 60 // 1 min
     const amountInPercent =  100 / (nbUpdatesPerSec * nbSeconds) // 0.333
 
     progressRef.current = Math.min(100, progressRef.current + amountInPercent)

@@ -15,7 +15,7 @@ export function Zoom() {
       `animation-all duration-300 ease-in-out`,
       isGeneratingStory ? `scale-0 opacity-0` : ``,
     )}>
-      <div className="font-mono text-xs pb-1 text-stone-700">
+      <div className="font-mono text-xs pb-1 text-stone-700 bg-stone-50 rounded-full">
         Zoom
       </div>
       <div className="w-2">

@@ -51,14 +51,16 @@ export async function newRender({
         // negativePrompt, unused for now
         nbFrames: 1,
         nbSteps: 25, // 20 = fast, 30 = better, 50 = best
-        actionnables: [],
-        segmentation: "disabled", // one day we will remove this param, to make it automatic
+        actionnables: [], // ["text block"],
+        segmentation: "disabled", // "firstframe", // one day we will remove this param, to make it automatic
         width,
         height,
 
         // no need to upscale right now as we generate tiny panels
         // maybe later we can provide an "export" button to PDF
-        upscalingFactor: 2,
+        // unfortunately there are too many requests for upscaling,
+        // the server is always down
+        upscalingFactor: 1, // 2,
 
         // analyzing doesn't work yet, it seems..
         analyze: false, // analyze: true,

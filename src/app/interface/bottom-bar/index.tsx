@@ -28,7 +28,9 @@ export function BottomBar() {
           onClick={handlePrint}
           disabled={!prompt?.length}
         >{
-          remainingImages ? `Print (${allStatus.length - remainingImages}/4 in HD ⌛)` : `Print (in HD)`
+          remainingImages ? `${allStatus.length - remainingImages}/4 panels ⌛` : `Print as PDF`
+          // remainingImages ? `Print (${allStatus.length - remainingImages}/4 in HD ⌛)` : `Print (in HD)`
+        
         }</Button>
       </div>
     </div>

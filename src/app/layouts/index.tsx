@@ -17,14 +17,14 @@ export function Layout1() {
       <div className="bg-zinc-100 row-span-2">
         <Panel
           panel={1}
-          width={1024}
+          width={768}
           height={1024}
         />
       </div>
       <div className="bg-gray-100 row-span-2 col-span-1">
         <Panel
           panel={2}
-          width={1024}
+          width={768}
           height={1024}
         />
       </div>
@@ -154,20 +154,20 @@ export function Layout5() {
         <Panel
           panel={0}
           width={768}
-          height={768}
+          height={1024}
         />
       </div>
       <div className="bg-zinc-100 col-span-1 row-span-1">
         <Panel
           panel={1}
           width={768}
-          height={768}
+          height={1024}
         />
       </div>
       <div className="bg-stone-100 row-span-2 col-span-1">
         <Panel
           panel={2}
-          width={768}
+          width={512}
           height={1024}
         />
       </div>
@@ -175,7 +175,7 @@ export function Layout5() {
         <Panel
           panel={3}
           width={1024}
-          height={768}
+          height={1024}
         />
       </div>
     </Grid>
@@ -196,14 +196,14 @@ export function Layout6() {
         <Panel
           panel={1}
           width={768}
-          height={768}
+          height={1024}
         />
       </div>
       <div className="bg-stone-100 row-span-1 col-span-1">
         <Panel
           panel={2}
           width={768}
-          height={768}
+          height={1024}
         />
       </div>
       <div className="bg-slate-100 row-span-1 col-span-2">
@@ -218,11 +218,18 @@ export function Layout6() {
 }
 
 // export const layouts = { Layout1, Layout2, Layout3, Layout4, Layout5, Layout6 }
-export const layouts = { Layout1, Layout5, Layout6  }
-
-export type LayoutName = keyof typeof layouts 
-
-export function getRandomLayoutName(): LayoutName {
-  return pick(Object.keys(layouts) as LayoutName[]) as LayoutName
+export const allLayouts = { 
+  Layout1,
+  Layout5,
+  Layout6 
 }
 
+export type LayoutName = keyof typeof allLayouts 
+
+export function getRandomLayoutName(): LayoutName {
+  return pick(Object.keys(allLayouts) as LayoutName[]) as LayoutName
+}
+
+export function getRandomLayoutNames(): LayoutName[] {
+  return Object.keys(allLayouts).sort(() => Math.random() - 0.5) as LayoutName[]
+}

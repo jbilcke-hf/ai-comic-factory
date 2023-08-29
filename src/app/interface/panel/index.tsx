@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils"
 import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
 import { Progress } from "@/app/interface/progress"
 import { see } from "@/app/engine/caption"
+import { writeIntoBubble } from "@/lib/writeIntoBubble"
 // import { Bubble } from "./bubble"
 
 export function Panel({
@@ -49,23 +50,25 @@ export function Panel({
   // since this run in its own loop, we need to use references everywhere
   // but perhaps this could be refactored
   useEffect(() => {
-    startTransition(async () => {
-      // console.log("Panel prompt: "+ prompt)
-      if (!prompt?.length) { return }
+    // console.log("Panel prompt: "+ prompt)
+    if (!prompt?.length) { return }
 
-      console.log("Loading panel..")
+    // important: update the status, and clear the scene
+    setGeneratingImages(panel, true)
+    setRendered(getInitialRenderedScene())
 
-      // console.log("calling:\nconst newRendered = await newRender({ prompt, preset, width, height })")
-      console.log({
-        panel, prompt, width, height
-      })
+    setTimeout(() => {
+      startTransition(async () => {
 
-      console.log("")
-      // important: update the status, and clear the scene
-      setGeneratingImages(panel, true)
-      setRendered(getInitialRenderedScene())
-
-      const newRendered = await newRender({ prompt, width, height })
+      console.log(`Loading panel ${panel}..`)
+    
+      let newRendered = await newRender({ prompt, width, height })
+      try {
+        newRendered = await newRender({ prompt, width, height })
+      } catch (err) {
+        console.log("Failed to load the panel! Don't worry, we are retrying..")
+        newRendered = await newRender({ prompt, width, height })
+      }
 
       if (newRendered) {
         // console.log("newRendered:", newRendered)
@@ -86,6 +89,7 @@ export function Panel({
         return
       }
     })
+  }, 1000 * panel)
   }, [prompt, width, height])
 
 
@@ -94,7 +98,7 @@ export function Panel({
       clearTimeout(timeoutRef.current)
 
       if (!renderedRef.current?.renderId || renderedRef.current?.status !== "pending") {
-        timeoutRef.current = setTimeout(checkStatus, 1000)
+        timeoutRef.current = setTimeout(checkStatus, 1500)
         return
       }
       try {
@@ -112,20 +116,20 @@ export function Panel({
 
         if (newRendered.status === "pending") {
           // console.log("job not finished")
-          timeoutRef.current = setTimeout(checkStatus, 1000)
+          timeoutRef.current = setTimeout(checkStatus, 1500)
         } else {
           console.log("panel finished!")
           setGeneratingImages(panel, false)
         }
       } catch (err) {
         console.error(err)
-        timeoutRef.current = setTimeout(checkStatus, 1000)
+        timeoutRef.current = setTimeout(checkStatus, 1500)
       }
     })
   }
  
   useEffect(() => {
-    console.log("starting timeout")
+    // console.log("starting timeout")
     clearTimeout(timeoutRef.current)
     
     // normally it should reply in < 1sec, but we could also use an interval
@@ -176,6 +180,22 @@ export function Panel({
     `print:border-[1.5px] print:shadow-none`,
   )
 
+  const [newMask, setNewMask] = useState("")
+
+  useEffect(() => {
+    const transformMask = async () => {
+      if (rendered.maskUrl) {
+        const imgSrc = await writeIntoBubble(
+          rendered.maskUrl,
+          "LOREM IPSUM! Dolor sit amet.."
+        )
+        setNewMask(imgSrc)
+      }
+    }
+    transformMask()
+  }, [rendered.maskUrl])
+
+
   if (prompt && !rendered.assetUrl) {
     return (
       <div className={cn(
@@ -194,11 +214,13 @@ export function Panel({
       { "grayscale": preset.color === "grayscale" },
       className
     )}>
-      {rendered.assetUrl && <img
-        src={rendered.assetUrl}
-        className="w-full h-full object-cover"
-        alt={rendered.alt}
-      />}
+        {rendered.assetUrl && <img
+          src={rendered.assetUrl}
+          className=" w-full h-full object-cover"
+          alt={rendered.alt}
+        />}
+
+
 
       {/*<Bubble className="absolute top-4 left-4">
         Hello, world!

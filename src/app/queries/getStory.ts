@@ -19,10 +19,10 @@ export const getStory = async ({
       role: "system",
       content: [
         `You are a comic book author specialized in ${preset.llmPrompt}`,
-        `Please generate detailed drawing instructions for the 4 panels of a new silent comic book page.`,
+        `Please write detailed drawing instructions for the 5 panels of a new silent comic book page.`,
         `Give your response as a JSON array like this: \`Array<{ panel: number; caption: string}>\`.`,
         // `Give your response as Markdown bullet points.`,
-        `Be brief in your caption don't add your own comments. Be straight to the point, and never reply things like "Sure, I can.." etc.`
+        `Be brief in your 5 captions, don't add your own comments. Be straight to the point, and never reply things like "Sure, I can.." etc.`
       ].filter(item => item).join("\n")
     },
     {

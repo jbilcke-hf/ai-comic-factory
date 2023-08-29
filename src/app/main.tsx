@@ -1,18 +1,19 @@
 "use client"
 
-import { useEffect, useRef, useTransition } from "react"
+import { useEffect, useRef, useState, useTransition } from "react"
 import { useSearchParams } from "next/navigation"
 
 import { PresetName, defaultPreset, getPreset } from "@/app/engine/presets"
 
 import { cn } from "@/lib/utils"
 import { TopMenu } from "./interface/top-menu"
-import { FontName, defaultFont, fontList, fonts } from "@/lib/fonts"
-import { getRandomLayoutName, layouts } from "./layouts"
+import { FontName, defaultFont, fonts } from "@/lib/fonts"
+import { getRandomLayoutName } from "./layouts"
 import { useStore } from "./store"
 import { Zoom } from "./interface/zoom"
 import { getStory } from "./queries/getStory"
 import { BottomBar } from "./interface/bottom-bar"
+import { Page } from "./interface/page"
 
 export default function Main() {
   const [_isPending, startTransition] = useTransition()
@@ -34,8 +35,7 @@ export default function Main() {
   const prompt = useStore(state => state.prompt)
   const setPrompt = useStore(state => state.setPrompt)
 
-  const layout = useStore(state => state.layout)
-  const setLayout = useStore(state => state.setLayout)
+  const setLayouts = useStore(state => state.setLayouts)
 
   const setPanels = useStore(state => state.setPanels)
 
@@ -43,6 +43,8 @@ export default function Main() {
 
   const setPage = useStore(state => state.setPage)
   const pageRef = useRef<HTMLDivElement>(null)
+
+  const [waitABitMore, setWaitABitMore] = useState(false)
 
   useEffect(() => {
     const element = pageRef.current
@@ -68,23 +70,28 @@ export default function Main() {
     if (!prompt) { return }
 
     startTransition(async () => {
-
+      setWaitABitMore(false)
       setGeneratingStory(true)
 
-      const newLayout = getRandomLayoutName()
-      console.log("using layout " + newLayout)
-      setLayout(newLayout)
+      const newLayouts = [
+        getRandomLayoutName(),
+        getRandomLayoutName(),
+      ]
+
+      console.log("using layouts " + newLayouts)
+      setLayouts(newLayouts)
 
       try {
+
         const llmResponse = await getStory({ preset, prompt })
         console.log("response:", llmResponse)
 
-        // TODO call the LLM here!
         const panelPromptPrefix = preset.imagePrompt(prompt).join(", ")
         console.log("panel prompt prefix:", panelPromptPrefix)
     
         const nbPanels = 4
         const newPanels: string[] = []
+        setWaitABitMore(true)
 
         for (let p = 0; p < nbPanels; p++) {
           const newPanel = [panelPromptPrefix, llmResponse[p] || ""]
@@ -95,12 +102,13 @@ export default function Main() {
       } catch (err) {
         console.error(err)
       } finally {
-        setGeneratingStory(false)
+        setTimeout(() => {
+          setGeneratingStory(false)
+          setWaitABitMore(false)
+        }, 9000)
       }
     })
   }, [prompt, preset?.label]) // important: we need to react to preset changes too
-
-  const LayoutElement = (layouts as any)[layout]
 
   return (
     <div>
@@ -112,35 +120,27 @@ export default function Main() {
         `print:pt-0 print:px-0 print:pl-0 print:pr-0`,
         fonts.actionman.className
       )}>
-        <div className={cn(
-          `flex flex-col w-full`,
-          zoomLevel > 105 ? `items-start` : `items-center`
-        )}>
+        <div
+          ref={pageRef}
+          className={cn(
+            `flex flex-col w-full`,
+            zoomLevel > 105 ? `items-start` : `items-center`
+          )}>
           <div
-            ref={pageRef}
             className={cn(
               `comic-page`,
-              `flex flex-col items-center justify-start`,
-
-              // we are trying to reach a "book" look
-              // we are using aspect-[297/210] because it matches A4 (297mm x 210mm)
-              // `aspect-[210/297]`,
-              `aspect-[250/297]`,
-
-              `transition-all duration-100 ease-in-out`,
-              `border border-stone-200`,
-              `shadow-2xl`,
-              `print:shadow-none`,
-              `print:border-0`,
-              `print:width-screen`
+              `flex flex-col md:flex-row md:space-x-16 md:items-center md:justify-start`,
             )}
             style={{
-              width: `${zoomLevel}%`,
-              padding: `${Math.round((zoomLevel / 100) * 16)}px`
-              // marginLeft: `${zoomLevel > 100 ? `100`}`
-            }}
-            >
-            <LayoutElement />
+              width: `${zoomLevel}%`
+            }}>
+            <Page page={0} />
+
+            {/*
+            // we could support multiple pages here,
+            // but let's disable it for now
+            <Page page={1} />
+            */}
           </div>
         </div>
       </div>
@@ -157,11 +157,12 @@ export default function Main() {
         fonts.actionman.className
       )}>
         <div className={cn(
-          `text-center text-lg text-stone-600 w-[70%]`,
+          `text-center text-xl text-stone-600 w-[70%]`,
           isGeneratingStory ? ``: `scale-0 opacity-0`,
           `transition-all duration-300 ease-in-out`,
         )}>
-          Generating your story.. (hold tight)
+          {waitABitMore ? `Story is ready, but server is a bit busy!`: 'Generating a new story..'}<br/>
+          {waitABitMore ? `Please hold tight..` : ''}
         </div>
       </div>
     </div>
