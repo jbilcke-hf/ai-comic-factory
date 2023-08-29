@@ -43,12 +43,12 @@ export function TopMenu() {
       `bg-stone-900/70 dark:bg-stone-900/70 text-gray-50 dark:text-gray-50`,
       `space-y-2 md:space-y-0 md:space-x-3 lg:space-x-6`
     )}>
-      <div className="flex flex-row space-x-3">
+      <div className="flex flex-row space-x-6 md:space-x-3">
         <div className={cn(
           `transition-all duration-200 ease-in-out`,
           `flex flex-row items-center justify-start space-x-3 font-mono w-1/2 md:w-auto`
           )}>
-          <Label className="flex text-sm w-24">Preset:</Label>
+          <Label className="flex text-sm md:w-24">Preset:</Label>
           <Select
             defaultValue={defaultPreset}
             onValueChange={(value) => { setPreset(getPreset(value as FontName)) }}
@@ -68,7 +68,7 @@ export function TopMenu() {
           `transition-all duration-200 ease-in-out`,
           `flex flex-row items-center space-x-3 font-mono w-1/2 md:w-auto md:hidden`
         )}>
-          <Label className="flex text-sm w-24">Font:</Label>
+          <Label className="flex text-sm md:w-24">Font:</Label>
           <Select
             defaultValue={fontList.includes(preset.font) ? preset.font : "cartoonist"}
             onValueChange={(value) => { setFont(value as FontName) }}
