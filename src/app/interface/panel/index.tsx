@@ -173,7 +173,7 @@ export function Panel({
     `border-transparent md:border-[0.5px] rounded-none md:rounded-none`,
     `shadow-sm`,
     `overflow-hidden`,
-    `print:shadow-none`,
+    `print:border-[1.5px] print:shadow-none`,
   )
 
   if (prompt && !rendered.assetUrl) {
