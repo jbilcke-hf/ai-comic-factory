@@ -102,6 +102,8 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
+
+  /*
   american_comic_40: {
     label: "American (1940)",
     family: "american",
@@ -130,6 +132,7 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
+  */
   american_comic_50: {
     label: "American (1950)",
     family: "american",
@@ -158,6 +161,7 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
+  /*
   american_comic_60: {
     label: "American (1960)",
     family: "american",
@@ -186,10 +190,11 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
+  */
 
-  /*
-  pulp_sf: {
-    label: "Pulp SF",
+  
+  flying_saucer: {
+    label: "Flying saucer",
     family: "european",
     color: "color",
     font: "actionman",
@@ -197,10 +202,12 @@ export const presets: Record<string, Preset> = {
     imagePrompt: (prompt: string) => [
       `color comic panel`,
       `${prompt}`,
-      "pulp science fiction",
-      "vintage",
+      "40s",
       "1940",
-      "1950",
+      "vintage comic",
+      "pulp magazine",
+      "pulp science fiction",
+      "vintage science fiction",
       "single panel",
       "comic album"
     ],
@@ -215,7 +222,7 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
-  */
+ 
   humanoid: {
     label: "Humanoid",
     family: "european",
