@@ -20,13 +20,11 @@ export function Panel({
   className = "",
   width = 1,
   height = 1,
-  delay = 0,
 }: {
   panel: number
   className?: string
   width?: number
   height?: number
-  delay?: number
  }) {
   const font = useStore(state => state.font)
   const preset = useStore(state => state.preset)
@@ -46,6 +44,8 @@ export function Panel({
   const renderedRef = useRef<RenderedScene>()
 
   const timeoutRef = useRef<any>(null)
+
+  const delay = 3000 + (1000 * panel)
 
   // since this run in its own loop, we need to use references everywhere
   // but perhaps this could be refactored
@@ -98,7 +98,7 @@ export function Panel({
       clearTimeout(timeoutRef.current)
 
       if (!renderedRef.current?.renderId || renderedRef.current?.status !== "pending") {
-        timeoutRef.current = setTimeout(checkStatus, 2500)
+        timeoutRef.current = setTimeout(checkStatus, delay)
         return
       }
       try {
@@ -116,14 +116,23 @@ export function Panel({
 
         if (newRendered.status === "pending") {
           // console.log("job not finished")
-          timeoutRef.current = setTimeout(checkStatus, 2500)
+          timeoutRef.current = setTimeout(checkStatus, delay)
+        } else if (newRendered.status === "error") {
+          console.log(`panel got an error :/ "${newRendered.error}", but let's try to recover..`)
+          try {
+            const newAttempt = await newRender({ prompt, width, height })
+            setRendered(renderedRef.current = newAttempt)
+          } catch (err) {
+            console.error("yeah sorry, something is wrong.. aborting")
+            setGeneratingImages(panel, false)
+          }
         } else {
           console.log("panel finished!")
           setGeneratingImages(panel, false)
         }
       } catch (err) {
         console.error(err)
-        timeoutRef.current = setTimeout(checkStatus, 2500)
+        timeoutRef.current = setTimeout(checkStatus, delay)
       }
     })
   }

@@ -310,7 +310,77 @@ export const presets: Record<string, Preset> = {
       "painting",
       "3D render"
     ],
-  }
+  },
+  render: {
+    label: "3D Render",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new movie",
+    imagePrompt: (prompt: string) => [
+      `3D render`,
+      `Blender`,
+      `3D animation`,
+      `Unreal engine`,
+      `${prompt}`,
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "painting"
+    ],
+  },
+  /*
+  psx: {
+    label: "PSX",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new movie",
+    imagePrompt: (prompt: string) => [
+      `videogame screenshot`,
+      `3dfx`,
+      `3D dos game`,
+      `software rendering`,
+      `${prompt}`,
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "painting"
+    ],
+  },
+  */
+ /*
+  pixel: {
+    label: "Pixel",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new movie",
+    imagePrompt: (prompt: string) => [
+      `pixelart`,
+      `isometric`,
+      `pixelated`,
+      `low res`,
+      `${prompt}`,
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "painting"
+    ],
+  },
+  */
 }
 
 export type PresetName = keyof typeof presets
