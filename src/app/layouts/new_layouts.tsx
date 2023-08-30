@@ -39,7 +39,7 @@ export function Layout1() {
         <Panel
           panel={4}
           width={1024}
-          height={512}
+          height={768}
         />
       </div>
     </Grid>
@@ -196,7 +196,7 @@ export function Layout5() {
         <Panel
           panel={3}
           width={1024}
-          height={1024}
+          height={768}
         />
       </div>
       <div className="bg-slate-100 row-span-1 col-span-3">

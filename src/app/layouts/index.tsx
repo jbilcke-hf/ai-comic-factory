@@ -175,7 +175,7 @@ export function Layout5() {
         <Panel
           panel={3}
           width={1024}
-          height={1024}
+          height={768}
         />
       </div>
     </Grid>
