@@ -40,7 +40,7 @@ export function BottomBar() {
     console.log("descriptionMd:", descriptionMd)
 
     const params = new URLSearchParams({
-      title: `captionTxt`,
+      title: `[Comic] ${prompt}`,
       description: descriptionMd,
       });
     const paramsStr = params.toString();
