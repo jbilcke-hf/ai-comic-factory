@@ -41,16 +41,7 @@ export default function Main() {
 
   const zoomLevel = useStore(state => state.zoomLevel)
 
-  const setPage = useStore(state => state.setPage)
-  const pageRef = useRef<HTMLDivElement>(null)
-
   const [waitABitMore, setWaitABitMore] = useState(false)
-
-  useEffect(() => {
-    const element = pageRef.current
-    if (!element) { return }
-    setPage(element)
-  }, [pageRef.current])
 
   // react to URL params
   useEffect(() => {
@@ -121,7 +112,6 @@ export default function Main() {
         fonts.actionman.className
       )}>
         <div
-          ref={pageRef}
           className={cn(
             `flex flex-col w-full`,
             zoomLevel > 105 ? `items-start` : `items-center`

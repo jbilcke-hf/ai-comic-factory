@@ -1,6 +1,7 @@
 import { allLayouts } from "@/app/layouts"
 import { useStore } from "@/app/store"
 import { cn } from "@/lib/utils"
+import { useEffect, useRef } from "react"
 
 export function Page({ page }: { page: number }) {
   const zoomLevel = useStore(state => state.zoomLevel)
@@ -21,8 +22,18 @@ export function Page({ page }: { page: number }) {
   }, [prompt])
   */
 
+  const setPage = useStore(state => state.setPage)
+  const pageRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const element = pageRef.current
+    if (!element) { return }
+    setPage(element)
+  }, [pageRef.current])
+  
   return (
     <div
+      ref={pageRef}
       className={cn(
         `w-full`,
         // we are trying to reach a "book" look

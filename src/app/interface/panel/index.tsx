@@ -89,7 +89,7 @@ export function Panel({
         return
       }
     })
-  }, 1000 * panel)
+  }, 2000 * panel)
   }, [prompt, width, height])
 
 
