@@ -1,13 +1,11 @@
 import { allLayouts } from "@/app/layouts"
 import { useStore } from "@/app/store"
 import { cn } from "@/lib/utils"
-import { useEffect, useState } from "react"
-
 
 export function Page({ page }: { page: number }) {
   const zoomLevel = useStore(state => state.zoomLevel)
   const layouts = useStore(state => state.layouts)
-  const prompt = useStore(state => state.prompt)
+  // const prompt = useStore(state => state.prompt)
 
   const LayoutElement = (allLayouts as any)[layouts[page]]
 

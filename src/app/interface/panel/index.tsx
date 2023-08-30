@@ -216,8 +216,10 @@ export function Panel({
     )}>
         {rendered.assetUrl && <img
           src={rendered.assetUrl}
-          className=" w-full h-full object-cover"
+          width={width}
+          height={height}
           alt={rendered.alt}
+          className="h-full max-w-fit"
         />}
 
 

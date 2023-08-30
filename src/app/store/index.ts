@@ -32,7 +32,8 @@ export const useStore = create<{
   setGeneratingStory: (isGeneratingStory: boolean) => void
   setGeneratingImages: (panelId: number, value: boolean) => void
   setGeneratingText: (isGeneratingText: boolean) => void
-  download: () => void
+  pageToImage: () => Promise<string>
+  download: () => Promise<void>
 }>((set, get) => ({
   prompt: "",
   font: "actionman",
@@ -118,16 +119,20 @@ export const useStore = create<{
     })
   },
   setGeneratingText: (isGeneratingText: boolean) => set({ isGeneratingText }),
-  download: async () => {
-    console.log("download called!")
+  pageToImage: async () => {
     const { page } = get()
-    console.log("page:", page)
-    if (!page) { return }
+    if (!page) { return "" }
     
     const canvas = await html2canvas(page)
     console.log("canvas:", canvas)
 
     const data = canvas.toDataURL('image/jpg')
+    return data
+  },
+  download: async () => {
+    const { pageToImage } = get()
+    const data = await pageToImage()
+   
     const link = document.createElement('a')
 
     if (typeof link.download === 'string') {
