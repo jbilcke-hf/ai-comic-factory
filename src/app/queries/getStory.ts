@@ -82,7 +82,6 @@ export const getStory = async ({
 
       captions = dirtyLLMJsonParser(strategy2)
     } catch (err2) {
-
       // in case of failure here, it might be because the LLM hallucinated a completely different response,
       // such as markdown. There is no real solution.. but we can try a fallback:
 

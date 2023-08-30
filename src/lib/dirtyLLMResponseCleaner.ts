@@ -2,6 +2,12 @@ export function dirtyLLMResponseCleaner(input: string) {
   return (
     `${input || ""}`
     // a summary of all the weird hallucinations I saw it make..
+    .replaceAll(`"]`, `"}]`)
+    .replaceAll(`" ]`, `"}]`)
+    .replaceAll(`"  ]`, `"}]`)
+    .replaceAll(`"\n]`, `"}]`)
+    .replaceAll(`"\n ]`, `"}]`)
+    .replaceAll(`"\n  ]`, `"}]`)
     .replaceAll("}}", "}")
     .replaceAll("]]", "]")
     .replaceAll(",,", ",")

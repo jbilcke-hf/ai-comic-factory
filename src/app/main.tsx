@@ -105,7 +105,7 @@ export default function Main() {
         setTimeout(() => {
           setGeneratingStory(false)
           setWaitABitMore(false)
-        }, 9000)
+        }, 10000)
       }
     })
   }, [prompt, preset?.label]) // important: we need to react to preset changes too
