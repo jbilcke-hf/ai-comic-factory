@@ -18,11 +18,17 @@ export function BottomBar() {
   const remainingImages = allStatus.reduce((acc, s) => (acc + (s ? 1 : 0)), 0)
     
   const handleShare = async () => {
-    // const dataUrl = await pageToImage()
+    const dataUrl = await pageToImage()
     // console.log("dataUrl:", dataUrl)
-    // const fileToUpload = base64ToFile(dataUrl, "comic.png")
-    // const uploadUrl = await uploadToHuggingFace(fileToUpload)
-    // console.log("uploadUrl:", uploadUrl)
+    const fileToUpload = base64ToFile(dataUrl, "comic.png")
+    let uploadUrl = ""
+    try {
+      uploadUrl = await uploadToHuggingFace(fileToUpload)
+      console.log("uploadUrl:", uploadUrl)
+    } catch (err) {
+      console.error("Failed to upload the image to Hugging Face")
+    }
+
 
     const descriptionMd = `
 #### Prompt:
@@ -32,10 +38,10 @@ export function BottomBar() {
 \`\`\`${preset.label}\`\`\`
 
 #### Comic:
-
-(drag & drop your downloaded comic here)
+${uploadUrl
+  ? (`![${prompt}](${uploadUrl})`)
+  : (`(please drag & drop your JPG image here)`)}
 `;
-// ![${prompt}](${uploadUrl})
 
     console.log("descriptionMd:", descriptionMd)
 

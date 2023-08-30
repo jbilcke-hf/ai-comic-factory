@@ -62,7 +62,7 @@ export function Panel({
 
       console.log(`Loading panel ${panel}..`)
     
-      let newRendered = await newRender({ prompt, width, height })
+      let newRendered: RenderedScene
       try {
         newRendered = await newRender({ prompt, width, height })
       } catch (err) {
@@ -117,8 +117,9 @@ export function Panel({
         if (newRendered.status === "pending") {
           // console.log("job not finished")
           timeoutRef.current = setTimeout(checkStatus, delay)
-        } else if (newRendered.status === "error") {
-          console.log(`panel got an error :/ "${newRendered.error}", but let's try to recover..`)
+        } else if (newRendered.status === "error" || 
+        (newRendered.status === "completed" && !newRendered.assetUrl?.length)) {
+          console.log(`panel got an error and/or an empty asset url :/ "${newRendered.error}", but let's try to recover..`)
           try {
             const newAttempt = await newRender({ prompt, width, height })
             setRendered(renderedRef.current = newAttempt)
