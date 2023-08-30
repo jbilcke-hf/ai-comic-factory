@@ -126,7 +126,7 @@ export const useStore = create<{
     const canvas = await html2canvas(page)
     console.log("canvas:", canvas)
 
-    const data = canvas.toDataURL('image/jpg')
+    const data = canvas.toDataURL('image/jpeg', 0.5)
     return data
   },
   download: async () => {

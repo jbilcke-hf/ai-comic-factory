@@ -98,7 +98,7 @@ export function Panel({
       clearTimeout(timeoutRef.current)
 
       if (!renderedRef.current?.renderId || renderedRef.current?.status !== "pending") {
-        timeoutRef.current = setTimeout(checkStatus, 1500)
+        timeoutRef.current = setTimeout(checkStatus, 2500)
         return
       }
       try {
@@ -116,14 +116,14 @@ export function Panel({
 
         if (newRendered.status === "pending") {
           // console.log("job not finished")
-          timeoutRef.current = setTimeout(checkStatus, 1500)
+          timeoutRef.current = setTimeout(checkStatus, 2500)
         } else {
           console.log("panel finished!")
           setGeneratingImages(panel, false)
         }
       } catch (err) {
         console.error(err)
-        timeoutRef.current = setTimeout(checkStatus, 1500)
+        timeoutRef.current = setTimeout(checkStatus, 2500)
       }
     })
   }

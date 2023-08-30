@@ -53,30 +53,27 @@ export function BottomBar() {
   return (
     <div className={cn(
       `print:hidden`,
-      `fixed bottom-6 right-6`,
+      `fixed bottom-6 right-3`,
       `flex flex-row`,
       `animation-all duration-300 ease-in-out`,
       isGeneratingStory ? `scale-0 opacity-0` : ``,
       `space-x-3`,
+      `scale-[0.9]`
     )}>
-      {/*
       <div>
         <Button
           onClick={handlePrint}
           disabled={!prompt?.length}
-        >{
-          remainingImages ? `${allStatus.length - remainingImages}/4 panels ⌛` : `Print as PDF`
-          // remainingImages ? `Print (${allStatus.length - remainingImages}/4 in HD ⌛)` : `Print (in HD)`
-        
-        }</Button>
+        >
+          Print
+        </Button>
       </div>
-      */}
       <div>
         <Button
           onClick={download}
           disabled={!prompt?.length}
         >{
-          remainingImages ? `${allStatus.length - remainingImages}/4 panels ⌛` : `Download`
+          remainingImages ? `${allStatus.length - remainingImages}/4 panels ⌛` : `Save`
         }</Button>
       </div>
       <div>
