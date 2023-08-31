@@ -1,13 +1,10 @@
 "use client"
 
-import { useEffect, useRef, useState, useTransition } from "react"
-import { useSearchParams } from "next/navigation"
-
-import { PresetName, defaultPreset, getPreset } from "@/app/engine/presets"
+import { useEffect, useState, useTransition } from "react"
 
 import { cn } from "@/lib/utils"
 import { TopMenu } from "./interface/top-menu"
-import { FontName, defaultFont, fonts } from "@/lib/fonts"
+import { fonts } from "@/lib/fonts"
 import { getRandomLayoutName } from "./layouts"
 import { useStore } from "./store"
 import { Zoom } from "./interface/zoom"
@@ -17,23 +14,13 @@ import { Page } from "./interface/page"
 
 export default function Main() {
   const [_isPending, startTransition] = useTransition()
-  const searchParams = useSearchParams()
-
-  const requestedPreset = (searchParams.get('preset') as PresetName) || defaultPreset
-  const requestedFont = (searchParams.get('font') as FontName) || defaultFont
-  const requestedPrompt = (searchParams.get('prompt') as string) || ""
 
   const isGeneratingStory = useStore(state => state.isGeneratingStory)
   const setGeneratingStory = useStore(state => state.setGeneratingStory)
 
   const font = useStore(state => state.font)
-  const setFont = useStore(state => state.setFont)
-
   const preset = useStore(state => state.preset)
-  const setPreset = useStore(state => state.setPreset)
-
   const prompt = useStore(state => state.prompt)
-  const setPrompt = useStore(state => state.setPrompt)
 
   const setLayouts = useStore(state => state.setLayouts)
 
@@ -43,18 +30,6 @@ export default function Main() {
 
   const [waitABitMore, setWaitABitMore] = useState(false)
 
-  // react to URL params
-  useEffect(() => {
-    if (requestedPreset && requestedPreset !== preset.label) { setPreset(getPreset(requestedPreset)) }
-  }, [requestedPreset])
-
-  useEffect(() => {
-    if (requestedFont && requestedFont !== font) { setFont(requestedFont) }
-  }, [requestedFont])
-
-  useEffect(() => {
-    if (requestedPrompt && requestedPrompt !== prompt) { setPrompt(requestedPrompt) }
-  }, [requestedPrompt])
 
   // react to prompt changes
   useEffect(() => {
@@ -63,14 +38,6 @@ export default function Main() {
     startTransition(async () => {
       setWaitABitMore(false)
       setGeneratingStory(true)
-
-      const newLayouts = [
-        getRandomLayoutName(),
-        getRandomLayoutName(),
-      ]
-
-      console.log("using layouts " + newLayouts)
-      setLayouts(newLayouts)
 
       try {
 

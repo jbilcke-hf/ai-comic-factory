@@ -11,9 +11,9 @@ import { useStore } from "@/app/store"
 import { cn } from "@/lib/utils"
 import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
 import { Progress } from "@/app/interface/progress"
-import { see } from "@/app/engine/caption"
-import { writeIntoBubble } from "@/lib/writeIntoBubble"
-// import { Bubble } from "./bubble"
+
+// import { see } from "@/app/engine/caption"
+// import { replaceTextInSpeechBubbles } from "@/lib/replaceTextInSpeechBubbles"
 
 export function Panel({
   panel,
@@ -26,10 +26,12 @@ export function Panel({
   width?: number
   height?: number
  }) {
+  const ref = useRef<HTMLImageElement>(null)
   const font = useStore(state => state.font)
   const preset = useStore(state => state.preset)
   const setGeneratingImages = useStore(state => state.setGeneratingImages)
 
+  const [imageWithText, setImageWithText] = useState("")
   const panels = useStore(state => state.panels)
   const prompt = panels[panel] || ""
 
@@ -190,20 +192,27 @@ export function Panel({
     `print:border-[1.5px] print:shadow-none`,
   )
 
-  const [newMask, setNewMask] = useState("")
 
+  /*
+  text detection (doesn't work)
   useEffect(() => {
-    const transformMask = async () => {
-      if (rendered.maskUrl) {
-        const imgSrc = await writeIntoBubble(
-          rendered.maskUrl,
-          "LOREM IPSUM! Dolor sit amet.."
-        )
-        setNewMask(imgSrc)
+    const fn = async () => {
+      if (!rendered.assetUrl || !ref.current) {
+        return
+      }
+
+      const result = await replaceTextInSpeechBubbles(
+        rendered.assetUrl,
+        "Lorem ipsum dolor sit amet, dolor ipsum. Sit amet? Ipsum! Dolor!!!"
+      )
+      if (result) {
+        setImageWithText(result)
       }
     }
-    transformMask()
-  }, [rendered.maskUrl])
+    fn()
+
+  }, [rendered.assetUrl, ref.current])
+  */
 
 
   if (prompt && !rendered.assetUrl) {
@@ -211,7 +220,7 @@ export function Panel({
       <div className={cn(
         frameClassName,
         `flex flex-col items-center justify-center`,
-        className
+        className,
       )}>
        <Progress isLoading />
       </div>
@@ -224,20 +233,15 @@ export function Panel({
       { "grayscale": preset.color === "grayscale" },
       className
     )}>
-        {rendered.assetUrl && <img
-          src={rendered.assetUrl}
+        {rendered.assetUrl &&
+        <img
+          ref={ref}
+          src={imageWithText || rendered.assetUrl}
           width={width}
           height={height}
           alt={rendered.alt}
-          className="h-full max-w-fit print:w-full print:object-cover"
+          className="w-full object-cover md:h-full md:max-w-fit print:w-full print:object-cover"
         />}
-
-
-
-      {/*<Bubble className="absolute top-4 left-4">
-        Hello, world!
-      </Bubble>
-      */}
     </div>
   )
 }

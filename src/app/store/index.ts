@@ -3,8 +3,8 @@
 import { create } from "zustand"
 
 import { FontName } from "@/lib/fonts"
-import { Preset, getPreset } from "@/app/engine/presets"
-import { LayoutName, getRandomLayoutNames } from "../layouts"
+import { Preset, PresetName, getPreset, getRandomPreset } from "@/app/engine/presets"
+import { LayoutName, getRandomLayoutName, getRandomLayoutNames } from "../layouts"
 import html2canvas from "html2canvas"
 
 export const useStore = create<{
@@ -14,6 +14,7 @@ export const useStore = create<{
   nbFrames: number
   panels: string[]
   captions: Record<string, string>
+  layout: LayoutName
   layouts: LayoutName[]
   zoomLevel: number
   page: HTMLDivElement
@@ -25,6 +26,7 @@ export const useStore = create<{
   setFont: (font: FontName) => void
   setPreset: (preset: Preset) => void
   setPanels: (panels: string[]) => void
+  setLayout: (layout: LayoutName) => void
   setLayouts: (layouts: LayoutName[]) => void
   setCaption: (panelId: number, caption: string) => void
   setZoomLevel: (zoomLevel: number) => void
@@ -34,6 +36,7 @@ export const useStore = create<{
   setGeneratingText: (isGeneratingText: boolean) => void
   pageToImage: () => Promise<string>
   download: () => Promise<void>
+  generate: (prompt: string, presetName: PresetName, layoutName: LayoutName) => void
 }>((set, get) => ({
   prompt: "",
   font: "actionman",
@@ -41,6 +44,7 @@ export const useStore = create<{
   nbFrames: 1,
   panels: [],
   captions: {},
+  layout: "Layout1",
   layouts: getRandomLayoutNames(),
   zoomLevel: 60,
   page: undefined as unknown as HTMLDivElement,
@@ -53,9 +57,6 @@ export const useStore = create<{
     if (prompt === existingPrompt) { return }
     set({
       prompt,
-      layouts: getRandomLayoutNames(),
-      panels: [],
-      captions: {},
     })
   },
   setFont: (font: FontName) => {
@@ -63,9 +64,6 @@ export const useStore = create<{
     if (font === existingFont) { return }
     set({
       font,
-      layouts: getRandomLayoutNames(),
-      panels: [],
-      captions: {}
     })
   },
   setPreset: (preset: Preset) => {
@@ -73,9 +71,6 @@ export const useStore = create<{
     if (preset.label === existingPreset.label) { return }
     set({
       preset,
-      layouts: getRandomLayoutNames(),
-      panels: [],
-      captions: {}
     })
   },
   setNbFrames: (nbFrames: number) => {
@@ -83,9 +78,6 @@ export const useStore = create<{
     if (nbFrames === existingNbFrames) { return }
     set({
       nbFrames,
-      layouts: getRandomLayoutNames(),
-      panels: [],
-      captions: {}
     })
   },
   setPanels: (panels: string[]) => set({ panels }),
@@ -95,6 +87,16 @@ export const useStore = create<{
         ...get().captions,
         [panelId]: caption
       }
+    })
+  },
+  setLayout: (layoutName: LayoutName) => {
+    const layout = layoutName === "random"
+      ? getRandomLayoutName()
+      : layoutName
+
+    set({
+      layout,
+      layouts: [layout, layout]
     })
   },
   setLayouts: (layouts: LayoutName[]) => set({ layouts }),
@@ -144,5 +146,20 @@ export const useStore = create<{
     } else {
       window.open(data)
     }
+  },
+  generate: (prompt: string, presetName: PresetName, layoutName: LayoutName) => {
+    const layout = layoutName === "random"
+      ? getRandomLayoutName()
+      : layoutName
+    set({
+      prompt,
+      panels: [],
+      captions: {},
+      preset: presetName === "random"
+        ? getRandomPreset()
+        : getPreset(presetName),
+      layout,
+      layouts: [layout, layout],
+    })
   }
 }))

@@ -1,4 +1,5 @@
 import { FontName, actionman, komika, vtc } from "@/lib/fonts"
+import { pick } from "@/lib/pick"
 import { NextFontWithVariable } from "next/dist/compiled/@next/font"
 
 export type ComicFamily =
@@ -12,6 +13,7 @@ export type ComicColor =
   | "monochrome"
 
 export interface Preset {
+  id: string
   label: string
   family: ComicFamily
   color: ComicColor
@@ -24,7 +26,18 @@ export interface Preset {
 // ATTENTION!! negative prompts are not supported by the VideoChain API yet
 
 export const presets: Record<string, Preset> = {
+  random: {
+    id: "random",
+    label: "Random style",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "",
+    imagePrompt: (prompt: string) => [],
+    negativePrompt: () => [],
+  },
   japanese_manga: {
+    id: "japanese_manga",
     label: "Japanese",
     family: "asian",
     color: "grayscale",
@@ -51,6 +64,7 @@ export const presets: Record<string, Preset> = {
     ],
   },
   franco_belgian: {
+    id: "franco_belgian",
     label: "Franco-Belgian",
     family: "european",
     color: "color",
@@ -75,6 +89,7 @@ export const presets: Record<string, Preset> = {
     ],
   },
   american_comic_90: {
+    id: "american_comic_90",
     label: "American (modern)",
     family: "american",
     color: "color",
@@ -134,6 +149,7 @@ export const presets: Record<string, Preset> = {
   },
   */
   american_comic_50: {
+    id: "american_comic_50",
     label: "American (1950)",
     family: "american",
     color: "color",
@@ -194,6 +210,7 @@ export const presets: Record<string, Preset> = {
 
   
   flying_saucer: {
+    id: "flying_saucer",
     label: "Flying saucer",
     family: "european",
     color: "color",
@@ -224,6 +241,7 @@ export const presets: Record<string, Preset> = {
   },
  
   humanoid: {
+    id: "humanoid",
     label: "Humanoid",
     family: "european",
     color: "color",
@@ -251,7 +269,8 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
-  milou: {
+  haddock: {
+    id: "haddock",
     label: "Haddock",
     family: "european",
     color: "color",
@@ -282,6 +301,7 @@ export const presets: Record<string, Preset> = {
     ],
   },
   armorican: {
+    id: "armorican",
     label: "Armorican",
     family: "european",
     color: "monochrome",
@@ -312,6 +332,7 @@ export const presets: Record<string, Preset> = {
     ],
   },
   render: {
+    id: "render",
     label: "3D Render",
     family: "european",
     color: "color",
@@ -385,6 +406,11 @@ export const presets: Record<string, Preset> = {
 
 export type PresetName = keyof typeof presets
 
-export const defaultPreset: PresetName = "japanese_manga"
+export const defaultPreset: PresetName = "random"
 
 export const getPreset = (preset?: PresetName): Preset => presets[preset || defaultPreset] || presets[defaultPreset]
+
+export const getRandomPreset = (): Preset => {
+  const presetName = pick(Object.keys(presets).filter(preset => preset !== "random")) as PresetName
+  return getPreset(presetName)
+}
