@@ -31,3 +31,9 @@ body {
 @media print {
   .comic-page[style] { width: 100vw !important; }
 }
+
+
+.render-to-image .comic-panel {
+  height: auto !important;
+  /* max-width: fit-content !important; */
+}

@@ -13,7 +13,8 @@ export const useStore = create<{
   preset: Preset
   nbFrames: number
   panels: string[]
-  captions: Record<string, string>
+  captions: string[]
+  showCaptions: boolean
   layout: LayoutName
   layouts: LayoutName[]
   zoomLevel: number
@@ -26,9 +27,10 @@ export const useStore = create<{
   setFont: (font: FontName) => void
   setPreset: (preset: Preset) => void
   setPanels: (panels: string[]) => void
+  setShowCaptions: (showCaptions: boolean) => void
   setLayout: (layout: LayoutName) => void
   setLayouts: (layouts: LayoutName[]) => void
-  setCaption: (panelId: number, caption: string) => void
+  setCaptions: (captions: string[]) => void
   setZoomLevel: (zoomLevel: number) => void
   setPage: (page: HTMLDivElement) => void
   setGeneratingStory: (isGeneratingStory: boolean) => void
@@ -40,11 +42,12 @@ export const useStore = create<{
 }>((set, get) => ({
   prompt: "",
   font: "actionman",
-  preset: getPreset("japanese_manga"),
+  preset: getRandomPreset(),
   nbFrames: 1,
   panels: [],
-  captions: {},
-  layout: "Layout1",
+  captions: [],
+  showCaptions: false,
+  layout: "random",
   layouts: getRandomLayoutNames(),
   zoomLevel: 60,
   page: undefined as unknown as HTMLDivElement,
@@ -81,12 +84,14 @@ export const useStore = create<{
     })
   },
   setPanels: (panels: string[]) => set({ panels }),
-  setCaption: (panelId: number, caption: string) => {
+  setCaptions: (captions: string[]) => {
     set({
-      captions: {
-        ...get().captions,
-        [panelId]: caption
-      }
+      captions,
+    })
+  },
+  setShowCaptions: (showCaptions: boolean) => {
+    set({
+      showCaptions,
     })
   },
   setLayout: (layoutName: LayoutName) => {
@@ -125,6 +130,7 @@ export const useStore = create<{
     const { page } = get()
     if (!page) { return "" }
     
+    
     const canvas = await html2canvas(page)
     console.log("canvas:", canvas)
 
@@ -154,7 +160,7 @@ export const useStore = create<{
     set({
       prompt,
       panels: [],
-      captions: {},
+      captions: [],
       preset: presetName === "random"
         ? getRandomPreset()
         : getPreset(presetName),

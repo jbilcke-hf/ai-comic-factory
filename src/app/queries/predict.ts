@@ -17,7 +17,7 @@ export async function predict(inputs: string) {
         do_sample: true,
 
         // hard limit for max_new_tokens is 1512
-        max_new_tokens: 300, // 1150,
+        max_new_tokens: 330, // 1150,
         return_full_text: false,
       }
     })) {

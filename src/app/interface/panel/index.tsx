@@ -35,7 +35,11 @@ export function Panel({
   const panels = useStore(state => state.panels)
   const prompt = panels[panel] || ""
 
+  const captions = useStore(state => state.captions)
+  const caption = captions[panel] || ""
+
   const zoomLevel = useStore(state => state.zoomLevel)
+  const showCaptions = useStore(state => state.showCaptions)
 
   // const setCaption = useStore(state => state.setCaption)
   // const captions = useStore(state => state.captions)
@@ -179,6 +183,7 @@ export function Panel({
   */
 
   const frameClassName = cn(
+    //`flex`,
     `w-full h-full`,
     `border-stone-800`,
     `transition-all duration-200 ease-in-out`,
@@ -214,7 +219,6 @@ export function Panel({
   }, [rendered.assetUrl, ref.current])
   */
 
-
   if (prompt && !rendered.assetUrl) {
     return (
       <div className={cn(
@@ -226,6 +230,7 @@ export function Panel({
       </div>
     )
   }
+
 
   return (
     <div className={cn(
@@ -240,8 +245,33 @@ export function Panel({
           width={width}
           height={height}
           alt={rendered.alt}
-          className="w-full object-cover md:h-full md:max-w-fit print:w-full print:object-cover"
+          className={cn(
+            `comic-panel w-full h-full object-cover max-w-max`,
+            // showCaptions ? `-mt-11` : ''
+            )}
         />}
+        {/*
+              <div className={cn(
+        `flex`,
+        `bg-stone-50`,
+        `border-stone-800`,
+        `transition-all duration-200 ease-in-out`,
+        zoomLevel > 140 ? `border-b-[2px] md:border-b-[4px]` :
+        zoomLevel > 120 ? `border-b-[1.5px] md:border-b-[3px]` :
+        zoomLevel > 90 ? `border-b-[1px] md:border-b-[2px]` :
+        zoomLevel > 40 ? `border-b-[0.5px] md:border-b-[1px]` :
+        `border-transparent md:border-b-[0.5px]`,
+        `print:border-b-[1.5px]`,
+        showCaptions ? `` : `hidden`,
+        `truncate`,
+        `h-11`,
+        `p-3`
+      )}
+      style={{
+        fontSize: zoomLevel * 0.2
+      }}
+      >{caption}</div>
+    */}
     </div>
   )
 }

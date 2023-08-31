@@ -1,5 +1,5 @@
 export function dirtyLLMResponseCleaner(input: string) {
-  return (
+  let str = (
     `${input || ""}`
     // a summary of all the weird hallucinations I saw it make..
     .replaceAll(`"]`, `"}]`)
@@ -10,6 +10,8 @@ export function dirtyLLMResponseCleaner(input: string) {
     .replaceAll(`"\n  ]`, `"}]`)
     .replaceAll("}}", "}")
     .replaceAll("]]", "]")
+    .replaceAll("[[", "[")
+    .replaceAll("{{", "{")
     .replaceAll(",,", ",")
     .replaceAll("[0]", "")
     .replaceAll("[1]", "")
@@ -22,4 +24,23 @@ export function dirtyLLMResponseCleaner(input: string) {
     .replaceAll("[panel 3]", "")
     .replaceAll("[panel 4]", "")
   )
+
+  // repair missing end of JSON array
+  if (str.at(-1) === '}') {
+    str = str + "]"
+  }
+
+  if (str.at(-1) === '"') {
+    str = str + "}]"
+  }
+
+  if (str[0] === '{') {
+    str = "[" + str
+  }
+  
+  if (str[0] === '"') {
+    str = "[{" + str
+  }
+
+  return str
 }

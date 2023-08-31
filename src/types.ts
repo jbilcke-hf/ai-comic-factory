@@ -79,4 +79,4 @@ export interface ImageAnalysisResponse {
   error?: string
 }
 
-export type LLMResponse = Array<{panel: number; caption: string }>
+export type LLMResponse = Array<{panel: number; instructions: string; caption: string }>

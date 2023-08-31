@@ -25,6 +25,7 @@ import layoutPreview1 from "../../../../public/layouts/layout1.jpg"
 import layoutPreview2 from "../../../../public/layouts/layout2.jpg"
 import layoutPreview3 from "../../../../public/layouts/layout3.jpg"
 import { StaticImageData } from "next/image"
+import { Switch } from "@/components/ui/switch"
 
 const layoutIcons: Partial<Record<LayoutName, StaticImageData>> = {
   Layout0: layoutPreview0,
@@ -40,6 +41,9 @@ export function TopMenu() {
   const prompt = useStore(state => state.prompt)
   const layout = useStore(state => state.layout)
   const setLayout = useStore(state => state.setLayout)
+
+  const setShowCaptions = useStore(state => state.setShowCaptions)
+  const showCaptions = useStore(state => state.showCaptions)
 
   const generate = useStore(state => state.generate)
 
@@ -200,6 +204,15 @@ export function TopMenu() {
         >
           Generate
         </Button>
+        {/*
+        <Switch
+          checked={showCaptions}
+          onCheckedChange={setShowCaptions}
+        />
+        <Label>
+          Caption
+        </Label>
+        */}
       </div>
       {/*
         Let's add this feature later, because right now people

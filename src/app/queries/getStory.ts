@@ -5,6 +5,8 @@ import { dirtyCaptionCleaner } from "@/lib/dirtyCaptionCleaner"
 
 import { predict } from "./predict"
 import { Preset } from "../engine/presets"
+import { LLMResponse } from "@/types"
+import { cleanJson } from "@/lib/cleanJson"
 
 export const getStory = async ({
   preset,
@@ -12,17 +14,17 @@ export const getStory = async ({
 }: {
   preset: Preset;
   prompt: string;
-}): Promise<string[]> => {
+}): Promise<LLMResponse> => {
 
   const query = createLlamaPrompt([
     {
       role: "system",
       content: [
         `You are a comic book author specialized in ${preset.llmPrompt}`,
-        `Please write detailed drawing instructions for the 5 panels of a new silent comic book page.`,
-        `Give your response as a JSON array like this: \`Array<{ panel: number; caption: string}>\`.`,
+        `Please write detailed drawing instructions and a one-sentence short caption for the 4 panels of a new silent comic book page.`,
+        `Give your response as a JSON array like this: \`Array<{ panel: number; instructions: string; caption: string}>\`.`,
         // `Give your response as Markdown bullet points.`,
-        `Be brief in your 5 captions, don't add your own comments. Be straight to the point, and never reply things like "Sure, I can.." etc.`
+        `Be brief in your 4 instructions and captions, don't add your own comments. Be straight to the point, and never reply things like "Sure, I can.." etc.`
       ].filter(item => item).join("\n")
     },
     {
@@ -53,44 +55,28 @@ export const getStory = async ({
   }
 
   console.log("Raw response from LLM:", result)
-  const tmp = dirtyLLMResponseCleaner(result)
+  const tmp = cleanJson(result)
   
-  let captions: string[] = []
+  let llmResponse: LLMResponse = []
 
   try {
-    captions = dirtyLLMJsonParser(tmp)
+    llmResponse = dirtyLLMJsonParser(tmp)
   } catch (err) {
     console.log(`failed to read LLM response: ${err}`)
 
-    // it is possible that the LLM has generated multiple JSON files like this:
-    
-    /*
-    [ {
-      "panel": 1,
-      "caption": "A samurai stands at the edge of a bustling street in San Francisco, looking out of place among the hippies and beatniks."
-      } ]
-
-      [ {
-      "panel": 2,
-      "caption": "The samurai spots a group of young people playing music on the sidewalk. He approaches them, intrigued."
-      } ]
-    */
-    try {
-      // in that case, we can try to repair it like so:
-      let strategy2 = `[${tmp.split("[").pop() || ""}`
-      strategy2.replaceAll("[", ",")
-
-      captions = dirtyLLMJsonParser(strategy2)
-    } catch (err2) {
       // in case of failure here, it might be because the LLM hallucinated a completely different response,
       // such as markdown. There is no real solution.. but we can try a fallback:
 
-      captions = (
-        tmp.split("*")
-        .map(item => item.replaceAll("[", "[").replaceAll("]", "]").trim())
-      )
-    }
+    llmResponse = (
+      tmp.split("*")
+      .map(item => item.trim())
+      .map((cap, i) => ({
+        panel: i,
+        caption: cap,
+        instructions: cap,
+      }))
+    )
   }
 
-  return captions.map(caption => dirtyCaptionCleaner(caption))
+  return llmResponse.map(res => dirtyCaptionCleaner(res))
 }

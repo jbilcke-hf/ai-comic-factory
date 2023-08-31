@@ -25,6 +25,7 @@ export default function Main() {
   const setLayouts = useStore(state => state.setLayouts)
 
   const setPanels = useStore(state => state.setPanels)
+  const setCaptions = useStore(state => state.setCaptions)
 
   const zoomLevel = useStore(state => state.zoomLevel)
 
@@ -49,13 +50,16 @@ export default function Main() {
     
         const nbPanels = 4
         const newPanels: string[] = []
+        const newCaptions: string[] = []
         setWaitABitMore(true)
 
         for (let p = 0; p < nbPanels; p++) {
-          const newPanel = [panelPromptPrefix, llmResponse[p] || ""]
+          newCaptions.push(llmResponse[p]?.caption || "...")
+          const newPanel = [panelPromptPrefix, llmResponse[p]?.instructions || ""]
           newPanels.push(newPanel.map(chunk => chunk).join(", "))
         }
         console.log("newPanels:", newPanels)
+        setCaptions(newCaptions)
         setPanels(newPanels)
       } catch (err) {
         console.error(err)
