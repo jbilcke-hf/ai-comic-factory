@@ -204,7 +204,6 @@ export function TopMenu() {
         >
           Generate
         </Button>
-        {/*
         <Switch
           checked={showCaptions}
           onCheckedChange={setShowCaptions}
@@ -212,7 +211,6 @@ export function TopMenu() {
         <Label>
           Caption
         </Label>
-        */}
       </div>
       {/*
         Let's add this feature later, because right now people

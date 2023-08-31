@@ -2,6 +2,9 @@ import { dirtyLLMResponseCleaner } from "./dirtyLLMResponseCleaner"
 
 export function cleanJson(input: string) {
   
+  if (input.includes('```')) {
+    input = input.split('```')[0]
+  }
   let tmp = dirtyLLMResponseCleaner(input)
   
   // we only keep what's after the first [

@@ -238,6 +238,26 @@ export function Panel({
       { "grayscale": preset.color === "grayscale" },
       className
     )}>
+        <div className={cn(
+        ``,
+        `bg-stone-50`,
+        `border-stone-800`,
+        `transition-all duration-200 ease-in-out`,
+        zoomLevel > 140 ? `border-b-[2px] md:border-b-[4px]` :
+        zoomLevel > 120 ? `border-b-[1.5px] md:border-b-[3px]` :
+        zoomLevel > 90 ? `border-b-[1px] md:border-b-[2px]` :
+        zoomLevel > 40 ? `border-b-[0.5px] md:border-b-[1px]` :
+        `border-transparent md:border-b-[0.5px]`,
+        `print:border-b-[1.5px]`,
+        showCaptions ? `block` : `hidden`,
+        `truncate`,
+        `max-h-32`,
+        `p-2`
+      )}
+      style={{
+        fontSize: zoomLevel * 0.2
+      }}
+      >{caption}</div>
         {rendered.assetUrl &&
         <img
           ref={ref}
@@ -250,28 +270,6 @@ export function Panel({
             // showCaptions ? `-mt-11` : ''
             )}
         />}
-        {/*
-              <div className={cn(
-        `flex`,
-        `bg-stone-50`,
-        `border-stone-800`,
-        `transition-all duration-200 ease-in-out`,
-        zoomLevel > 140 ? `border-b-[2px] md:border-b-[4px]` :
-        zoomLevel > 120 ? `border-b-[1.5px] md:border-b-[3px]` :
-        zoomLevel > 90 ? `border-b-[1px] md:border-b-[2px]` :
-        zoomLevel > 40 ? `border-b-[0.5px] md:border-b-[1px]` :
-        `border-transparent md:border-b-[0.5px]`,
-        `print:border-b-[1.5px]`,
-        showCaptions ? `` : `hidden`,
-        `truncate`,
-        `h-11`,
-        `p-3`
-      )}
-      style={{
-        fontSize: zoomLevel * 0.2
-      }}
-      >{caption}</div>
-    */}
     </div>
   )
 }
