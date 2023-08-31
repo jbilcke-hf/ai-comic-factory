@@ -1,5 +1,5 @@
 ---
-title: Comic Factory
+title: AI Comic Factory
 emoji: 👩‍🎨
 colorFrom: red
 colorTo: yellow
@@ -8,4 +8,4 @@ pinned: true
 app_port: 3000
 ---
 
-Comic Factory
+AI Comic Factory

@@ -229,7 +229,7 @@ export function Panel({
           width={width}
           height={height}
           alt={rendered.alt}
-          className="h-full max-w-fit"
+          className="h-full max-w-fit print:w-full print:object-cover"
         />}
 
 

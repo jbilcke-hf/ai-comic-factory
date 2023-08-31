@@ -5,8 +5,8 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Comic Factory: generate your own comics!',
-  description: 'Comic Factory: generate your own comits!',
+  title: 'AI Comic Factory: generate your own comics! Powered by Hugging Face 🤗',
+  description: 'Generate comic panels using a LLM + SDXL. Powered by Hugging Face 🤗',
 }
 
 export default function RootLayout({
