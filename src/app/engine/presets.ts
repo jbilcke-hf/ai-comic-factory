@@ -63,6 +63,33 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
+  nihonga: {
+    id: "nihonga",
+    label: "Nihonga",
+    family: "asian",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "japanese manga",
+    imagePrompt: (prompt: string) => [
+      `japanese nihonga painting about ${prompt}`,
+      "Nihonga",
+      "ancient japanese painting",
+      "intricate",
+      "detailed",
+      // "drawing"
+    ],
+    negativePrompt: () => [
+      "franco-belgian comic",
+      "color album",
+      "color",
+      "manga",
+      "comic",
+      "american comic",
+      "photo",
+      "painting",
+      "3D render"
+    ],
+  },
   franco_belgian: {
     id: "franco_belgian",
     label: "Franco-Belgian",
