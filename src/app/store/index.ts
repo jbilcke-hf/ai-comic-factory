@@ -3,8 +3,8 @@
 import { create } from "zustand"
 
 import { FontName } from "@/lib/fonts"
-import { Preset, PresetName, getPreset, getRandomPreset } from "@/app/engine/presets"
-import { LayoutName, getRandomLayoutName, getRandomLayoutNames } from "../layouts"
+import { Preset, PresetName, defaultPreset, getPreset, getRandomPreset } from "@/app/engine/presets"
+import { LayoutName, defaultLayout, getRandomLayoutName, getRandomLayoutNames } from "../layouts"
 import html2canvas from "html2canvas"
 
 export const useStore = create<{
@@ -42,13 +42,13 @@ export const useStore = create<{
 }>((set, get) => ({
   prompt: "",
   font: "actionman",
-  preset: getRandomPreset(),
+  preset: getPreset(defaultPreset),
   nbFrames: 1,
   panels: [],
   captions: [],
   showCaptions: false,
-  layout: "random",
-  layouts: getRandomLayoutNames(),
+  layout: defaultLayout,
+  layouts: [defaultLayout, defaultLayout],
   zoomLevel: 60,
   page: undefined as unknown as HTMLDivElement,
   isGeneratingStory: false,

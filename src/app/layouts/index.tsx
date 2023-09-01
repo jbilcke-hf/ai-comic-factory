@@ -271,7 +271,7 @@ export const allLayoutLabels = {
 
 export type LayoutName = keyof typeof allLayouts 
 
-export const defaultLayout: LayoutName = "random"
+export const defaultLayout: LayoutName = "Layout1"
 
 export type LayoutCategory = "square" | "fluid"
 

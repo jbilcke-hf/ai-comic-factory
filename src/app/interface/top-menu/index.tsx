@@ -13,12 +13,12 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
-import { FontName, defaultFont, fontList, fonts } from "@/lib/fonts"
+import { FontName, defaultFont } from "@/lib/fonts"
 import { Input } from "@/components/ui/input"
-import { PresetName, defaultPreset, getPreset, getRandomPreset, presets } from "@/app/engine/presets"
+import { PresetName, defaultPreset, nonRandomPresets, presets } from "@/app/engine/presets"
 import { useStore } from "@/app/store"
 import { Button } from "@/components/ui/button"
-import { LayoutName, allLayoutLabels, allLayouts, defaultLayout } from "@/app/layouts"
+import { LayoutName, allLayoutLabels, defaultLayout, nonRandomLayouts } from "@/app/layouts"
 
 import layoutPreview0 from "../../../../public/layouts/layout0.jpg"
 import layoutPreview1 from "../../../../public/layouts/layout1.jpg"
@@ -56,7 +56,7 @@ export function TopMenu() {
   const requestedPreset = (searchParams.get('preset') as PresetName) || defaultPreset
   const requestedFont = (searchParams.get('font') as FontName) || defaultFont
   const requestedPrompt = (searchParams.get('prompt') as string) || ""
-  const requestedLayout = (searchParams.get('prompt') as LayoutName) || defaultLayout
+  const requestedLayout = (searchParams.get('layout') as LayoutName) || defaultLayout
 
   const [draftPrompt, setDraftPrompt] = useState(requestedPrompt)
   const [draftPreset, setDraftPreset] = useState<PresetName>(requestedPreset)
@@ -106,8 +106,8 @@ export function TopMenu() {
               <SelectValue className="text-xs md:text-sm" placeholder="Style" />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(presets).map(([key, preset]) =>
-                <SelectItem key={key} value={key}>{preset.label}</SelectItem>
+              {nonRandomPresets.map(key =>
+                <SelectItem key={key} value={key}>{presets[key].label}</SelectItem>
               )}
             </SelectContent>
           </Select>
@@ -128,7 +128,7 @@ export function TopMenu() {
               <SelectValue className="text-xs md:text-sm" placeholder="Layout" />
             </SelectTrigger>
             <SelectContent>
-              {Object.keys(allLayouts).map(key =>
+              {nonRandomLayouts.map(key =>
                 <SelectItem key={key} value={key} className="w-full">
                   <div className="space-x-6 flex flex-row items-center justify-between font-mono">
                     <div className="flex">{
