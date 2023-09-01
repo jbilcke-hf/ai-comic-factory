@@ -7,22 +7,30 @@ export function dirtyCaptionCleaner({
   instructions: string;
   caption: string
 }) {
+  let newCaption = caption.split(":").pop()?.trim() || ""
+  let newInstructions = (
+    // need to remove from LLM garbage here, too
+    (instructions.split(":").pop() || "")
+    .replaceAll("Show a", "")
+    .replaceAll("Show the", "")
+    .replaceAll("Opens with a", "")
+    .replaceAll("Opens with the", "")
+    .replaceAll("Opens with", "")
+    .replaceAll("Cut to a", "")
+    .replaceAll("Cut to the", "")
+    .replaceAll("Cut to", "")
+    .replaceAll("End with a", "")
+    .replaceAll("End with", "").trim() || ""
+  )
+
+  // we have to crop the instructions unfortunately, otherwise the style will disappear
+  newInstructions = newInstructions.slice(0, 77)
+
+  // american comic about brunette wood elf walks around a dark forrest and suddenly stops when hearing a strange noise, single panel, modern american comic, comicbook style, 2010s, digital print, color comicbook, color drawing, Full shot of the elf, her eyes widening in surprise, as a glowing, ethereal creature steps out of the shadows.",
+
   return {
     panel,
-    instructions: (
-      // need to remove from LLM garbage here, too
-      (instructions.split(":").pop() || "")
-      .replaceAll("Show a", "")
-      .replaceAll("Show the", "")
-      .replaceAll("Opens with a", "")
-      .replaceAll("Opens with the", "")
-      .replaceAll("Opens with", "")
-      .replaceAll("Cut to a", "")
-      .replaceAll("Cut to the", "")
-      .replaceAll("Cut to", "")
-      .replaceAll("End with a", "")
-      .replaceAll("End with", "").trim() || ""
-    ),
-    caption: caption.split(":").pop()?.trim() || "",
+    instructions: newInstructions,
+    caption: newCaption,
   }
 }

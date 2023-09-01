@@ -51,7 +51,7 @@ export const presets: Record<string, Preset> = {
       "grayscale",
       "intricate",
       "detailed",
-      "drawing"
+      // "drawing"
     ],
     negativePrompt: () => [
       "franco-belgian comic",
@@ -75,7 +75,7 @@ export const presets: Record<string, Preset> = {
       "bande dessinée",
       "franco-belgian comic",
       "comic album",
-      "color drawing"
+      // "color drawing"
     ],
     negativePrompt: () => [
       "manga",
@@ -103,7 +103,7 @@ export const presets: Record<string, Preset> = {
       "2010s",
       "digital print",
       "color comicbook",
-      "color drawing"
+      // "color drawing"
     ],
     negativePrompt: () => [
       "manga",
@@ -163,7 +163,7 @@ export const presets: Record<string, Preset> = {
       "1950",
       "50s",
       "color comicbook",
-      "color drawing"
+      // "color drawing"
     ],
     negativePrompt: () => [
       "manga",
@@ -226,7 +226,7 @@ export const presets: Record<string, Preset> = {
       "pulp science fiction",
       "vintage science fiction",
       "single panel",
-      "comic album"
+      // "comic album"
     ],
     negativePrompt: () => [
       "manga",
@@ -256,7 +256,7 @@ export const presets: Record<string, Preset> = {
       "franco-belgian style",
       "bande dessinée",
       "single panel",
-      "comic album"
+      // "comic album"
     ],
     negativePrompt: () => [
       "manga",
@@ -287,7 +287,7 @@ export const presets: Record<string, Preset> = {
       "color panel",
       "bande dessinée",
       "single panel",
-      "comic album"
+      // "comic album"
     ],
     negativePrompt: () => [
       "manga",
@@ -318,7 +318,7 @@ export const presets: Record<string, Preset> = {
       "single panel",
       "comical",
       "comic album",
-      "color drawing"
+      // "color drawing"
     ],
     negativePrompt: () => [
       "manga",

@@ -44,7 +44,12 @@ export default function Main() {
         const llmResponse = await getStory({ preset, prompt })
         console.log("response:", llmResponse)
 
-        const panelPromptPrefix = preset.imagePrompt(prompt).join(", ")
+        // we have to limit the size of the prompt, otherwise the rest of the style won't be followed
+
+        let limitedPrompt = prompt.slice(0, 77)
+        console.log("had to cut the length og the prompt to:", limitedPrompt)
+
+        const panelPromptPrefix = preset.imagePrompt(limitedPrompt).join(", ")
         console.log("panel prompt prefix:", panelPromptPrefix)
     
         const nbPanels = 4
