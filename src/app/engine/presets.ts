@@ -393,7 +393,6 @@ export const presets: Record<string, Preset> = {
       `patchwork`,
       `style of Gustav Klimt`,
       `Gustav Klimt painting`,
-      // `medieval color engraving`,
       `${prompt}`,
     ],
     negativePrompt: () => [
