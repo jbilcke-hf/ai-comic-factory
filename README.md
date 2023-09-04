@@ -8,7 +8,7 @@ pinned: true
 app_port: 3000
 ---
 
-AI Comic Factory
+# AI Comic Factory
 
 ## Running the project at home
 
