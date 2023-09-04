@@ -381,6 +381,102 @@ export const presets: Record<string, Preset> = {
       "painting"
     ],
   },
+  medieval: {
+    id: "medieval",
+    label: "Medieval",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new story",
+    imagePrompt: (prompt: string) => [
+      `medieval illuminated manuscript`,
+      `illuminated manuscript of`,
+      // `medieval color engraving`,
+      `${prompt}`,
+      `medieval`
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "painting"
+    ],
+  },
+  /*
+  glass: {
+    id: "glass",
+    label: "Glass",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new movie",
+    imagePrompt: (prompt: string) => [
+      `stained glass`,
+      `vitrail`,
+      `stained glass`,
+      // `medieval color engraving`,
+      `${prompt}`,
+      `medieval`,
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "painting"
+    ],
+  },
+  */
+  /*
+  voynich: {
+    id: "voynich",
+    label: "Voynich",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new movie",
+    imagePrompt: (prompt: string) => [
+      `voynich`,
+      `voynich page`,
+      // `medieval color engraving`,
+      `${prompt}`,
+      `medieval`,
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "painting"
+    ],
+  },
+  */
+  egyptian: {
+    id: "egyptian",
+    label: "Egyptian",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new movie",
+    imagePrompt: (prompt: string) => [
+      `ancient egyptian wall painting`,
+      // `medieval color engraving`,
+      `${prompt}`,
+      `ancient egypt`,
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "painting"
+    ],
+  },
   /*
   psx: {
     label: "PSX",

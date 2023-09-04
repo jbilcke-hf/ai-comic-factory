@@ -66,6 +66,16 @@ ${uploadUrl
       `space-x-3`,
       `scale-[0.9]`
     )}>
+      {/*
+      <div>
+        <Button
+          onClick={handleUpscale}
+          disabled={!prompt?.length && remainingImages}
+        >
+          Upscale
+        </Button>
+      </div>
+    */}
       <div>
         <Button
           onClick={handlePrint}

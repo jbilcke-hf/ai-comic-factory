@@ -44,7 +44,7 @@ export async function newRender({
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${process.env.VC_SECRET_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${process.env.VC_SECRET_ACCESS_TOKEN}`,
       },
       body: JSON.stringify({
         prompt,
