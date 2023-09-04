@@ -231,7 +231,6 @@ export function Panel({
     )
   }
 
-  console.log("eoomLevel:", zoomLevel)
   return (
     <div className={cn(
       frameClassName,
