@@ -231,7 +231,7 @@ export function Panel({
     )
   }
 
-
+  console.log("eoomLevel:", zoomLevel)
   return (
     <div className={cn(
       frameClassName,
@@ -251,13 +251,29 @@ export function Panel({
         `print:border-b-[1.5px]`,
         showCaptions ? `block` : `hidden`,
         `truncate`,
-        `max-h-32`,
-        `p-2`
+
+        zoomLevel > 200 ? `p-4 md:p-8` :
+        zoomLevel > 180 ? `p-[14px] md:p-8` :
+        zoomLevel > 160 ? `p-[12px] md:p-[28px]` :
+        zoomLevel > 140 ? `p-[10px] md:p-[26px]` :
+        zoomLevel > 120 ? `p-2 md:p-6` :
+        zoomLevel > 100 ? `p-1.5 md:p-[20px]` :
+        zoomLevel > 90 ? `p-1.5 md:p-4` :
+        zoomLevel > 40 ? `p-1 md:p-2` :
+        `p-0.5 md:p-2`,
+
+        zoomLevel > 220 ? `text-xl md:text-4xl` :
+        zoomLevel > 200 ? `text-lg md:text-3xl` :
+        zoomLevel > 180 ? `text-md md:text-2xl` :
+        zoomLevel > 140 ? `text-2xs md:text-2xl` :
+        zoomLevel > 120 ? `text-3xs md:text-xl` :
+        zoomLevel > 100 ? `text-4xs md:text-lg` :
+        zoomLevel > 90 ? `text-5xs md:text-sm` :
+        zoomLevel > 40 ? `hidden md:block md:text-xs` :
+        `hidden md:block md:text-2xs`,
       )}
-      style={{
-        fontSize: zoomLevel * 0.2
-      }}
-      >{caption}</div>
+      >{caption || "Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, "}
+        </div>
         {rendered.assetUrl &&
         <img
           ref={ref}

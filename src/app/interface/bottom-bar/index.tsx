@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { base64ToFile } from "@/lib/base64ToFile"
 import { uploadToHuggingFace } from "@/lib/uploadToHuggingFace"
 import { cn } from "@/lib/utils"
+import { About } from "../about"
 
 export function BottomBar() {
   const download = useStore(state => state.download)
@@ -59,13 +60,20 @@ ${uploadUrl
   return (
     <div className={cn(
       `print:hidden`,
-      `fixed bottom-6 right-3`,
+      `fixed bottom-2 md:bottom-4 left-2 right-0 md:left-3 md:right-1`,
       `flex flex-row`,
-      `animation-all duration-300 ease-in-out`,
-      isGeneratingStory ? `scale-0 opacity-0` : ``,
-      `space-x-3`,
-      `scale-[0.9]`
+      `justify-between`
     )}>
+      <div className={cn(
+        `flex flex-row`,
+        `items-end`,
+        `animation-all duration-300 ease-in-out`,
+        isGeneratingStory ? `scale-0 opacity-0` : ``,
+        `space-x-3`,
+        `scale-[0.9]`
+      )}>
+        <About />
+      </div>
       {/*
       <div>
         <Button
@@ -75,32 +83,48 @@ ${uploadUrl
           Upscale
         </Button>
       </div>
-    */}
-      <div>
-        <Button
-          onClick={handlePrint}
-          disabled={!prompt?.length}
-        >
-          Print
-        </Button>
-      </div>
-      <div>
-        <Button
-          onClick={download}
-          disabled={!prompt?.length}
-        >{
-          remainingImages ? `${allStatus.length - remainingImages}/4 panels ⌛` : `Save`
-        }</Button>
-      </div>
-      <div>
-        <Button
-          onClick={handleShare}
-          disabled={!prompt?.length}
-          className="space-x-2"
-        >
-          <span className="scale-105"><HuggingClap /></span>
-          <span>Share to community</span>
-        </Button>
+      */}
+      <div className={cn(
+      `flex flex-row`,
+      `animation-all duration-300 ease-in-out`,
+      isGeneratingStory ? `scale-0 opacity-0` : ``,
+      `space-x-3`,
+      `scale-[0.9]`
+    )}>
+        <div>
+          <Button
+            onClick={handlePrint}
+            disabled={!prompt?.length}
+          >
+            Print
+          </Button>
+        </div>
+        <div>
+          <Button
+            onClick={download}
+            disabled={!prompt?.length}
+          >
+            <span className="hidden md:inline">{
+            remainingImages ? `${allStatus.length - remainingImages}/4 panels ⌛` : `Save`
+            }</span>
+            <span className="inline md:hidden">{
+              remainingImages ? `${allStatus.length - remainingImages}/4 ⌛` : `Save`
+            }</span>
+           </Button>
+        </div>
+        <div>
+          <Button
+            onClick={handleShare}
+            disabled={!prompt?.length}
+            className="space-x-2"
+          >
+            <div className="scale-105"><HuggingClap /></div>
+            <div>
+              <span className="hidden md:inline">Share to community</span>
+              <span className="inline md:hidden">Share</span>
+            </div>
+          </Button>
+        </div>
       </div>
     </div>
   )

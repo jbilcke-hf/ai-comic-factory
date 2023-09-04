@@ -89,13 +89,14 @@ export function TopMenu() {
       `bg-stone-900/70 dark:bg-stone-900/70 text-gray-50 dark:text-gray-50`,
       `space-y-2 md:space-y-0 md:space-x-3 lg:space-x-6`
     )}>
-      <div className="flex flex-row space-x-6 md:space-x-3">
-      <div className={cn(
+      <div className="flex flex-row space-x-2 md:space-x-3 w-full md:w-auto">
+        <div className={cn(
           `transition-all duration-200 ease-in-out`,
-          `flex flex-row items-center justify-start space-x-3 font-mono w-1/2 md:w-auto`
+          `flex flex-row items-center justify-start space-x-3 font-mono`,
+          `flex-grow`
           )}>
 
-          {/* <Label className="flex text-xs md:text-sm md:w-24">Style:</Label> */}
+          {/* <Label className="flex text-2xs md:text-sm md:w-24">Style:</Label> */}
 
           <Select
             defaultValue={defaultPreset}
@@ -103,7 +104,7 @@ export function TopMenu() {
             disabled={isBusy}
             >
             <SelectTrigger className="flex-grow">
-              <SelectValue className="text-xs md:text-sm" placeholder="Style" />
+              <SelectValue className="text-2xs md:text-sm" placeholder="Style" />
             </SelectTrigger>
             <SelectContent>
               {nonRandomPresets.map(key =>
@@ -114,10 +115,11 @@ export function TopMenu() {
         </div>
         <div className={cn(
           `transition-all duration-200 ease-in-out`,
-          `flex flex-row items-center justify-start space-x-3 font-mono w-1/2 md:w-auto`
+          `flex flex-row items-center justify-start space-x-3 font-mono`,
+          `w-40`
           )}>
 
-          {/* <Label className="flex text-xs md:text-sm md:w-24">Style:</Label> */}
+          {/* <Label className="flex text-2xs md:text-sm md:w-24">Style:</Label> */}
 
           <Select
             defaultValue={defaultLayout}
@@ -125,7 +127,7 @@ export function TopMenu() {
             disabled={isBusy}
             >
             <SelectTrigger className="flex-grow">
-              <SelectValue className="text-xs md:text-sm" placeholder="Layout" />
+              <SelectValue className="text-2xs md:text-sm" placeholder="Layout" />
             </SelectTrigger>
             <SelectContent>
               {nonRandomLayouts.map(key =>
@@ -150,19 +152,29 @@ export function TopMenu() {
             </SelectContent>
           </Select>
         </div>
+        <div className="flex flex-row items-center space-x-3">
+        <Switch
+          checked={showCaptions}
+          onCheckedChange={setShowCaptions}
+        />
+        <Label>
+          <span className="hidden md:inline">Caption</span>
+          <span className="inline md:hidden">Cap.</span>
+        </Label>
+        </div>
         {/*
         <div className={cn(
           `transition-all duration-200 ease-in-out`,
           `flex flex-row items-center space-x-3 font-mono w-1/2 md:w-auto md:hidden`
         )}>
-          <Label className="flex text-xs md:text-sm md:w-24">Font:</Label>
+          <Label className="flex text-2xs md:text-sm md:w-24">Font:</Label>
           <Select
             defaultValue={fontList.includes(preset.font) ? preset.font : "cartoonist"}
             onValueChange={(value) => { setFont(value as FontName) }}
             disabled={atLeastOnePanelIsBusy}
             >
             <SelectTrigger className="flex-grow">
-              <SelectValue className="text-xs md:text-sm" placeholder="Type" />
+              <SelectValue className="text-2xs md:text-sm" placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
               {Object.keys(fonts)
@@ -180,11 +192,12 @@ export function TopMenu() {
       </div>
       <div className={cn(
           `transition-all duration-200 ease-in-out`,
-          `flex flex-row flex-grow items-center space-x-3 font-mono w-full md:w-auto`
+          `flex  flex-grow flex-col space-y-2 md:space-y-0 md:flex-row items-center md:space-x-3 font-mono w-full md:w-auto`
         )}>
+          <div className="flex flex-row flex-grow w-full">
         <Input
           placeholder="Story"
-          className="w-full bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800"
+          className="w-full bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 rounded-r-none"
           // disabled={atLeastOnePanelIsBusy}
           onChange={(e) => {
             setDraftPrompt(e.target.value)
@@ -197,20 +210,18 @@ export function TopMenu() {
           value={draftPrompt}
          />
         <Button
+          className={cn(
+            `rounded-l-none cursor-pointer`,
+            `transition-all duration-200 ease-in-out`,
+            )}
           onClick={() => {
             handleSubmit()
           }}
           disabled={!draftPrompt?.trim().length || isBusy}
         >
-          Generate
+          Go
         </Button>
-        <Switch
-          checked={showCaptions}
-          onCheckedChange={setShowCaptions}
-        />
-        <Label>
-          Caption
-        </Label>
+        </div>
       </div>
       {/*
         Let's add this feature later, because right now people
@@ -219,7 +230,7 @@ export function TopMenu() {
           `transition-all duration-200 ease-in-out`,
           `hidden md:flex flex-row items-center space-x-3 font-mono w-full md:w-auto`
       )}>
-        <Label className="flex text-xs md:text-sm w-24">Font:</Label>
+        <Label className="flex text-2xs md:text-sm w-24">Font:</Label>
         <Select
           defaultValue={fontList.includes(preset.font) ? preset.font : "actionman"}
           onValueChange={(value) => { setFont(value as FontName) }}
@@ -227,7 +238,7 @@ export function TopMenu() {
           disabled={true}
           >
           <SelectTrigger className="flex-grow">
-            <SelectValue className="text-xs md:text-sm" placeholder="Type" />
+            <SelectValue className="text-2xs md:text-sm" placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
             {Object.keys(fonts)

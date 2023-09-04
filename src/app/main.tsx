@@ -80,9 +80,9 @@ export default function Main() {
     <div>
       <TopMenu />
       <div className={cn(
-        `flex items-start w-screen h-screen pt-[120px] md:pt-[72px] overflow-y-scroll`,
+        `flex items-start w-screen h-screen pt-24 md:pt-[72px] overflow-y-scroll`,
         `transition-all duration-200 ease-in-out`,
-        zoomLevel > 105 ? `px-0` : `pl-2 pr-16 md:pl-16 md:pr-16`,
+        zoomLevel > 105 ? `px-0` : `pl-1 pr-8 md:pl-16 md:pr-16`,
         `print:pt-0 print:px-0 print:pl-0 print:pr-0`,
         fonts.actionman.className
       )}>
