@@ -31,7 +31,15 @@ module.exports = {
         toontime: ['var(--font-sf-toontime)'],
         vtc: ['var(--font-vtc-letterer-pro)'],
         digitalstrip: ['var(--font-digital-strip-bb)'],
-      
+      },
+      fontSize: {
+        "7xs": "5px",
+        "7xs": "6px",
+        "6xs": "7px",
+        "5xs": "8px",
+        "4xs": "9px",
+        "3xs": "10px",
+        "2xs": "11px"
       },
       keyframes: {
         "accordion-down": {

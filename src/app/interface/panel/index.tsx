@@ -272,7 +272,7 @@ export function Panel({
         zoomLevel > 40 ? `hidden md:block md:text-xs` :
         `hidden md:block md:text-2xs`,
       )}
-      >{caption || "Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, "}
+      >{caption || ""}
         </div>
         {rendered.assetUrl &&
         <img
