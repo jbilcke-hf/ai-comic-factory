@@ -381,6 +381,30 @@ export const presets: Record<string, Preset> = {
       "painting"
     ],
   },
+  klimt: {
+    id: "klimt",
+    label: "Klimt",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new story",
+    imagePrompt: (prompt: string) => [
+      `golden`,
+      `patchwork`,
+      `style of Gustav Klimt`,
+      `Gustav Klimt painting`,
+      // `medieval color engraving`,
+      `${prompt}`,
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "painting"
+    ],
+  },
   medieval: {
     id: "medieval",
     label: "Medieval",
