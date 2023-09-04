@@ -34,17 +34,17 @@ Currently the AI Comic Factory uses [Llama-2 70b](https://huggingface.co/blog/ll
 
 You have two options:
 
-## Option 1: Fork and modify the code to use another LLM
+### Option 1: Fork and modify the code to use another LLM
 
 If you fork the AI Comic Factory, you will be able to use another API and model, such as a locally-running Llama 7b.
 
 To run the LLM locally, you can use [TGI](https://github.com/huggingface/text-generation-inference) (Please read [this post](https://github.com/huggingface/text-generation-inference/issues/726) for more information about licensing).
 
-## Option 2: Fork and modify the code to use human content instead
+### Option 2: Fork and modify the code to use human content instead
 
 Another option could be to disable the LLM completely and replace it with a human-generated story instead (by returning mock or static data).
 
-## Notes
+### Notes
 
 It is possible that I modify the AI Comic Factory to make it easier in the future (eg. add support for OpenAI or Replicate)
 
@@ -68,6 +68,6 @@ Unfortunately, I haven't had the time to write the documentation for VideoChain 
 
 If you fork the project you will be able to modify the code to use the Stable Diffusion technology of your choice (local, open-source, your custom HF Space etc)
 
-## Notes
+### Notes
 
 It is possible that I modify the AI Comic Factory to make it easier in the future (eg. add support for Replicate)
