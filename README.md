@@ -36,7 +36,7 @@ You have two options:
 
 ## Option 1: Fork and modify the code to use another LLM
 
-If you fork the AI Comic Factory, you will be able to use another API and model, such a locally-running Llama 7b.
+If you fork the AI Comic Factory, you will be able to use another API and model, such as a locally-running Llama 7b.
 
 To run the LLM locally, you can use [TGI](https://github.com/huggingface/text-generation-inference) (Please read [this post](https://github.com/huggingface/text-generation-inference/issues/726) for more information about licensing).
 
