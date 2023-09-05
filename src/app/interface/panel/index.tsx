@@ -35,8 +35,6 @@ export function Panel({
   const panels = useStore(state => state.panels)
   const prompt = panels[panel] || ""
 
-  const setRenderedIds = useStore(state => state.setRenderedIds)
-
   const captions = useStore(state => state.captions)
   const caption = captions[panel] || ""
 
