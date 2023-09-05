@@ -17,7 +17,16 @@ export function BottomBar() {
 
   const allStatus = Object.values(panelGenerationStatus)
   const remainingImages = allStatus.reduce((acc, s) => (acc + (s ? 1 : 0)), 0)
-    
+  
+  /*
+  const handleUpscale = () => {
+    startTransition(() => {
+      we are blocked here, because we don't know the render id
+      also  we will have to store a state about the 
+    })
+  }
+  */
+
   const handleShare = async () => {
     const dataUrl = await pageToImage()
     // console.log("dataUrl:", dataUrl)

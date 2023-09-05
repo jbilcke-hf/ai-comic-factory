@@ -122,7 +122,7 @@ export default function Main() {
         fonts.actionman.className
       )}>
         <div className={cn(
-          `text-center text-xl text-stone-600 w-[70%]`,
+          `text-center text-xl text-stone-700 w-[70%]`,
           isGeneratingStory ? ``: `scale-0 opacity-0`,
           `transition-all duration-300 ease-in-out`,
         )}>

@@ -6,6 +6,7 @@ import { FontName } from "@/lib/fonts"
 import { Preset, PresetName, defaultPreset, getPreset, getRandomPreset } from "@/app/engine/presets"
 import { LayoutName, defaultLayout, getRandomLayoutName, getRandomLayoutNames } from "../layouts"
 import html2canvas from "html2canvas"
+import { RenderedScene } from "@/types"
 
 export const useStore = create<{
   prompt: string

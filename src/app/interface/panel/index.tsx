@@ -35,6 +35,8 @@ export function Panel({
   const panels = useStore(state => state.panels)
   const prompt = panels[panel] || ""
 
+  const setRenderedIds = useStore(state => state.setRenderedIds)
+
   const captions = useStore(state => state.captions)
   const caption = captions[panel] || ""
 
@@ -61,6 +63,8 @@ export function Panel({
 
     // important: update the status, and clear the scene
     setGeneratingImages(panel, true)
+
+    // just to empty it
     setRendered(getInitialRenderedScene())
 
     setTimeout(() => {
@@ -79,6 +83,7 @@ export function Panel({
       if (newRendered) {
         // console.log("newRendered:", newRendered)
         setRendered(renderedRef.current = newRendered)
+        // addRenderedScene(newRendered)
 
         // but we are still loading!
       } else {
