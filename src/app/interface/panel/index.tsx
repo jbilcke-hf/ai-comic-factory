@@ -26,9 +26,12 @@ export function Panel({
   width?: number
   height?: number
  }) {
+  const panelId = `${panel}`
+
   const ref = useRef<HTMLImageElement>(null)
   const font = useStore(state => state.font)
   const preset = useStore(state => state.preset)
+
   const setGeneratingImages = useStore(state => state.setGeneratingImages)
 
   const [imageWithText, setImageWithText] = useState("")
@@ -41,13 +44,18 @@ export function Panel({
   const zoomLevel = useStore(state => state.zoomLevel)
   const showCaptions = useStore(state => state.showCaptions)
 
-  // const setCaption = useStore(state => state.setCaption)
-  // const captions = useStore(state => state.captions)
-  // const caption = captions[panel] || ""
+  const addToUpscaleQueue = useStore(state => state.addToUpscaleQueue)
 
   const [_isPending, startTransition] = useTransition()
-  const [rendered, setRendered] = useState<RenderedScene>(getInitialRenderedScene())
+  const renderedScenes = useStore(state => state.renderedScenes)
+  const setRendered = useStore(state => state.setRendered)
+
+  const rendered = renderedScenes[panel] || getInitialRenderedScene()
+
+  // keep a ref in sync
   const renderedRef = useRef<RenderedScene>()
+  const renderedKey = JSON.stringify(rendered)
+  useEffect(() => { renderedRef.current = rendered }, [renderedKey])
 
   const timeoutRef = useRef<any>(null)
 
@@ -60,41 +68,40 @@ export function Panel({
     if (!prompt?.length) { return }
 
     // important: update the status, and clear the scene
-    setGeneratingImages(panel, true)
+    setGeneratingImages(panelId, true)
 
     // just to empty it
-    setRendered(getInitialRenderedScene())
+    setRendered(panelId, getInitialRenderedScene())
 
     setTimeout(() => {
       startTransition(async () => {
 
-      console.log(`Loading panel ${panel}..`)
+      // console.log(`Loading panel ${panel}..`)
     
       let newRendered: RenderedScene
       try {
         newRendered = await newRender({ prompt, width, height })
       } catch (err) {
-        console.log("Failed to load the panel! Don't worry, we are retrying..")
+        // "Failed to load the panel! Don't worry, we are retrying..")
         newRendered = await newRender({ prompt, width, height })
       }
 
       if (newRendered) {
         // console.log("newRendered:", newRendered)
-        setRendered(renderedRef.current = newRendered)
-        // addRenderedScene(newRendered)
+        setRendered(panelId, newRendered)
 
         // but we are still loading!
       } else {
-        setRendered(renderedRef.current = {
+        setRendered(panelId, {
           renderId: "",
-          status: "error",
+          status: "pending",
           assetUrl: "",
           alt: "",
           maskUrl: "",
-          error: "failed to fetch the data",
+          error: "",
           segments: []
         })
-        setGeneratingImages(panel, false)
+        setGeneratingImages(panelId, false)
         return
       }
     })
@@ -111,15 +118,15 @@ export function Panel({
         return
       }
       try {
-        setGeneratingImages(panel, true)
+        setGeneratingImages(panelId, true)
         // console.log(`Checking job status API for job ${renderedRef.current?.renderId}`)
         const newRendered = await getRender(renderedRef.current.renderId)
         // console.log("got a response!", newRendered)
 
         if (JSON.stringify(renderedRef.current) !== JSON.stringify(newRendered)) {
-          console.log("updated panel:", newRendered)
-          setRendered(renderedRef.current = newRendered)
-          setGeneratingImages(panel, true)
+          // console.log("updated panel:", newRendered)
+          setRendered(panelId, renderedRef.current = newRendered)
+          setGeneratingImages(panelId, true)
         }
         // console.log("status:", newRendered.status)
 
@@ -128,17 +135,18 @@ export function Panel({
           timeoutRef.current = setTimeout(checkStatus, delay)
         } else if (newRendered.status === "error" || 
         (newRendered.status === "completed" && !newRendered.assetUrl?.length)) {
-          console.log(`panel got an error and/or an empty asset url :/ "${newRendered.error}", but let's try to recover..`)
+          // console.log(`panel got an error and/or an empty asset url :/ "${newRendered.error}", but let's try to recover..`)
           try {
             const newAttempt = await newRender({ prompt, width, height })
-            setRendered(renderedRef.current = newAttempt)
+            setRendered(panelId, newAttempt)
           } catch (err) {
-            console.error("yeah sorry, something is wrong.. aborting")
-            setGeneratingImages(panel, false)
+            console.error("yeah sorry, something is wrong.. aborting", err)
+            setGeneratingImages(panelId, false)
           }
         } else {
           console.log("panel finished!")
-          setGeneratingImages(panel, false)
+          setGeneratingImages(panelId, false)
+          addToUpscaleQueue(panelId, newRendered)
         }
       } catch (err) {
         console.error(err)
@@ -251,7 +259,6 @@ export function Panel({
         zoomLevel > 40 ? `border-b-[0.5px] md:border-b-[1px]` :
         `border-transparent md:border-b-[0.5px]`,
         `print:border-b-[1.5px]`,
-        showCaptions ? `block` : `hidden`,
         `truncate`,
 
         zoomLevel > 200 ? `p-4 md:p-8` :
@@ -271,8 +278,11 @@ export function Panel({
         zoomLevel > 120 ? `text-3xs md:text-xl` :
         zoomLevel > 100 ? `text-4xs md:text-lg` :
         zoomLevel > 90 ? `text-5xs md:text-sm` :
-        zoomLevel > 40 ? `hidden md:block md:text-xs` :
-        `hidden md:block md:text-2xs`,
+        zoomLevel > 40 ? `md:text-xs` : `md:text-2xs`,
+
+        showCaptions ? (
+          zoomLevel > 90 ? `block` : `hidden md:block`
+        ) : `hidden`,
       )}
       >{caption || ""}
         </div>

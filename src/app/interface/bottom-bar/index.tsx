@@ -5,6 +5,9 @@ import { base64ToFile } from "@/lib/base64ToFile"
 import { uploadToHuggingFace } from "@/lib/uploadToHuggingFace"
 import { cn } from "@/lib/utils"
 import { About } from "../about"
+import { startTransition, useState } from "react"
+import { upscaleImage } from "@/app/engine/render"
+import { sleep } from "@/lib/sleep"
 
 export function BottomBar() {
   const download = useStore(state => state.download)
@@ -17,15 +20,42 @@ export function BottomBar() {
 
   const allStatus = Object.values(panelGenerationStatus)
   const remainingImages = allStatus.reduce((acc, s) => (acc + (s ? 1 : 0)), 0)
-  
-  /*
+
+  const upscaleQueue = useStore(state => state.upscaleQueue)
+  const renderedScenes = useStore(state => state.renderedScenes)
+  const removeFromUpscaleQueue = useStore(state => state.removeFromUpscaleQueue)
+  const setRendered = useStore(state => state.setRendered)
+  const [isUpscaling, setUpscaling] = useState(false)
+
   const handleUpscale = () => {
+    setUpscaling(true)
     startTransition(() => {
-      we are blocked here, because we don't know the render id
-      also  we will have to store a state about the 
+      const fn = async () => {
+        for (let [panelId, renderedScene] of Object.entries(upscaleQueue)) {
+          try {
+            console.log(`upscaling panel ${panelId} (${renderedScene.renderId})`)
+            const result = await upscaleImage(renderedScene.assetUrl)
+            await sleep(1000)
+            if (result.assetUrl) {
+              console.log(`upscale successful, removing ${panelId} (${renderedScene.renderId}) from upscale queue`)
+              setRendered(panelId, {
+                ...renderedScene,
+                assetUrl: result.assetUrl
+              })
+              removeFromUpscaleQueue(panelId)
+            }
+
+          } catch (err) {
+            console.error(`failed to upscale: ${err}`)
+          }
+        }
+        
+        setUpscaling(false)
+      }
+
+      fn()
     })
   }
-  */
 
   const handleShare = async () => {
     const dataUrl = await pageToImage()
@@ -83,16 +113,6 @@ ${uploadUrl
       )}>
         <About />
       </div>
-      {/*
-      <div>
-        <Button
-          onClick={handleUpscale}
-          disabled={!prompt?.length && remainingImages}
-        >
-          Upscale
-        </Button>
-      </div>
-      */}
       <div className={cn(
       `flex flex-row`,
       `animation-all duration-300 ease-in-out`,
@@ -100,6 +120,16 @@ ${uploadUrl
       `space-x-3`,
       `scale-[0.9]`
     )}>
+      <div>
+        <Button
+          onClick={handleUpscale}
+          disabled={!prompt?.length || remainingImages > 0 || !Object.values(upscaleQueue).length}
+        >
+          {isUpscaling
+            ? `${allStatus.length - Object.values(upscaleQueue).length}/${allStatus.length} ⌛`
+            : "Upscale"}
+        </Button>
+      </div>
         <div>
           <Button
             onClick={handlePrint}
@@ -114,10 +144,10 @@ ${uploadUrl
             disabled={!prompt?.length}
           >
             <span className="hidden md:inline">{
-            remainingImages ? `${allStatus.length - remainingImages}/4 panels ⌛` : `Save`
+            remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} panels ⌛` : `Save`
             }</span>
             <span className="inline md:hidden">{
-              remainingImages ? `${allStatus.length - remainingImages}/4 ⌛` : `Save`
+              remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save`
             }</span>
            </Button>
         </div>

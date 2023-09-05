@@ -30,7 +30,6 @@ export default function Main() {
 
   const [waitABitMore, setWaitABitMore] = useState(false)
 
-
   // react to prompt changes
   useEffect(() => {
     if (!prompt) { return }
@@ -42,27 +41,29 @@ export default function Main() {
       try {
 
         const llmResponse = await getStory({ preset, prompt })
-        console.log("response:", llmResponse)
+        console.log("LLM responded:", llmResponse)
 
         // we have to limit the size of the prompt, otherwise the rest of the style won't be followed
 
         let limitedPrompt = prompt.slice(0, 77)
-        console.log("had to cut the length og the prompt to:", limitedPrompt)
+        if (limitedPrompt.length !== prompt.length) {
+          console.log("Sorry folks, the prompt was cut to:", limitedPrompt)
+        }
 
         const panelPromptPrefix = preset.imagePrompt(limitedPrompt).join(", ")
-        console.log("panel prompt prefix:", panelPromptPrefix)
-    
+
         const nbPanels = 4
         const newPanels: string[] = []
         const newCaptions: string[] = []
         setWaitABitMore(true)
-
+        console.log("Panel prompts for SDXL:")
         for (let p = 0; p < nbPanels; p++) {
           newCaptions.push(llmResponse[p]?.caption || "...")
-          const newPanel = [panelPromptPrefix, llmResponse[p]?.instructions || ""]
-          newPanels.push(newPanel.map(chunk => chunk).join(", "))
+          const newPanel = [panelPromptPrefix, llmResponse[p]?.instructions || ""].map(chunk => chunk).join(", ")
+          newPanels.push(newPanel)
+          console.log(newPanel)
         }
-        console.log("newPanels:", newPanels)
+   
         setCaptions(newCaptions)
         setPanels(newPanels)
       } catch (err) {

@@ -15,7 +15,9 @@ export const useStore = create<{
   nbFrames: number
   panels: string[]
   captions: string[]
+  upscaleQueue: Record<string, RenderedScene>
   showCaptions: boolean
+  renderedScenes: Record<string, RenderedScene>
   layout: LayoutName
   layouts: LayoutName[]
   zoomLevel: number
@@ -24,6 +26,9 @@ export const useStore = create<{
   panelGenerationStatus: Record<number, boolean>
   isGeneratingText: boolean
   atLeastOnePanelIsBusy: boolean
+  setRendered: (panelId: string, renderedScene: RenderedScene) => void
+  addToUpscaleQueue: (panelId: string, renderedScene: RenderedScene) => void
+  removeFromUpscaleQueue: (panelId: string) => void
   setPrompt: (prompt: string) => void
   setFont: (font: FontName) => void
   setPreset: (preset: Preset) => void
@@ -35,7 +40,7 @@ export const useStore = create<{
   setZoomLevel: (zoomLevel: number) => void
   setPage: (page: HTMLDivElement) => void
   setGeneratingStory: (isGeneratingStory: boolean) => void
-  setGeneratingImages: (panelId: number, value: boolean) => void
+  setGeneratingImages: (panelId: string, value: boolean) => void
   setGeneratingText: (isGeneratingText: boolean) => void
   pageToImage: () => Promise<string>
   download: () => Promise<void>
@@ -47,6 +52,8 @@ export const useStore = create<{
   nbFrames: 1,
   panels: [],
   captions: [],
+  upscaleQueue: {} as Record<string, RenderedScene>,
+  renderedScenes: {} as Record<string, RenderedScene>,
   showCaptions: false,
   layout: defaultLayout,
   layouts: [defaultLayout, defaultLayout],
@@ -56,6 +63,31 @@ export const useStore = create<{
   panelGenerationStatus: {},
   isGeneratingText: false,
   atLeastOnePanelIsBusy: false,
+  setRendered: (panelId: string, renderedScene: RenderedScene) => {
+    const { renderedScenes } = get()
+    set({
+      renderedScenes: {
+        ...renderedScenes,
+        [panelId]: renderedScene
+      }
+    })
+  },
+  addToUpscaleQueue: (panelId: string, renderedScene: RenderedScene) => {
+    const { upscaleQueue } = get()
+    set({
+      upscaleQueue: {
+        ...upscaleQueue,
+        [panelId]: renderedScene
+      },
+    })
+  },
+  removeFromUpscaleQueue: (panelId: string) => {
+    const upscaleQueue = { ...get().upscaleQueue }
+    delete upscaleQueue[panelId]
+    set({
+      upscaleQueue,
+    })
+  },
   setPrompt: (prompt: string) => {
     const existingPrompt = get().prompt
     if (prompt === existingPrompt) { return }
@@ -112,9 +144,8 @@ export const useStore = create<{
     set({ page })
   },
   setGeneratingStory: (isGeneratingStory: boolean) => set({ isGeneratingStory }),
-  setGeneratingImages: (panelId: number, value: boolean) => {
-
-    const panelGenerationStatus: Record<number, boolean> = {
+  setGeneratingImages: (panelId: string, value: boolean) => {
+    const panelGenerationStatus: Record<string, boolean> = {
       ...get().panelGenerationStatus,
       [panelId]: value
     }

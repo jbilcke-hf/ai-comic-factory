@@ -123,13 +123,12 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "american comic",
     imagePrompt: (prompt: string) => [
-      `american comic about ${prompt}`,
-      "single panel",
-      "modern american comic",
-      "comicbook style",
-      "2010s",
-      "digital print",
-      "color comicbook",
+      `modern american comic about ${prompt}`,
+      //"single panel",
+      "digital color comicbook style",
+      // "2010s",
+      // "digital print",
+      // "color comicbook",
       // "color drawing"
     ],
     negativePrompt: () => [
@@ -183,13 +182,12 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "american comic",
     imagePrompt: (prompt: string) => [
-      `american comic about ${prompt}`,
-      "single panel",
-      "american comic",
-      "comicbook style",
+      `vintage american color comic about ${prompt}`,
+      // "single panel",
+     //  "comicbook style",
       "1950",
       "50s",
-      "color comicbook",
+      // "color comicbook",
       // "color drawing"
     ],
     negativePrompt: () => [
@@ -244,15 +242,12 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "new pulp science fiction",
     imagePrompt: (prompt: string) => [
-      `color comic panel`,
+      `vintage color pulp comic panel`,
       `${prompt}`,
       "40s",
       "1940",
-      "vintage comic",
-      "pulp magazine",
-      "pulp science fiction",
       "vintage science fiction",
-      "single panel",
+      // "single panel",
       // "comic album"
     ],
     negativePrompt: () => [
@@ -311,9 +306,9 @@ export const presets: Record<string, Preset> = {
       "tintin style",
       "french comic panel",
       "franco-belgian style",
-      "color panel",
-      "bande dessinée",
-      "single panel",
+     //  "color panel",
+     //  "bande dessinée",
+      // "single panel",
       // "comic album"
     ],
     negativePrompt: () => [
@@ -343,8 +338,8 @@ export const presets: Record<string, Preset> = {
       "franco-belgian style",
       "bande dessinée",
       "single panel",
-      "comical",
-      "comic album",
+      // "comical",
+      // "comic album",
       // "color drawing"
     ],
     negativePrompt: () => [

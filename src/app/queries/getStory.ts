@@ -54,7 +54,7 @@ export const getStory = async ({
     }
   }
 
-  console.log("Raw response from LLM:", result)
+  // console.log("Raw response from LLM:", result)
   const tmp = cleanJson(result)
   
   let llmResponse: LLMResponse = []
@@ -63,6 +63,7 @@ export const getStory = async ({
     llmResponse = dirtyLLMJsonParser(tmp)
   } catch (err) {
     console.log(`failed to read LLM response: ${err}`)
+    console.log(`original response was:`, result)
 
       // in case of failure here, it might be because the LLM hallucinated a completely different response,
       // such as markdown. There is no real solution.. but we can try a fallback:

@@ -19,7 +19,7 @@ export async function newRender({
   width: number
   height: number
 }) {
-  console.log(`newRender(${prompt})`)
+  // console.log(`newRender(${prompt})`)
   if (!prompt) {
     console.error(`cannot call the rendering API without a prompt, aborting..`)
     throw new Error(`cannot call the rendering API without a prompt, aborting..`)
@@ -37,7 +37,7 @@ export async function newRender({
 
 
   try {
-    console.log(`calling POST ${apiUrl}/render with prompt: ${prompt}`)
+    // console.log(`calling POST ${apiUrl}/render with prompt: ${prompt}`)
 
     const res = await fetch(`${apiUrl}/render`, {
       method: "POST",
@@ -99,7 +99,7 @@ export async function getRender(renderId: string) {
 
   let defaulResult: RenderedScene = {
     renderId: "",
-    status: "error",
+    status: "pending",
     assetUrl: "",
     alt: "",
     maskUrl: "",
@@ -114,7 +114,7 @@ export async function getRender(renderId: string) {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${process.env.VC_SECRET_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${process.env.VC_SECRET_ACCESS_TOKEN}`,
       },
       cache: 'no-store',
     // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
@@ -132,6 +132,62 @@ export async function getRender(renderId: string) {
     }
     
     const response = (await res.json()) as RenderedScene
+    // console.log("response:", response)
+    return response
+  } catch (err) {
+    console.error(err)
+    defaulResult.status = "error"
+    defaulResult.error = `${err}`
+    // Gorgon.clear(cacheKey)
+    return defaulResult
+  }
+
+  // }, cacheDurationInSec * 1000)
+}
+
+export async function upscaleImage(image: string): Promise<{
+  assetUrl: string
+  error: string
+}> {
+  if (!image) {
+    console.error(`cannot call the rendering API without an image, aborting..`)
+    throw new Error(`cannot call the rendering API without an image, aborting..`)
+  }
+
+  let defaulResult = {
+    assetUrl: "",
+    error: "failed to fetch the data",
+  }
+
+  try {
+    // console.log(`calling GET ${apiUrl}/render with renderId: ${renderId}`)
+    const res = await fetch(`${apiUrl}/upscale`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.VC_SECRET_ACCESS_TOKEN}`,
+      },
+      cache: 'no-store',
+      body: JSON.stringify({ image, factor: 3 })
+    // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
+    // next: { revalidate: 1 }
+    })
+
+    // console.log("res:", res)
+    // The return value is *not* serialized
+    // You can return Date, Map, Set, etc.
+    
+    // Recommendation: handle errors
+    if (res.status !== 200) {
+      // This will activate the closest `error.js` Error Boundary
+      throw new Error('Failed to fetch data')
+    }
+    
+    const response = (await res.json()) as {
+      assetUrl: string
+      error: string
+    }
     // console.log("response:", response)
     return response
   } catch (err) {
