@@ -19,12 +19,16 @@ it requires various components to run for the frontend, backend, LLM, SDXL etc.
 
 If you try to duplicate the project, you will see it requires some variables:
 
-- `HF_INFERENCE_ENDPOINT_URL`: This is the endpoint to call the LLM 
-- `HF_API_TOKEN`: The Hugging Face token used to call the inference endpoint (if you intent to use a LLM hosted on Hugging Face)
-- `VIDEOCHAIN_API_URL`: This is the API that generates images
-- `VIDEOCHAIN_API_TOKEN`: Token used to call the rendering engine API (not used yet, but it's gonna be because [💸](https://en.wikipedia.org/wiki/No_such_thing_as_a_free_lunch))
-
-This is the architecture for the current production AI Comic Factory.
+- `LLM_ENGINE`: can be either "INFERENCE_API" or "INFERENCE_ENDPOINT"
+- `HF_API_TOKEN`: necessary if you decide to use an inference api model or a custom inference endpoint
+- `HF_INFERENCE_ENDPOINT_URL`: necessary if you decide to use a custom inference endpoint
+- `RENDERING_ENGINE`: can only be "VIDEOCHAIN" for now, unless you code your custom solution
+- `VIDEOCHAIN_API_URL`: url to the VideoChain API server
+- `VIDEOCHAIN_API_TOKEN`: secret token to access the VideoChain API server
+ 
+Please read the `.env` default config file for more informations.
+To customise a variable locally, you should create a `.env.local`
+(do not commit this file as it will contain your secrets).
 
 -> If you intend to run it with local, cloud-hosted and/or proprietary models **you are going to need to code 👨‍💻**.
 
@@ -41,6 +45,8 @@ This is a new option added recently, where you can use one of the models from th
 To activate it, create a `.env.local` configuration file:
 
 ```bash
+LLM_ENGINE="INFERENCE_API"
+
 HF_API_TOKEN="Your Hugging Face token"
 
 # codellama/CodeLlama-7b-hf" is used by default, but you can change this
@@ -53,7 +59,10 @@ HF_INFERENCE_API_MODEL="codellama/CodeLlama-7b-hf"
 If your would like to run the AI Comic Factory on a private LLM running on the Hugging Face Inference Endpoint service, create a `.env.local` configuration file:
 
 ```bash
+LLM_ENGINE="INFERENCE_ENDPOINT"
+
 HF_API_TOKEN="Your Hugging Face token"
+
 HF_INFERENCE_ENDPOINT_URL="path to your inference endpoint url"
 ```
 
