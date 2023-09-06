@@ -40,7 +40,7 @@ You have three options:
 
 ### Option 1: Use an Inference API model
 
-This is a new option added recently, where you can use one of the models from the Hugging Face Hub. By default we suggest to use CodeLlama.
+This is a new option added recently, where you can use one of the models from the Hugging Face Hub. By default we suggest to use CodeLlama 34b as it will provide better results than the 7b model.
 
 To activate it, create a `.env.local` configuration file:
 
@@ -50,13 +50,14 @@ LLM_ENGINE="INFERENCE_API"
 HF_API_TOKEN="Your Hugging Face token"
 
 # codellama/CodeLlama-7b-hf" is used by default, but you can change this
-# note: You should use a model able to generate JSON responses
+# note: You should use a model able to generate JSON responses,
+# so it is storngly suggested to use at least the 34b model
 HF_INFERENCE_API_MODEL="codellama/CodeLlama-7b-hf"
 ```
 
 ### Option 2: Use an Inference Endpoint URL
 
-If your would like to run the AI Comic Factory on a private LLM running on the Hugging Face Inference Endpoint service, create a `.env.local` configuration file:
+If you would like to run the AI Comic Factory on a private LLM running on the Hugging Face Inference Endpoint service, create a `.env.local` configuration file:
 
 ```bash
 LLM_ENGINE="INFERENCE_ENDPOINT"
