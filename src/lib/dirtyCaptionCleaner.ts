@@ -24,7 +24,9 @@ export function dirtyCaptionCleaner({
   )
 
   // we have to crop the instructions unfortunately, otherwise the style will disappear
-  newInstructions = newInstructions.slice(0, 77)
+  // newInstructions = newInstructions.slice(0, 77)
+  // EDIT: well actually the instructions are already at the end of the prompt,
+  // so we can let SDXL do this cropping job for us
 
   // american comic about brunette wood elf walks around a dark forrest and suddenly stops when hearing a strange noise, single panel, modern american comic, comicbook style, 2010s, digital print, color comicbook, color drawing, Full shot of the elf, her eyes widening in surprise, as a glowing, ethereal creature steps out of the shadows.",
 
