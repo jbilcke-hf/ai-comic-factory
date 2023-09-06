@@ -1,12 +1,12 @@
 "use server"
 
-import { RenderRequest, RenderedScene } from "@/types"
+import { RenderRequest, RenderedScene, RenderingEngine } from "@/types"
+
+const renderingEngine = `${process.env.RENDERING_ENGINE || ""}` as RenderingEngine
 
 // note: there is no / at the end in the variable
 // so we have to add it ourselves if needed
-const apiUrl = process.env.RENDERING_ENGINE_API
-
-const cacheDurationInSec = 30 * 60 // 30 minutes
+const apiUrl = process.env.VIDEOCHAIN_API_URL
 
 export async function newRender({
   prompt,
@@ -44,7 +44,7 @@ export async function newRender({
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.VC_SECRET_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${process.env.VIDEOCHAIN_API_TOKEN}`,
       },
       body: JSON.stringify({
         prompt,
@@ -114,7 +114,7 @@ export async function getRender(renderId: string) {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.VC_SECRET_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${process.env.VIDEOCHAIN_API_TOKEN}`,
       },
       cache: 'no-store',
     // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
@@ -166,7 +166,7 @@ export async function upscaleImage(image: string): Promise<{
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.VC_SECRET_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${process.env.VIDEOCHAIN_API_TOKEN}`,
       },
       cache: 'no-store',
       body: JSON.stringify({ image, factor: 3 })

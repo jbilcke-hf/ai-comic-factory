@@ -213,6 +213,7 @@ export function TopMenu() {
           className={cn(
             `rounded-l-none cursor-pointer`,
             `transition-all duration-200 ease-in-out`,
+            `bg-[rgb(59,134,247)] hover:bg-[rgb(69,144,255)] disabled:bg-[rgb(59,134,247)]`
             )}
           onClick={() => {
             handleSubmit()

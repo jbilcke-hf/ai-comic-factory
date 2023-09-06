@@ -21,8 +21,8 @@ If you try to duplicate the project, you will see it requires some variables:
 
 - `HF_INFERENCE_ENDPOINT_URL`: This is the endpoint to call the LLM 
 - `HF_API_TOKEN`: The Hugging Face token used to call the inference endpoint (if you intent to use a LLM hosted on Hugging Face)
-- `RENDERING_ENGINE_API`: This is the API that generates images
-- `VC_SECRET_ACCESS_TOKEN`: Token used to call the rendering engine API (not used yet, but it's gonna be because [💸](https://en.wikipedia.org/wiki/No_such_thing_as_a_free_lunch))
+- `VIDEOCHAIN_API_URL`: This is the API that generates images
+- `VIDEOCHAIN_API_TOKEN`: Token used to call the rendering engine API (not used yet, but it's gonna be because [💸](https://en.wikipedia.org/wiki/No_such_thing_as_a_free_lunch))
 
 This is the architecture for the current production AI Comic Factory.
 
@@ -32,17 +32,37 @@ This is the architecture for the current production AI Comic Factory.
 
 Currently the AI Comic Factory uses [Llama-2 70b](https://huggingface.co/blog/llama2) through an [Inference Endpoint](https://huggingface.co/docs/inference-endpoints/index).
 
-You have two options:
+You have three options:
 
-### Option 1: Fork and modify the code to use another LLM
+### Option 1: Use an Inference API model
 
-If you fork the AI Comic Factory, you will be able to use another API and model, such as a locally-running Llama 7b.
+This is a new option added recently, where you can use one of the models from the Hugging Face Hub. By default we suggest to use CodeLlama.
 
-To run the LLM locally, you can use [TGI](https://github.com/huggingface/text-generation-inference) (Please read [this post](https://github.com/huggingface/text-generation-inference/issues/726) for more information about licensing).
+To activate it, create a `.env.local` configuration file:
 
-### Option 2: Fork and modify the code to use human content instead
+```bash
+HF_API_TOKEN="Your Hugging Face token"
 
-Another option could be to disable the LLM completely and replace it with a human-generated story instead (by returning mock or static data).
+# codellama/CodeLlama-7b-hf" is used by default, but you can change this
+# note: You should use a model able to generate JSON responses
+HF_INFERENCE_API_MODEL="codellama/CodeLlama-7b-hf"
+```
+
+### Option 2: Use an Inference Endpoint URL
+
+If your would like to run the AI Comic Factory on a private LLM running on the Hugging Face Inference Endpoint service, create a `.env.local` configuration file:
+
+```bash
+HF_API_TOKEN="Your Hugging Face token"
+HF_INFERENCE_ENDPOINT_URL="path to your inference endpoint url"
+```
+
+To run this kind of LLM locally, you can use [TGI](https://github.com/huggingface/text-generation-inference) (Please read [this post](https://github.com/huggingface/text-generation-inference/issues/726) for more information about the licensing).
+
+### Option 3: Fork and modify the code to use a different LLM system
+
+Another option could be to disable the LLM completely and replace it with another LLM protocol and/or provider (eg. OpenAI, Replicate), or a human-generated story instead (by returning mock or static data).
+
 
 ### Notes
 

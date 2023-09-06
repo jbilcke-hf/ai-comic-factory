@@ -2,7 +2,7 @@
 
 import { ImageAnalysisRequest, ImageAnalysisResponse } from "@/types"
 
-const apiUrl = `${process.env.RENDERING_ENGINE_API || ""}`
+const apiUrl = `${process.env.VIDEOCHAIN_API_URL || ""}`
 
 export async function see({
   prompt,
@@ -33,7 +33,7 @@ export async function see({
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${process.env.VC_SECRET_ACCESS_TOKEN}`,
+        // Authorization: `Bearer ${process.env.VIDEOCHAIN_API_TOKEN}`,
       },
       body: JSON.stringify(request),
       cache: 'no-store',

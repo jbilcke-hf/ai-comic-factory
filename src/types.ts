@@ -80,3 +80,14 @@ export interface ImageAnalysisResponse {
 }
 
 export type LLMResponse = Array<{panel: number; instructions: string; caption: string }>
+
+export type LLMEngine =
+  | "INFERENCE_API"
+  | "INFERENCE_ENDPOINT"
+  | "OPENAI"
+  | "REPLICATE"
+
+export type RenderingEngine =
+  | "VIDEOCHAIN"
+  | "OPENAI"
+  | "REPLICATE"
