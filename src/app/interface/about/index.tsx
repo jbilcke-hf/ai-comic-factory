@@ -30,8 +30,11 @@ export function About() {
          <p>
          👉 The stable diffusion model used to generate the images is the base <a className="text-stone-600 underline" href="https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0" target="_blank">SDXL 1.0</a>.
         </p>
-         <p>
+        <p>
            The code is public and can be deployed at home with some changes in the code. See the <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/blob/main/README.md" target="_blank">README</a> for details about the architecture.
+         </p>
+         <p>
+            Do you want to create high-res image exports? Please check <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/discussions/105#64f84d182f7d3d945cdde3d2" target="_blank">this tutorial</a>.
          </p>
         </div>
         <DialogFooter>
