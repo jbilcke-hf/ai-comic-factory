@@ -123,7 +123,7 @@ ${uploadUrl
       <div>
         <Button
           onClick={handleUpscale}
-          disabled={!prompt?.length || remainingImages > 0 || !Object.values(upscaleQueue).length}
+          disabled={!prompt?.length || remainingImages > 0 || isUpscaling || !Object.values(upscaleQueue).length}
         >
           {isUpscaling
             ? `${allStatus.length - Object.values(upscaleQueue).length}/${allStatus.length} ⌛`
