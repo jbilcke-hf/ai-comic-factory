@@ -92,6 +92,11 @@ export type RenderingEngine =
   | "OPENAI"
   | "REPLICATE"
 
+export type PostVisibility =
+  | "featured" // featured by admins
+  | "trending" // top trending / received more than 10 upvotes
+  | "normal" // default visibility
+
 export type Post = {
   postId: string
   appId: string
@@ -99,6 +104,7 @@ export type Post = {
   previewUrl: string
   assetUrl: string
   createdAt: string
+  visibility: PostVisibility
   upvotes: number
   downvotes: number
 }

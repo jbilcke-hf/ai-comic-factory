@@ -2,7 +2,7 @@
 
 import { v4 as uuidv4 } from "uuid"
 
-import { CreatePostResponse, GetAppPostsResponse, Post } from "@/types"
+import { CreatePostResponse, GetAppPostsResponse, Post, PostVisibility } from "@/types"
 
 const apiUrl = `${process.env.COMMUNITY_API_URL || ""}`
 const apiToken = `${process.env.COMMUNITY_API_TOKEN || ""}`
@@ -25,6 +25,7 @@ export async function postToCommunity({
       previewUrl: assetUrl,
       assetUrl,
       createdAt: new Date().toISOString(),
+      visibility: "normal",
       upvotes: 0,
       downvotes: 0
     }
@@ -82,7 +83,7 @@ export async function postToCommunity({
   }
 }
 
-export async function getLatestPosts(): Promise<Post[]> {
+export async function getLatestPosts(visibility?: PostVisibility): Promise<Post[]> {
 
   let posts: Post[] = []
 
@@ -94,7 +95,9 @@ export async function getLatestPosts(): Promise<Post[]> {
 
   try {
     // console.log(`calling GET ${apiUrl}/posts with renderId: ${renderId}`)
-    const res = await fetch(`${apiUrl}/posts/${appId}`, {
+    const res = await fetch(`${apiUrl}/posts/${appId}/${
+      visibility || "all"
+    }`, {
       method: "GET",
       headers: {
         Accept: "application/json",
