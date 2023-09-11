@@ -25,7 +25,16 @@ If you try to duplicate the project, you will see it requires some variables:
 - `RENDERING_ENGINE`: can only be "VIDEOCHAIN" for now, unless you code your custom solution
 - `VIDEOCHAIN_API_URL`: url to the VideoChain API server
 - `VIDEOCHAIN_API_TOKEN`: secret token to access the VideoChain API server
- 
+
+In addition, there are some community sharing variables that you can just ignore.
+
+Those variables are not required to run the AI Comic Factory on your own website or computer
+(they are meant to create a connection with the Hugging Face community,
+and thus only make sense for official Hugging Face apps):
+- `COMMUNITY_API_URL`: community sharing feature
+- `COMMUNITY_API_TOKEN`: you don't need this
+- `COMMUNITY_API_ID`: same
+
 Please read the `.env` default config file for more informations.
 To customise a variable locally, you should create a `.env.local`
 (do not commit this file as it will contain your secrets).
