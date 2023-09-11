@@ -3,6 +3,7 @@
 import { v4 as uuidv4 } from "uuid"
 
 import { CreatePostResponse, GetAppPostsResponse, Post, PostVisibility } from "@/types"
+import { filterOutBadWords } from "./censorship"
 
 const apiUrl = `${process.env.COMMUNITY_API_URL || ""}`
 const apiToken = `${process.env.COMMUNITY_API_TOKEN || ""}`
@@ -15,6 +16,9 @@ export async function postToCommunity({
   prompt: string
   assetUrl: string
 }): Promise<Post> {
+
+  prompt = filterOutBadWords(prompt)
+
   // if the community API is disabled,
   // we don't fail, we just mock
   if (!apiUrl) {
@@ -42,7 +46,7 @@ export async function postToCommunity({
   }
 
   try {
-    console.log(`calling POST ${apiUrl}/post with prompt: ${prompt}`)
+    console.log(`calling POST ${apiUrl}/posts/${appId} with prompt: ${prompt}`)
 
     const postId = uuidv4()
 
@@ -50,7 +54,7 @@ export async function postToCommunity({
 
     console.table(post)
 
-    const res = await fetch(`${apiUrl}/post`, {
+    const res = await fetch(`${apiUrl}/posts/${appId}`, {
       method: "POST",
       headers: {
         Accept: "application/json",
