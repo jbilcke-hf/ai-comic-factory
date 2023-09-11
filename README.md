@@ -31,9 +31,10 @@ In addition, there are some community sharing variables that you can just ignore
 Those variables are not required to run the AI Comic Factory on your own website or computer
 (they are meant to create a connection with the Hugging Face community,
 and thus only make sense for official Hugging Face apps):
-- `COMMUNITY_API_URL`: community sharing feature
+- `NEXT_PUBLIC_ENABLE_COMMUNITY_SHARING`: you don't need this
+- `COMMUNITY_API_URL`: you don't need this
 - `COMMUNITY_API_TOKEN`: you don't need this
-- `COMMUNITY_API_ID`: same
+- `COMMUNITY_API_ID`: you don't need this
 
 Please read the `.env` default config file for more informations.
 To customise a variable locally, you should create a `.env.local`

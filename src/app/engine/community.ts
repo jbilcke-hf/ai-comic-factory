@@ -120,8 +120,9 @@ export async function getLatestPosts(): Promise<Post[]> {
     // console.log("response:", response)
     return Array.isArray(response?.posts) ? response?.posts : []
   } catch (err) {
-    const error = `failed to get posts: ${err}`
-    console.error(error)
-    throw new Error(error)
+    // const error = `failed to get posts: ${err}`
+    // console.error(error)
+    // throw new Error(error)
+    return []
   }
 }
