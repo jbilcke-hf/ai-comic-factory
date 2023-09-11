@@ -49,6 +49,7 @@
     "react-circular-progressbar": "^2.1.0",
     "react-dom": "18.2.0",
     "react-virtualized-auto-sizer": "^1.0.20",
+    "replicate": "^0.17.0",
     "sbd": "^1.0.19",
     "sharp": "^0.32.5",
     "styled-components": "^6.0.7",

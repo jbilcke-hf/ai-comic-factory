@@ -17,17 +17,19 @@ First, I would like to highlight that everything is open-source (see [here](http
 However the project isn't a monolithic Space that can be duplicated and ran immediately:
 it requires various components to run for the frontend, backend, LLM, SDXL etc.
 
-If you try to duplicate the project, you will see it requires some variables:
+If you try to duplicate the project and open the `.env` you will see it requires some variables:
 
 - `LLM_ENGINE`: can be either "INFERENCE_API" or "INFERENCE_ENDPOINT"
 - `HF_API_TOKEN`: necessary if you decide to use an inference api model or a custom inference endpoint
 - `HF_INFERENCE_ENDPOINT_URL`: necessary if you decide to use a custom inference endpoint
-- `RENDERING_ENGINE`: can only be "VIDEOCHAIN" for now, unless you code your custom solution
+- `RENDERING_ENGINE`: can only be "VIDEOCHAIN" or "REPLICATE" for now, unless you code your custom solution
 - `VIDEOCHAIN_API_URL`: url to the VideoChain API server
 - `VIDEOCHAIN_API_TOKEN`: secret token to access the VideoChain API server
+- `REPLICATE_API_TOKEN`: in case you want to use Replicate.com
+- `REPLICATE_API_MODEL`: optional, defaults to "stabilityai/sdxl"
+- `REPLICATE_API_MODEL_VERSION`: optional, in case you want to change the version
 
 In addition, there are some community sharing variables that you can just ignore.
-
 Those variables are not required to run the AI Comic Factory on your own website or computer
 (they are meant to create a connection with the Hugging Face community,
 and thus only make sense for official Hugging Face apps):
@@ -104,10 +106,23 @@ You will have to [clone](https://huggingface.co/spaces/jbilcke-hf/VideoChain-API
 Unfortunately, I haven't had the time to write the documentation for VideoChain yet.
 (When I do I will update this document to point to the VideoChain's README)
 
-### Option 2: Use another SDXL API
 
-If you fork the project you will be able to modify the code to use the Stable Diffusion technology of your choice (local, open-source, your custom HF Space etc)
+### Option 2: Use Replicate
 
-### Notes
+To use Replicate, create a `.env.local` configuration file:
 
-It is possible that I modify the AI Comic Factory to make it easier in the future (eg. add support for Replicate)
+```bash
+RENDERING_ENGINE="REPLICATE"
+
+REPLICATE_API_TOKEN="Your Replicate token"
+
+REPLICATE_API_MODEL="stabilityai/sdxl"
+
+REPLICATE_API_MODEL_VERSION="da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf"
+```
+
+### Option 3: Use another SDXL API
+
+If you fork the project you will be able to modify the code to use the Stable Diffusion technology of your choice (local, open-source, proprietary, your custom HF Space etc).
+
+It would even be something else, such as Dall-E.
