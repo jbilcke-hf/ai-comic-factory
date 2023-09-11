@@ -6,7 +6,7 @@ import { CreatePostResponse, GetAppPostsResponse, Post, PostVisibility } from "@
 
 const apiUrl = `${process.env.COMMUNITY_API_URL || ""}`
 const apiToken = `${process.env.COMMUNITY_API_TOKEN || ""}`
-const appId = `${process.env.APP_ID || ""}`
+const appId = `${process.env.COMMUNITY_API_ID || ""}`
 
 export async function postToCommunity({
   prompt,
