@@ -55,7 +55,8 @@ export async function predict(inputs: string) {
       parameters: {
         do_sample: true,
         // we don't require a lot of token for our task
-        max_new_tokens: 330, // 1150,
+        // but to be safe, let's count ~110 tokens per panel
+        max_new_tokens: 450, // 1150,
         return_full_text: false,
       }
     })) {
