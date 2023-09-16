@@ -1,5 +1,5 @@
 // adapted from https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ/discussions/5 
-export function createLlamaPrompt(messages: Array<{ role: string, content: string }>) {
+export function createLlamaPrompt({ messages }: { messages: Array<{ role: string; content: string; }>; }) {
   const B_INST = "[INST]", E_INST = "[/INST]";
   const B_SYS = "<<SYS>>\n", E_SYS = "\n<</SYS>>\n\n";
   const BOS = "<s>", EOS = "</s>";

@@ -57,18 +57,19 @@ export async function newRender({
       }
       const replicate = new Replicate({ auth: replicateToken })
 
-      // console.log("Calling replicate..")
+      console.log("Calling replicate..")
+
       const seed = generateSeed()
       const prediction = await replicate.predictions.create({
         version: replicateModelVersion,
         input: { prompt, seed }
       })
       
-      // console.log("prediction:", prediction)
+      console.log("prediction:", prediction)
 
       // no need to reply straight away: good things take time
       // also our friends at Replicate won't like it if we spam them with requests
-      await sleep(4000)
+      await sleep(400)
 
       return {
         renderId: prediction.id,
@@ -80,7 +81,7 @@ export async function newRender({
         segments: []
       } as RenderedScene
     } else {
-      // console.log(`calling POST ${apiUrl}/render with prompt: ${prompt}`)
+      console.log(`calling POST ${apiUrl}/render with prompt: ${prompt}`)
       const res = await fetch(`${apiUrl}/render`, {
         method: "POST",
         headers: {
@@ -111,7 +112,7 @@ export async function newRender({
         } as Partial<RenderRequest>),
         cache: 'no-store',
       // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
-      // next: { revalidate: 1 }
+        next: { revalidate: 1 }
       })
 
 

@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils"
 import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
 import { Progress } from "@/app/interface/progress"
 
-// import { see } from "@/app/engine/caption"
-// import { replaceTextInSpeechBubbles } from "@/lib/replaceTextInSpeechBubbles"
+import { see } from "@/app/engine/caption"
+import { replaceTextInSpeechBubbles } from "@/lib/replaceTextInSpeechBubbles"
 
 export function Panel({
   panel,
@@ -64,7 +64,7 @@ export function Panel({
   // since this run in its own loop, we need to use references everywhere
   // but perhaps this could be refactored
   useEffect(() => {
-    // console.log("Panel prompt: "+ prompt)
+    console.log("Panel prompt: "+ prompt)
     if (!prompt?.length) { return }
 
     // important: update the status, and clear the scene
@@ -76,7 +76,7 @@ export function Panel({
     setTimeout(() => {
       startTransition(async () => {
 
-      // console.log(`Loading panel ${panel}..`)
+      console.log(`Loading panel ${panel}..`)
     
       let newRendered: RenderedScene
       try {
@@ -87,7 +87,7 @@ export function Panel({
       }
 
       if (newRendered) {
-        // console.log("newRendered:", newRendered)
+        console.log("newRendered:", newRendered)
         setRendered(panelId, newRendered)
 
         // but we are still loading!
@@ -119,16 +119,16 @@ export function Panel({
       }
       try {
         setGeneratingImages(panelId, true)
-        // console.log(`Checking job status API for job ${renderedRef.current?.renderId}`)
+        console.log(`Checking job status API for job ${renderedRef.current?.renderId}`)
         const newRendered = await getRender(renderedRef.current.renderId)
-        // console.log("got a response!", newRendered)
+        console.log("got a response!", newRendered)
 
         if (JSON.stringify(renderedRef.current) !== JSON.stringify(newRendered)) {
-          // console.log("updated panel:", newRendered)
+          console.log("updated panel:", newRendered)
           setRendered(panelId, renderedRef.current = newRendered)
           setGeneratingImages(panelId, true)
         }
-        // console.log("status:", newRendered.status)
+        console.log("status:", newRendered.status)
 
         if (newRendered.status === "pending") {
           // console.log("job not finished")
@@ -194,7 +194,7 @@ export function Panel({
   */
 
   const frameClassName = cn(
-    //`flex`,
+    `flex`,
     `w-full h-full`,
     `border-stone-800`,
     `transition-all duration-200 ease-in-out`,

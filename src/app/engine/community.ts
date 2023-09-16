@@ -110,7 +110,7 @@ export async function getLatestPosts(visibility?: PostVisibility): Promise<Post[
       },
       cache: 'no-store',
     // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
-    // next: { revalidate: 1 }
+      next: { revalidate: 1 }
     })
 
     // console.log("res:", res)

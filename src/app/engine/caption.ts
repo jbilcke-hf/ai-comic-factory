@@ -38,7 +38,7 @@ export async function see({
       body: JSON.stringify(request),
       cache: 'no-store',
     // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
-    // next: { revalidate: 1 }
+      next: { revalidate: 1 }
     })
 
     if (res.status !== 200) {

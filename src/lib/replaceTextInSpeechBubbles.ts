@@ -35,7 +35,7 @@ export async function replaceTextInSpeechBubbles(image: string, customText: stri
       let fontSize = 18;
       ctx.font = `${fontSize}px Arial`;
 
-      /*
+      
       while (
         ctx.measureText(customText).width > bubbleWidth || fontSize * 1.2 // line height
          > bubbleHeight) {
@@ -49,7 +49,6 @@ export async function replaceTextInSpeechBubbles(image: string, customText: stri
       lines.forEach((text, i) => {
         ctx.fillText(text, line.bbox.x0, line.bbox.y0 + (i * fontSize * 1.2));
       });
-      */
     })
 
     await worker.terminate();
