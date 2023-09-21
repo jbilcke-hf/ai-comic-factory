@@ -268,7 +268,7 @@ export const presets: Record<string, Preset> = {
     family: "european",
     color: "color",
     font: "actionman",
-    llmPrompt: "new album by moebius",
+    llmPrompt: "comic books by Moebius",
     imagePrompt: (prompt: string) => [
       `color comic panel`,
       `${prompt}`,
@@ -297,7 +297,7 @@ export const presets: Record<string, Preset> = {
     family: "european",
     color: "color",
     font: "actionman",
-    llmPrompt: "new album by Hergé",
+    llmPrompt: "writing Tintin comic books",
     imagePrompt: (prompt: string) => [
       `color comic panel`,
       `${prompt}`,
@@ -322,13 +322,35 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
+  lurid: {
+    id: "lurid",
+    label: "Lurid",
+    family: "american",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "1970s satirical and alternative underground comics",
+    imagePrompt: (prompt: string) => [
+      `satirical color comic`,
+      `underground comix`,
+      `1970`,
+      `${prompt}`,
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "painting"
+    ],
+  },
   armorican: {
     id: "armorican",
     label: "Armorican",
     family: "european",
     color: "monochrome",
     font: "actionman",
-    llmPrompt: "new color album",
+    llmPrompt: "french style comic books set in ancient Rome and Gaul",
     imagePrompt: (prompt: string) => [
       `color comic panel`,
       `about ${prompt}`,
@@ -382,7 +404,7 @@ export const presets: Record<string, Preset> = {
     family: "european",
     color: "color",
     font: "actionman",
-    llmPrompt: "new story",
+    llmPrompt: "Gustav Klimt art pieces.",
     imagePrompt: (prompt: string) => [
       `golden`,
       `patchwork`,
@@ -405,7 +427,7 @@ export const presets: Record<string, Preset> = {
     family: "european",
     color: "color",
     font: "actionman",
-    llmPrompt: "new story",
+    llmPrompt: "medieval story (write in this style)",
     imagePrompt: (prompt: string) => [
       `medieval illuminated manuscript`,
       `illuminated manuscript of`,
@@ -479,7 +501,7 @@ export const presets: Record<string, Preset> = {
     family: "european",
     color: "color",
     font: "actionman",
-    llmPrompt: "new movie",
+    llmPrompt: "ancient egyptian stories.",
     imagePrompt: (prompt: string) => [
       `ancient egyptian wall painting`,
       // `medieval color engraving`,

@@ -4,6 +4,7 @@ import Head from "next/head"
 
 import Main from "./main"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import Script from "next/script"
 
 // https://nextjs.org/docs/pages/building-your-application/optimizing/fonts 
 
@@ -22,6 +23,16 @@ export default async function IndexPage({ params: { ownerId } }: { params: { own
         <TooltipProvider delayDuration={100}>
           <Main />
         </TooltipProvider>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=GTM-WH4MGSHS" />
+        <Script id="google-analytics">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+    
+            gtag('config', 'GTM-WH4MGSHS');
+          `}
+        </Script>
       </main>
     </>
   )
