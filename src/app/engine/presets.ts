@@ -322,6 +322,7 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
+  /*
   lurid: {
     id: "lurid",
     label: "Lurid",
@@ -344,6 +345,7 @@ export const presets: Record<string, Preset> = {
       "painting"
     ],
   },
+  */
   armorican: {
     id: "armorican",
     label: "Armorican",
