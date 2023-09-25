@@ -2,7 +2,7 @@
 
 import { ImageAnalysisRequest, ImageAnalysisResponse } from "@/types"
 
-const apiUrl = `${process.env.VIDEOCHAIN_API_URL || ""}`
+const apiUrl = `${process.env.RENDERING_VIDEOCHAIN_API_URL || ""}`
 
 export async function see({
   prompt,

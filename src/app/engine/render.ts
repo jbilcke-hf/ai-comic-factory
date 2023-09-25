@@ -1,6 +1,7 @@
 "use server"
 
-import Replicate, { Prediction } from "replicate"
+import { v4 as uuidv4 } from "uuid"
+import Replicate from "replicate"
 
 import { RenderRequest, RenderedScene, RenderingEngine } from "@/types"
 import { generateSeed } from "@/lib/generateSeed"
@@ -8,13 +9,15 @@ import { sleep } from "@/lib/sleep"
 
 const renderingEngine = `${process.env.RENDERING_ENGINE || ""}` as RenderingEngine
 
-const replicateToken = `${process.env.REPLICATE_API_TOKEN || ""}`
-const replicateModel = `${process.env.REPLICATE_API_MODEL || ""}`
-const replicateModelVersion = `${process.env.REPLICATE_API_MODEL_VERSION || ""}`
+const videochainApiUrl = `${process.env.RENDERING_VIDEOCHAIN_API_URL || "" }`
 
-// note: there is no / at the end in the variable
-// so we have to add it ourselves if needed
-const apiUrl = process.env.VIDEOCHAIN_API_URL
+const huggingFaceToken = `${process.env.HF_API_TOKEN || ""}`
+const huggingFaceInferenceEndpointUrl = `${process.env.RENDERING_HF_INFERENCE_ENDPOINT_URL || ""}`
+const huggingFaceInferenceApiModel = `${process.env.RENDERING_HF_INFERENCE_API_MODEL || ""}`
+
+const replicateToken = `${process.env.RENDERING_REPLICATE_API_TOKEN || ""}`
+const replicateModel = `${process.env.RENDERING_REPLICATE_API_MODEL || ""}`
+const replicateModelVersion = `${process.env.RENDERING_REPLICATE_API_MODEL_VERSION || ""}`
 
 export async function newRender({
   prompt,
@@ -79,9 +82,74 @@ export async function newRender({
         maskUrl: "",
         segments: []
       } as RenderedScene
+    } if (renderingEngine === "INFERENCE_ENDPOINT" || renderingEngine === "INFERENCE_API") {
+      if (!huggingFaceToken) {
+        throw new Error(`you need to configure your HF_API_TOKEN in order to use the ${renderingEngine} rendering engine`)
+      }
+      if (renderingEngine === "INFERENCE_ENDPOINT" && !huggingFaceInferenceEndpointUrl) {
+        throw new Error(`you need to configure your RENDERING_HF_INFERENCE_ENDPOINT_URL in order to use the INFERENCE_ENDPOINT rendering engine`)
+      }
+      if (renderingEngine === "INFERENCE_API" && !huggingFaceInferenceApiModel) {
+        throw new Error(`you need to configure your RENDERING_HF_INFERENCE_API_MODEL in order to use the INFERENCE_API rendering engine`)
+      }
+
+      const seed = generateSeed()
+
+      const url = renderingEngine === "INFERENCE_ENDPOINT"
+        ? huggingFaceInferenceEndpointUrl
+        : `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiModel}`
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          // Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${huggingFaceToken}`,
+        },
+        body: JSON.stringify({
+          inputs: [
+            "beautiful",
+            "intricate details",
+            prompt,
+            "award winning",
+            "high resolution"
+          ].join(", "),
+          parameters: {
+            num_inference_steps: 25,
+            guidance_scale: 8,
+            width,
+            height,
+
+          }
+        }),
+        cache: "no-store",
+        // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
+        // next: { revalidate: 1 }
+      })
+  
+  
+      // Recommendation: handle errors
+      if (res.status !== 200) {
+        // This will activate the closest `error.js` Error Boundary
+        throw new Error('Failed to fetch data')
+      }
+  
+      // the result is a JSON-encoded string
+      const response = await res.json() as string
+      const assetUrl = `data:image/png;base64,${response}`
+
+      return {
+        renderId: uuidv4(),
+        status: "completed",
+        assetUrl, 
+        alt: prompt,
+        error: "",
+        maskUrl: "",
+        segments: []
+      } as RenderedScene
     } else {
       // console.log(`calling POST ${apiUrl}/render with prompt: ${prompt}`)
-      const res = await fetch(`${apiUrl}/render`, {
+      const res = await fetch(`${videochainApiUrl}/render`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -202,7 +270,7 @@ export async function getRender(renderId: string) {
       } as RenderedScene
     } else {
       // console.log(`calling GET ${apiUrl}/render with renderId: ${renderId}`)
-      const res = await fetch(`${apiUrl}/render/${renderId}`, {
+      const res = await fetch(`${videochainApiUrl}/render/${renderId}`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -255,7 +323,7 @@ export async function upscaleImage(image: string): Promise<{
 
   try {
     // console.log(`calling GET ${apiUrl}/render with renderId: ${renderId}`)
-    const res = await fetch(`${apiUrl}/upscale`, {
+    const res = await fetch(`${videochainApiUrl}/upscale`, {
       method: "POST",
       headers: {
         Accept: "application/json",

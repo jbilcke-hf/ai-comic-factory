@@ -8,8 +8,8 @@ const hf = new HfInference(process.env.HF_API_TOKEN)
 
 // note: we always try "inference endpoint" first
 const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
-const inferenceEndpoint = `${process.env.HF_INFERENCE_ENDPOINT_URL || ""}`
-const inferenceModel = `${process.env.HF_INFERENCE_API_MODEL || ""}`
+const inferenceEndpoint = `${process.env.LLM_HF_INFERENCE_ENDPOINT_URL || ""}`
+const inferenceModel = `${process.env.LLM_HF_INFERENCE_API_MODEL || ""}`
 
 let hfie: HfInferenceEndpoint
 
