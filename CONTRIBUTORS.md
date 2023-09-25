@@ -1,4 +1,4 @@
-This project was developed Julian Bilcke (@jbilcke-hf), as part of his work at Hugging Face.
+This project was developed by Julian Bilcke (@jbilcke-hf), as part of his work at Hugging Face.
 
 ------------------------------------------
 
