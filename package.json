@@ -43,6 +43,7 @@
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.260.0",
     "next": "13.4.10",
+    "openai": "^4.10.0",
     "pick": "^0.0.1",
     "postcss": "8.4.26",
     "react": "18.2.0",
