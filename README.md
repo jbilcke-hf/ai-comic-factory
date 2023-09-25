@@ -92,14 +92,27 @@ HF_INFERENCE_ENDPOINT_URL="path to your inference endpoint url"
 
 To run this kind of LLM locally, you can use [TGI](https://github.com/huggingface/text-generation-inference) (Please read [this post](https://github.com/huggingface/text-generation-inference/issues/726) for more information about the licensing).
 
-### Option 3: Fork and modify the code to use a different LLM system
+### Option 3: Use an OpenAI API Key
 
-Another option could be to disable the LLM completely and replace it with another LLM protocol and/or provider (eg. OpenAI, Replicate), or a human-generated story instead (by returning mock or static data).
+This is a new option added recently, where you can use OpenAI API with an OpenAI API Key.
 
+To activate it, create a `.env.local` configuration file:
+
+```bash
+LLM_ENGINE="OPENAI"
+# default openai api base url is: https://api.openai.com/v1
+OPENAI_API_BASE_URL="Your OpenAI API Base URL"
+OPENAI_API_KEY="Your OpenAI API Key"
+OPENAI_API_MODEL="gpt-3.5-turbo"
+```
+
+### Option 4: Fork and modify the code to use a different LLM system
+
+Another option could be to disable the LLM completely and replace it with another LLM protocol and/or provider (eg. Claude, Replicate), or a human-generated story instead (by returning mock or static data).
 
 ### Notes
 
-It is possible that I modify the AI Comic Factory to make it easier in the future (eg. add support for OpenAI or Replicate)
+It is possible that I modify the AI Comic Factory to make it easier in the future (eg. add support for Claude or Replicate)
 
 ## The Rendering API
 

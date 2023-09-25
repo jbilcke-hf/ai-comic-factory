@@ -1,7 +1,10 @@
 "use server"
 
-import { LLMEngine } from "@/types"
 import { HfInference, HfInferenceEndpoint } from "@huggingface/inference"
+
+import type { ChatCompletionMessage } from "openai/resources/chat"
+import { LLMEngine } from "@/types"
+import OpenAI from "openai"
 
 const hf = new HfInference(process.env.HF_API_TOKEN)
 
@@ -10,6 +13,8 @@ const hf = new HfInference(process.env.HF_API_TOKEN)
 const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
 const inferenceEndpoint = `${process.env.LLM_HF_INFERENCE_ENDPOINT_URL || ""}`
 const inferenceModel = `${process.env.LLM_HF_INFERENCE_API_MODEL || ""}`
+const openaiApiKey = `${process.env.LLM_OPENAI_API_KEY || ""}`
+
 
 let hfie: HfInferenceEndpoint
 
@@ -34,6 +39,16 @@ switch (llmEngine) {
       throw new Error(error)
     }
     break;
+
+  case "OPENAI":
+    if (openaiApiKey) {
+      console.log("Using an OpenAI API Key")
+    } else {
+      const error = "No OpenAI API key defined"
+      console.error(error)
+      throw new Error(error)
+    }
+    break;
   
   default:
     const error = "No Inference Endpoint URL or Inference API Model defined"
@@ -44,6 +59,10 @@ switch (llmEngine) {
 export async function predict(inputs: string) {
 
   console.log(`predict: `, inputs)
+  
+  if (llmEngine==="OPENAI") {
+    return predictWithOpenAI(inputs)
+  } 
   
   const api = llmEngine ==="INFERENCE_ENDPOINT" ? hfie : hf
 
@@ -92,4 +111,31 @@ export async function predict(inputs: string) {
     .replaceAll("<|assistant|>", "")
     .replaceAll('""', '"')
   )
+}
+
+async function predictWithOpenAI(inputs: string) {
+  const openaiApiBaseUrl = `${process.env.OPENAI_API_BASE_URL || "https://api.openai.com/v1"}`
+  const openaiApiModel = `${process.env.OPENAI_API_MODEL || "gpt-3.5-turbo"}`
+  
+  const openai = new OpenAI({
+    apiKey: openaiApiKey,
+    baseURL: openaiApiBaseUrl,
+  })
+
+  const messages: ChatCompletionMessage[] = [
+    { role: "system", content: inputs },
+  ]
+
+  try {
+    const res = await openai.chat.completions.create({
+      messages: messages,
+      stream: false,
+      model: openaiApiModel,
+      temperature: 0.8
+    })
+
+    return res.choices[0].message.content
+  } catch (err) {
+    console.error(`error during generation: ${err}`)
+  }
 }
