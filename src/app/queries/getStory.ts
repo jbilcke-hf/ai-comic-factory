@@ -37,15 +37,15 @@ export const getStory = async ({
   let result = ""
 
   try {
-    result = await predict(query)
-    if (!result.trim().length) {
+    result = `${await predict(query) || ""}`.trim()
+    if (!result.length) {
       throw new Error("empty result!")
     }
   } catch (err) {
     console.log(`prediction of the story failed, trying again..`)
     try {
-      result = await predict(query+".")
-      if (!result.trim().length) {
+      result = `${await predict(query+".") || ""}`.trim()
+      if (!result.length) {
         throw new Error("empty result!")
       }
     } catch (err) {

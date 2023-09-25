@@ -33,7 +33,7 @@ export async function see({
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${process.env.VIDEOCHAIN_API_TOKEN}`,
+        // Authorization: `Bearer ${videochainApi}`,
       },
       body: JSON.stringify(request),
       cache: 'no-store',

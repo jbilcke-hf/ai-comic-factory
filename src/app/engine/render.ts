@@ -9,15 +9,17 @@ import { sleep } from "@/lib/sleep"
 
 const renderingEngine = `${process.env.RENDERING_ENGINE || ""}` as RenderingEngine
 
-const videochainApiUrl = `${process.env.RENDERING_VIDEOCHAIN_API_URL || "" }`
-
-const huggingFaceToken = `${process.env.HF_API_TOKEN || ""}`
+// TODO: we should split Hugging Face and Replicate backends into separate files
+const huggingFaceToken = `${process.env.AUTH_HF_API_TOKEN || ""}`
 const huggingFaceInferenceEndpointUrl = `${process.env.RENDERING_HF_INFERENCE_ENDPOINT_URL || ""}`
 const huggingFaceInferenceApiModel = `${process.env.RENDERING_HF_INFERENCE_API_MODEL || ""}`
 
-const replicateToken = `${process.env.RENDERING_REPLICATE_API_TOKEN || ""}`
+const replicateToken = `${process.env.AUTH_REPLICATE_API_TOKEN || ""}`
 const replicateModel = `${process.env.RENDERING_REPLICATE_API_MODEL || ""}`
 const replicateModelVersion = `${process.env.RENDERING_REPLICATE_API_MODEL_VERSION || ""}`
+
+const videochainToken = `${process.env.AUTH_VIDEOCHAIN_API_TOKEN || ""}`
+const videochainApiUrl = `${process.env.RENDERING_VIDEOCHAIN_API_URL || ""}`
 
 export async function newRender({
   prompt,
@@ -30,10 +32,10 @@ export async function newRender({
   width: number
   height: number
 }) {
-  // console.log(`newRender(${prompt})`)
   if (!prompt) {
-    console.error(`cannot call the rendering API without a prompt, aborting..`)
-    throw new Error(`cannot call the rendering API without a prompt, aborting..`)
+    const error = `cannot call the rendering API without a prompt, aborting..`
+    console.error(error)
+    throw new Error(error)
   }
 
   let defaulResult: RenderedScene = {
@@ -69,7 +71,7 @@ export async function newRender({
       
       // console.log("prediction:", prediction)
 
-      // no need to reply straight away: good things take time
+      // no need to reply straight away as images take time to generate, this isn't instantaneous
       // also our friends at Replicate won't like it if we spam them with requests
       await sleep(4000)
 
@@ -93,8 +95,6 @@ export async function newRender({
         throw new Error(`you need to configure your RENDERING_HF_INFERENCE_API_MODEL in order to use the INFERENCE_API rendering engine`)
       }
 
-      const seed = generateSeed()
-
       const url = renderingEngine === "INFERENCE_ENDPOINT"
         ? huggingFaceInferenceEndpointUrl
         : `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiModel}`
@@ -102,7 +102,6 @@ export async function newRender({
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          // Accept: "application/json",
           "Content-Type": "application/json",
           Authorization: `Bearer ${huggingFaceToken}`,
         },
@@ -148,13 +147,12 @@ export async function newRender({
         segments: []
       } as RenderedScene
     } else {
-      // console.log(`calling POST ${apiUrl}/render with prompt: ${prompt}`)
       const res = await fetch(`${videochainApiUrl}/render`, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.VIDEOCHAIN_API_TOKEN}`,
+          Authorization: `Bearer ${videochainToken}`,
         },
         body: JSON.stringify({
           prompt,
@@ -182,14 +180,7 @@ export async function newRender({
       // next: { revalidate: 1 }
       })
 
-
-      // console.log("res:", res)
-      // The return value is *not* serialized
-      // You can return Date, Map, Set, etc.
-      
-      // Recommendation: handle errors
       if (res.status !== 200) {
-        // This will activate the closest `error.js` Error Boundary
         throw new Error('Failed to fetch data')
       }
       
@@ -204,8 +195,9 @@ export async function newRender({
 
 export async function getRender(renderId: string) {
   if (!renderId) {
-    console.error(`cannot call the rendering API without a renderId, aborting..`)
-    throw new Error(`cannot call the rendering API without a renderId, aborting..`)
+    const error = `cannot call the rendering API without a renderId, aborting..`
+    console.error(error)
+    throw new Error(error)
   }
 
   let defaulResult: RenderedScene = {
@@ -221,24 +213,15 @@ export async function getRender(renderId: string) {
   try {
     if (renderingEngine === "REPLICATE") {
       if (!replicateToken) {
-        throw new Error(`you need to configure your REPLICATE_API_TOKEN in order to use the REPLICATE rendering engine`)
+        throw new Error(`you need to configure your AUTH_REPLICATE_API_TOKEN in order to use the REPLICATE rendering engine`)
       }
       if (!replicateModel) {
-        throw new Error(`you need to configure your REPLICATE_API_MODEL in order to use the REPLICATE rendering engine`)
+        throw new Error(`you need to configure your RENDERING_REPLICATE_API_MODEL in order to use the REPLICATE rendering engine`)
       }
 
-      // const replicate = new Replicate({ auth: replicateToken })
-
-      // console.log("Calling replicate..")
-      // const prediction = await replicate.predictions.get(renderId)
-      // console.log("Prediction:", prediction)
-
-       // console.log(`calling GET https://api.replicate.com/v1/predictions/${renderId}`)
        const res = await fetch(`https://api.replicate.com/v1/predictions/${renderId}`, {
         method: "GET",
         headers: {
-          // Accept: "application/json",
-          // "Content-Type": "application/json",
           Authorization: `Token ${replicateToken}`,
         },
         cache: 'no-store',
@@ -246,10 +229,6 @@ export async function getRender(renderId: string) {
       // next: { revalidate: 1 }
       })
     
-      // console.log("res:", res)
-      // The return value is *not* serialized
-      // You can return Date, Map, Set, etc.
-      
       // Recommendation: handle errors
       if (res.status !== 200) {
         // This will activate the closest `error.js` Error Boundary
@@ -257,7 +236,6 @@ export async function getRender(renderId: string) {
       }
       
       const response = (await res.json()) as any
-      // console.log("response:", response)
 
       return  {
         renderId,
@@ -275,36 +253,26 @@ export async function getRender(renderId: string) {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.VIDEOCHAIN_API_TOKEN}`,
+          Authorization: `Bearer ${videochainToken}`,
         },
         cache: 'no-store',
       // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
       // next: { revalidate: 1 }
       })
-
-      // console.log("res:", res)
-      // The return value is *not* serialized
-      // You can return Date, Map, Set, etc.
       
-      // Recommendation: handle errors
       if (res.status !== 200) {
-        // This will activate the closest `error.js` Error Boundary
         throw new Error('Failed to fetch data')
       }
       
       const response = (await res.json()) as RenderedScene
-      // console.log("response:", response)
       return response
     }
   } catch (err) {
     console.error(err)
     defaulResult.status = "error"
     defaulResult.error = `${err}`
-    // Gorgon.clear(cacheKey)
     return defaulResult
   }
-
-  // }, cacheDurationInSec * 1000)
 }
 
 export async function upscaleImage(image: string): Promise<{
@@ -312,8 +280,9 @@ export async function upscaleImage(image: string): Promise<{
   error: string
 }> {
   if (!image) {
-    console.error(`cannot call the rendering API without an image, aborting..`)
-    throw new Error(`cannot call the rendering API without an image, aborting..`)
+    const error = `cannot call the rendering API without an image, aborting..`
+    console.error(error)
+    throw new Error(error)
   }
 
   let defaulResult = {
@@ -328,7 +297,7 @@ export async function upscaleImage(image: string): Promise<{
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.VIDEOCHAIN_API_TOKEN}`,
+        Authorization: `Bearer ${videochainToken}`,
       },
       cache: 'no-store',
       body: JSON.stringify({ image, factor: 3 })
@@ -336,13 +305,7 @@ export async function upscaleImage(image: string): Promise<{
     // next: { revalidate: 1 }
     })
 
-    // console.log("res:", res)
-    // The return value is *not* serialized
-    // You can return Date, Map, Set, etc.
-    
-    // Recommendation: handle errors
     if (res.status !== 200) {
-      // This will activate the closest `error.js` Error Boundary
       throw new Error('Failed to fetch data')
     }
     
@@ -350,13 +313,9 @@ export async function upscaleImage(image: string): Promise<{
       assetUrl: string
       error: string
     }
-    // console.log("response:", response)
     return response
   } catch (err) {
     console.error(err)
-    // Gorgon.clear(cacheKey)
     return defaulResult
   }
-
-  // }, cacheDurationInSec * 1000)
 }

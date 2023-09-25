@@ -38,6 +38,7 @@
     "cmdk": "^0.2.0",
     "cookies-next": "^2.1.2",
     "date-fns": "^2.30.0",
+    "encoding": "^0.1.13",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.10",
     "html2canvas": "^1.4.1",

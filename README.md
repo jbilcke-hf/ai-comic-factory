@@ -20,13 +20,14 @@ it requires various components to run for the frontend, backend, LLM, SDXL etc.
 If you try to duplicate the project, open the `.env` you will see it requires some variables.
 
 Provider config:
-- `LLM_ENGINE`: can be either "INFERENCE_API" or "INFERENCE_ENDPOINT"
-- `RENDERING_ENGINE`: can only be "VIDEOCHAIN" or "REPLICATE" for now, unless you code your custom solution
+- `LLM_ENGINE`: can be one of: "INFERENCE_API", "INFERENCE_ENDPOINT", "OPENAI"
+- `RENDERING_ENGINE`: can be one of: "INFERENCE_API", "INFERENCE_ENDPOINT", "REPLICATE", "VIDEOCHAIN" for now, unless you code your custom solution
 
 Auth config:
-- `HF_API_TOKEN`: necessary if you decide to use an inference api model or a custom inference endpoint
-- `VIDEOCHAIN_API_TOKEN`: secret token to access the VideoChain API server
-- `REPLICATE_API_TOKEN`: in case you want to use Replicate.com
+- `AUTH_HF_API_TOKEN`: only if you decide to use OpenAI for the LLM engine necessary if you decide to use an inference api model or a custom inference endpoint
+- `AUTH_OPENAI_TOKEN`: only if you decide to use OpenAI for the LLM engine
+- `AITH_VIDEOCHAIN_API_TOKEN`: secret token to access the VideoChain API server
+- `AUTH_REPLICATE_API_TOKEN`: in case you want to use Replicate.com
 
 Rendering config:
 - `RENDERING_HF_INFERENCE_ENDPOINT_URL`: necessary if you decide to use a custom inference endpoint
