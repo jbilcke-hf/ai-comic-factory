@@ -78,36 +78,41 @@ export function Panel({
     setTimeout(() => {
       startTransition(async () => {
 
-      // console.log(`Loading panel ${panel}..`)
-    
-      let newRendered: RenderedScene
-      try {
-        newRendered = await newRender({ prompt, width, height })
-      } catch (err) {
-        // "Failed to load the panel! Don't worry, we are retrying..")
-        newRendered = await newRender({ prompt, width, height })
-      }
+        // console.log(`Loading panel ${panel}..`)
+      
+        let newRendered: RenderedScene
+        try {
+          newRendered = await newRender({ prompt, width, height })
+        } catch (err) {
+          // "Failed to load the panel! Don't worry, we are retrying..")
+          newRendered = await newRender({ prompt, width, height })
+        }
 
-      if (newRendered) {
-        // console.log("newRendered:", newRendered)
-        setRendered(panelId, newRendered)
+        if (newRendered) {
+          // console.log("newRendered:", newRendered)
+          setRendered(panelId, newRendered)
 
-        // but we are still loading!
-      } else {
-        setRendered(panelId, {
-          renderId: "",
-          status: "pending",
-          assetUrl: "",
-          alt: "",
-          maskUrl: "",
-          error: "",
-          segments: []
-        })
-        setGeneratingImages(panelId, false)
-        return
-      }
-    })
-  }, enableRateLimiter ? 2000 * panel : 0)
+          if (newRendered.status === "completed") {
+            setGeneratingImages(panelId, false)
+            addToUpscaleQueue(panelId, newRendered)
+          }
+
+          // but we are still loading!
+        } else {
+          setRendered(panelId, {
+            renderId: "",
+            status: "pending",
+            assetUrl: "",
+            alt: "",
+            maskUrl: "",
+            error: "",
+            segments: []
+          })
+          setGeneratingImages(panelId, false)
+          return
+        }
+      })
+    }, enableRateLimiter ? 2000 * panel : 0)
   }, [prompt, width, height])
 
 

@@ -50,7 +50,7 @@ export function TopMenu() {
   const isGeneratingStory = useStore(state => state.isGeneratingStory)
   const atLeastOnePanelIsBusy = useStore(state => state.atLeastOnePanelIsBusy)
   const isBusy = isGeneratingStory || atLeastOnePanelIsBusy
-
+  
   const searchParams = useSearchParams()
 
   const requestedPreset = (searchParams.get('preset') as PresetName) || defaultPreset
