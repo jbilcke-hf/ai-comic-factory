@@ -59,7 +59,9 @@ export function Panel({
 
   const timeoutRef = useRef<any>(null)
 
-  const delay = 3000 + (1000 * panel)
+  const enableRateLimiter = `${process.env.NEXT_PUBLIC_ENABLE_RATE_LIMITER}`  === "true"
+
+  const delay = enableRateLimiter ? (3000 + (1000 * panel)) : 1000
 
   // since this run in its own loop, we need to use references everywhere
   // but perhaps this could be refactored
@@ -105,7 +107,7 @@ export function Panel({
         return
       }
     })
-  }, 2000 * panel)
+  }, enableRateLimiter ? 2000 * panel : 0)
   }, [prompt, width, height])
 
 
