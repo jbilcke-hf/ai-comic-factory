@@ -99,6 +99,13 @@ export async function newRender({
         ? huggingFaceInferenceEndpointUrl
         : `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiModel}`
 
+      console.log(`calling ${url} with params: `, {
+        num_inference_steps: 25,
+        guidance_scale: 8,
+        width,
+        height,
+      })
+
       const res = await fetch(url, {
         method: "POST",
         headers: {
@@ -132,11 +139,13 @@ export async function newRender({
         // This will activate the closest `error.js` Error Boundary
         throw new Error('Failed to fetch data')
       }
-  
-      // the result is a JSON-encoded string
-      const response = await res.json() as string
-      const assetUrl = `data:image/png;base64,${response}`
 
+      const blob = await res.arrayBuffer()
+
+      const contentType = res.headers.get('content-type')
+
+      const assetUrl = `data:${contentType};base64,${Buffer.from(blob).toString('base64')}`
+      
       return {
         renderId: uuidv4(),
         status: "completed",
