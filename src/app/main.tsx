@@ -38,6 +38,8 @@ export default function Main() {
       setWaitABitMore(false)
       setGeneratingStory(true)
 
+      const enableRateLimiter = `${process.env.NEXT_PUBLIC_ENABLE_RATE_LIMITER}`  === "true"
+
       try {
 
         const llmResponse = await getStory({ preset, prompt })
@@ -72,7 +74,7 @@ export default function Main() {
         setTimeout(() => {
           setGeneratingStory(false)
           setWaitABitMore(false)
-        }, 12000)
+        }, enableRateLimiter ? 12000 : 0)
       }
     })
   }, [prompt, preset?.label]) // important: we need to react to preset changes too
