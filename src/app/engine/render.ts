@@ -136,6 +136,8 @@ export async function newRender({
   
       // Recommendation: handle errors
       if (res.status !== 200) {
+        const content = await res.text()
+        console.error(content)
         // This will activate the closest `error.js` Error Boundary
         throw new Error('Failed to fetch data')
       }

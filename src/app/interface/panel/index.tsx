@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState, useTransition } from "react"
-// import AutoSizer from "react-virtualized-auto-sizer"
+import { RxReload } from "react-icons/rx"
 
 import { RenderedScene } from "@/types"
 
@@ -11,9 +11,6 @@ import { useStore } from "@/app/store"
 import { cn } from "@/lib/utils"
 import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
 import { Progress } from "@/app/interface/progress"
-
-// import { see } from "@/app/engine/caption"
-// import { replaceTextInSpeechBubbles } from "@/lib/replaceTextInSpeechBubbles"
 
 export function Panel({
   panel,
@@ -28,13 +25,13 @@ export function Panel({
  }) {
   const panelId = `${panel}`
 
+  const [mouseOver, setMouseOver] = useState(false)
   const ref = useRef<HTMLImageElement>(null)
   const font = useStore(state => state.font)
   const preset = useStore(state => state.preset)
 
   const setGeneratingImages = useStore(state => state.setGeneratingImages)
 
-  const [imageWithText, setImageWithText] = useState("")
   const panels = useStore(state => state.panels)
   const prompt = panels[panel] || ""
 
@@ -63,9 +60,8 @@ export function Panel({
 
   const delay = enableRateLimiter ? (3000 + (1000 * panel)) : 1000
 
-  // since this run in its own loop, we need to use references everywhere
-  // but perhaps this could be refactored
-  useEffect(() => {
+
+  const startImageGeneration = ({ prompt, width, height }: { prompt: string, width: number, height: number}) => {
     // console.log("Panel prompt: "+ prompt)
     if (!prompt?.length) { return }
 
@@ -113,6 +109,12 @@ export function Panel({
         }
       })
     }, enableRateLimiter ? 2000 * panel : 0)
+  }
+
+  // since this run in its own loop, we need to use references everywhere
+  // but perhaps this could be refactored
+  useEffect(() => {
+    startImageGeneration({ prompt, width, height })
   }, [prompt, width, height])
 
 
@@ -215,27 +217,10 @@ export function Panel({
     `print:border-[1.5px] print:shadow-none`,
   )
 
-
-  /*
-  text detection (doesn't work)
-  useEffect(() => {
-    const fn = async () => {
-      if (!rendered.assetUrl || !ref.current) {
-        return
-      }
-
-      const result = await replaceTextInSpeechBubbles(
-        rendered.assetUrl,
-        "Lorem ipsum dolor sit amet, dolor ipsum. Sit amet? Ipsum! Dolor!!!"
-      )
-      if (result) {
-        setImageWithText(result)
-      }
-    }
-    fn()
-
-  }, [rendered.assetUrl, ref.current])
-  */
+  const handleReload = () => {
+    console.log(`Asked to reload panel ${panelId}`)
+    startImageGeneration({ prompt, width, height })
+  }
 
   if (prompt && !rendered.assetUrl) {
     return (
@@ -254,9 +239,11 @@ export function Panel({
       frameClassName,
       { "grayscale": preset.color === "grayscale" },
       className
-    )}>
+    )}
+    onMouseEnter={() => setMouseOver(true)}
+    onMouseLeave={() => setMouseOver(false)}
+    >
         <div className={cn(
-        ``,
         `bg-stone-50`,
         `border-stone-800`,
         `transition-all duration-200 ease-in-out`,
@@ -296,7 +283,7 @@ export function Panel({
         {rendered.assetUrl &&
         <img
           ref={ref}
-          src={imageWithText || rendered.assetUrl}
+          src={rendered.assetUrl}
           width={width}
           height={height}
           alt={rendered.alt}
@@ -305,6 +292,26 @@ export function Panel({
             // showCaptions ? `-mt-11` : ''
             )}
         />}
+        {process.env.NEXT_PUBLIC_CAN_REDRAW === "true" ? <div
+        className={cn(`relative -mt-14 ml-4`,)}>
+          <div className="flex flex-row">
+            <div
+              onClick={rendered.status === "completed" ? handleReload : undefined}
+              className={cn(
+                `bg-stone-100 rounded-lg`,
+                `flex flex-row space-x-2 items-center`,
+                `py-2 px-3 cursor-pointer`,
+                `transition-all duration-200 ease-in-out`,
+                rendered.status === "completed" ? "opacity-95" : "opacity-50",
+                mouseOver && rendered.assetUrl ? `scale-95 hover:scale-100 hover:opacity-100`: `scale-0`
+              )}>
+              <RxReload
+                className="w-5 h-5"
+              />
+              <span className="text-base">Redraw</span>
+            </div>
+          </div>
+        </div> : null}
     </div>
   )
 }
