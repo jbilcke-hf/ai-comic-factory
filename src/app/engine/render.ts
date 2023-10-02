@@ -125,8 +125,8 @@ export async function newRender({
             guidance_scale: 8,
             width,
             height,
-
-          }
+          },
+          use_cache: false,
         }),
         cache: "no-store",
         // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
