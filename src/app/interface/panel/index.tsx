@@ -292,7 +292,10 @@ export function Panel({
             // showCaptions ? `-mt-11` : ''
             )}
         />}
-        {process.env.NEXT_PUBLIC_CAN_REDRAW === "true" ? <div
+        {
+          // there is an issue, this env check doesn't work..
+        // process.env.NEXT_PUBLIC_CAN_REDRAW === "true" ?
+         <div
         className={cn(`relative -mt-14 ml-4`,)}>
           <div className="flex flex-row">
             <div
@@ -311,7 +314,9 @@ export function Panel({
               <span className="text-base">Redraw</span>
             </div>
           </div>
-        </div> : null}
+        </div> 
+        //: null
+      }
     </div>
   )
 }

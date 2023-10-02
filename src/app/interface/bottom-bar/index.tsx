@@ -124,14 +124,19 @@ ${uploadUrl
       `scale-[0.9]`
     )}>
       <div>
-        {process.env.NEXT_PUBLIC_CAN_UPSCALE === "true" ? <Button
+        {
+       // there is an issue, this env check doesn't work..
+        // process.env.NEXT_PUBLIC_CAN_UPSCALE === "true" ?
+        <Button
           onClick={handleUpscale}
           disabled={!prompt?.length || remainingImages > 0 || isUpscaling || !Object.values(upscaleQueue).length}
         >
           {isUpscaling
             ? `${allStatus.length - Object.values(upscaleQueue).length}/${allStatus.length} ⌛`
             : "Upscale"}
-        </Button> : null}
+        </Button>
+        // : null
+      }
       </div>
         <div>
           <Button
@@ -155,7 +160,10 @@ ${uploadUrl
            </Button>
         </div>
         <div>
-          {process.env.NEXT_PUBLIC_ENABLE_COMMUNITY_SHARING === "true" ? <Button
+          {
+          // there is an issue, this env check doesn't work..
+          // process.env.NEXT_PUBLIC_ENABLE_COMMUNITY_SHARING === "true" ? 
+          <Button
             onClick={handleShare}
             disabled={!prompt?.length}
             className="space-x-2"
@@ -165,7 +173,9 @@ ${uploadUrl
               <span className="hidden md:inline">Share to community</span>
               <span className="inline md:hidden">Share</span>
             </div>
-          </Button> : null}
+          </Button> 
+          //: null
+        }
         </div>
       </div>
     </div>
