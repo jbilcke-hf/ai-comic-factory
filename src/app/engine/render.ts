@@ -66,7 +66,18 @@ export async function newRender({
       const seed = generateSeed()
       const prediction = await replicate.predictions.create({
         version: replicateModelVersion,
-        input: { prompt, seed }
+        input: {
+          prompt: [
+            "beautiful",
+            "intricate details",
+            prompt,
+            "award winning",
+            "high resolution"
+          ].join(", "),
+          width,
+          height,
+          seed
+        }
       })
       
       // console.log("prediction:", prediction)
@@ -99,12 +110,14 @@ export async function newRender({
         ? huggingFaceInferenceEndpointUrl
         : `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiModel}`
 
+      /*
       console.log(`calling ${url} with params: `, {
         num_inference_steps: 25,
         guidance_scale: 8,
         width,
         height,
       })
+      */
 
       const res = await fetch(url, {
         method: "POST",
