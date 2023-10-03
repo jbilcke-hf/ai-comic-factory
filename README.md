@@ -6,6 +6,7 @@ colorTo: yellow
 sdk: docker
 pinned: true
 app_port: 3000
+disable_embedding: true
 ---
 
 # AI Comic Factory
