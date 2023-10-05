@@ -6,6 +6,7 @@ colorTo: yellow
 sdk: docker
 pinned: true
 app_port: 3000
+disable_embedding: true
 ---
 
 # AI Comic Factory
@@ -17,17 +18,29 @@ First, I would like to highlight that everything is open-source (see [here](http
 However the project isn't a monolithic Space that can be duplicated and ran immediately:
 it requires various components to run for the frontend, backend, LLM, SDXL etc.
 
-If you try to duplicate the project and open the `.env` you will see it requires some variables:
+If you try to duplicate the project, open the `.env` you will see it requires some variables.
 
-- `LLM_ENGINE`: can be either "INFERENCE_API" or "INFERENCE_ENDPOINT"
-- `HF_API_TOKEN`: necessary if you decide to use an inference api model or a custom inference endpoint
-- `HF_INFERENCE_ENDPOINT_URL`: necessary if you decide to use a custom inference endpoint
-- `RENDERING_ENGINE`: can only be "VIDEOCHAIN" or "REPLICATE" for now, unless you code your custom solution
-- `VIDEOCHAIN_API_URL`: url to the VideoChain API server
-- `VIDEOCHAIN_API_TOKEN`: secret token to access the VideoChain API server
-- `REPLICATE_API_TOKEN`: in case you want to use Replicate.com
-- `REPLICATE_API_MODEL`: optional, defaults to "stabilityai/sdxl"
-- `REPLICATE_API_MODEL_VERSION`: optional, in case you want to change the version
+Provider config:
+- `LLM_ENGINE`: can be one of: "INFERENCE_API", "INFERENCE_ENDPOINT", "OPENAI"
+- `RENDERING_ENGINE`: can be one of: "INFERENCE_API", "INFERENCE_ENDPOINT", "REPLICATE", "VIDEOCHAIN" for now, unless you code your custom solution
+
+Auth config:
+- `AUTH_HF_API_TOKEN`: only if you decide to use OpenAI for the LLM engine necessary if you decide to use an inference api model or a custom inference endpoint
+- `AUTH_OPENAI_TOKEN`: only if you decide to use OpenAI for the LLM engine
+- `AITH_VIDEOCHAIN_API_TOKEN`: secret token to access the VideoChain API server
+- `AUTH_REPLICATE_API_TOKEN`: in case you want to use Replicate.com
+
+Rendering config:
+- `RENDERING_HF_INFERENCE_ENDPOINT_URL`: necessary if you decide to use a custom inference endpoint
+- `RENDERING_REPLICATE_API_MODEL_VERSION`: url to the VideoChain API server
+- `RENDERING_HF_INFERENCE_ENDPOINT_URL`: optional, default to nothing
+- `RENDERING_HF_INFERENCE_API_MODEL`: optional, defaults to "stabilityai/stable-diffusion-xl-base-1.0"
+- `RENDERING_REPLICATE_API_MODEL`: optional, defaults to "stabilityai/sdxl"
+- `RENDERING_REPLICATE_API_MODEL_VERSION`: optional, in case you want to change the version
+
+Language model config:
+- `LLM_HF_INFERENCE_ENDPOINT_URL`: "https://llama-v2-70b-chat.ngrok.io"
+- `LLM_HF_INFERENCE_API_MODEL`: "codellama/CodeLlama-7b-hf"
 
 In addition, there are some community sharing variables that you can just ignore.
 Those variables are not required to run the AI Comic Factory on your own website or computer

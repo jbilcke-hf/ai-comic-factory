@@ -101,11 +101,13 @@ ${uploadUrl
       `print:hidden`,
       `fixed bottom-2 md:bottom-4 left-2 right-0 md:left-3 md:right-1`,
       `flex flex-row`,
-      `justify-between`
+      `justify-between`,
+      `pointer-events-none`
     )}>
       <div className={cn(
         `flex flex-row`,
         `items-end`,
+        `pointer-events-auto`,
         `animation-all duration-300 ease-in-out`,
         isGeneratingStory ? `scale-0 opacity-0` : ``,
         `space-x-3`,
@@ -115,12 +117,16 @@ ${uploadUrl
       </div>
       <div className={cn(
       `flex flex-row`,
+      `pointer-events-auto`,
       `animation-all duration-300 ease-in-out`,
       isGeneratingStory ? `scale-0 opacity-0` : ``,
       `space-x-3`,
       `scale-[0.9]`
     )}>
       <div>
+        {
+       // there is an issue, this env check doesn't work..
+        // process.env.NEXT_PUBLIC_CAN_UPSCALE === "true" ?
         <Button
           onClick={handleUpscale}
           disabled={!prompt?.length || remainingImages > 0 || isUpscaling || !Object.values(upscaleQueue).length}
@@ -129,6 +135,8 @@ ${uploadUrl
             ? `${allStatus.length - Object.values(upscaleQueue).length}/${allStatus.length} ⌛`
             : "Upscale"}
         </Button>
+        // : null
+      }
       </div>
         <div>
           <Button
@@ -152,6 +160,9 @@ ${uploadUrl
            </Button>
         </div>
         <div>
+          {
+          // there is an issue, this env check doesn't work..
+          // process.env.NEXT_PUBLIC_ENABLE_COMMUNITY_SHARING === "true" ? 
           <Button
             onClick={handleShare}
             disabled={!prompt?.length}
@@ -162,7 +173,9 @@ ${uploadUrl
               <span className="hidden md:inline">Share to community</span>
               <span className="inline md:hidden">Share</span>
             </div>
-          </Button>
+          </Button> 
+          //: null
+        }
         </div>
       </div>
     </div>

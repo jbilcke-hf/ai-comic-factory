@@ -91,6 +91,8 @@ export type RenderingEngine =
   | "VIDEOCHAIN"
   | "OPENAI"
   | "REPLICATE"
+  | "INFERENCE_API"
+  | "INFERENCE_ENDPOINT"
 
 export type PostVisibility =
   | "featured" // featured by admins
