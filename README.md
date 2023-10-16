@@ -102,10 +102,13 @@ To activate it, create a `.env.local` configuration file:
 
 ```bash
 LLM_ENGINE="OPENAI"
+
 # default openai api base url is: https://api.openai.com/v1
-OPENAI_API_BASE_URL="Your OpenAI API Base URL"
-OPENAI_API_KEY="Your OpenAI API Key"
-OPENAI_API_MODEL="gpt-3.5-turbo"
+LLM_OPENAI_API_BASE_URL="Your OpenAI API Base URL"
+
+LLM_OPENAI_API_MODEL="gpt-3.5-turbo"
+
+AUTH_OPENAI_API_KEY="Your OpenAI API Key"
 ```
 
 ### Option 4: Fork and modify the code to use a different LLM system
@@ -140,11 +143,11 @@ To use Replicate, create a `.env.local` configuration file:
 ```bash
 RENDERING_ENGINE="REPLICATE"
 
-REPLICATE_API_TOKEN="Your Replicate token"
+RENDERING_REPLICATE_API_MODEL="stabilityai/sdxl"
 
-REPLICATE_API_MODEL="stabilityai/sdxl"
+RENDERING_REPLICATE_API_MODEL_VERSION="da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf"
 
-REPLICATE_API_MODEL_VERSION="da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf"
+AUTH_REPLICATE_API_TOKEN="Your Replicate token"
 ```
 
 ### Option 3: Use another SDXL API

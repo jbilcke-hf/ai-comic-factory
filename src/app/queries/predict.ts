@@ -1,9 +1,15 @@
 "use server"
 
 import { LLMEngine } from "@/types"
-import { predictWithHuggingFace } from "./predictWithHuggingFace"
-import { predictWithOpenAI } from "./predictWithOpenAI"
 
 const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
 
-export const predict = llmEngine === "OPENAI" ? predictWithOpenAI : predictWithHuggingFace
+export const predict = async () => {
+    if (llmEngine === "OPENAI")  {
+        const module = await import("./predictWithOpenAI")  
+        return module.predictWithOpenAI
+    } else {
+        const module = await import("./predictWithHuggingFace")  
+        return module.predictWithHuggingFace
+    }
+} 
