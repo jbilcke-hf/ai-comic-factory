@@ -6,10 +6,8 @@ const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
 
 export const predict = async () => {
     if (llmEngine === "OPENAI")  {
-        const module = await import("./predictWithOpenAI")  
-        return module.predictWithOpenAI
+        return (await import("./predictWithOpenAI")).predictWithOpenAI
     } else {
-        const module = await import("./predictWithHuggingFace")  
-        return module.predictWithHuggingFace
+        return (await import("./predictWithHuggingFace")).predictWithHuggingFace
     }
 } 
