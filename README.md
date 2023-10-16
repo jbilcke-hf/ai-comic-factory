@@ -11,6 +11,8 @@ disable_embedding: true
 
 # AI Comic Factory
 
+*(note: the website "aicomicfactory.com" is not affiliated with the AI Comic Factory project, nor it is created or maintained by the AI Comic Factory team. If you see their website has an issue, please contact them directly)*
+
 ## Running the project at home
 
 First, I would like to highlight that everything is open-source (see [here](https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/tree/main), [here](https://huggingface.co/spaces/jbilcke-hf/VideoChain-API/tree/main), [here](https://huggingface.co/spaces/hysts/SD-XL/tree/main), [here](https://github.com/huggingface/text-generation-inference)).
