@@ -12,7 +12,8 @@ const renderingEngine = `${process.env.RENDERING_ENGINE || ""}` as RenderingEngi
 // TODO: we should split Hugging Face and Replicate backends into separate files
 const huggingFaceToken = `${process.env.AUTH_HF_API_TOKEN || ""}`
 const huggingFaceInferenceEndpointUrl = `${process.env.RENDERING_HF_INFERENCE_ENDPOINT_URL || ""}`
-const huggingFaceInferenceApiModel = `${process.env.RENDERING_HF_INFERENCE_API_MODEL || ""}`
+const huggingFaceInferenceApiBaseModel = `${process.env.RENDERING_HF_INFERENCE_API_BASE_MODEL || ""}`
+const huggingFaceInferenceApiRefinerModel = `${process.env.RENDERING_HF_INFERENCE_API_REFINER_MODEL || ""}`
 
 const replicateToken = `${process.env.AUTH_REPLICATE_API_TOKEN || ""}`
 const replicateModel = `${process.env.RENDERING_REPLICATE_API_MODEL || ""}`
@@ -102,13 +103,16 @@ export async function newRender({
       if (renderingEngine === "INFERENCE_ENDPOINT" && !huggingFaceInferenceEndpointUrl) {
         throw new Error(`you need to configure your RENDERING_HF_INFERENCE_ENDPOINT_URL in order to use the INFERENCE_ENDPOINT rendering engine`)
       }
-      if (renderingEngine === "INFERENCE_API" && !huggingFaceInferenceApiModel) {
-        throw new Error(`you need to configure your RENDERING_HF_INFERENCE_API_MODEL in order to use the INFERENCE_API rendering engine`)
+      if (renderingEngine === "INFERENCE_API" && !huggingFaceInferenceApiBaseModel) {
+        throw new Error(`you need to configure your RENDERING_HF_INFERENCE_API_BASE_MODEL in order to use the INFERENCE_API rendering engine`)
+      }
+      if (renderingEngine === "INFERENCE_API" && !huggingFaceInferenceApiRefinerModel) {
+        throw new Error(`you need to configure your RENDERING_HF_INFERENCE_API_REFINER_MODEL in order to use the INFERENCE_API rendering engine`)
       }
 
-      const url = renderingEngine === "INFERENCE_ENDPOINT"
+      const baseModelUrl = renderingEngine === "INFERENCE_ENDPOINT"
         ? huggingFaceInferenceEndpointUrl
-        : `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiModel}`
+        : `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiBaseModel}`
 
       /*
       console.log(`calling ${url} with params: `, {
@@ -119,20 +123,22 @@ export async function newRender({
       })
       */
 
-      const res = await fetch(url, {
+      const positivePrompt = [
+        "beautiful",
+        "intricate details",
+        prompt,
+        "award winning",
+        "high resolution"
+      ].join(", ")
+
+      const res = await fetch(baseModelUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${huggingFaceToken}`,
         },
         body: JSON.stringify({
-          inputs: [
-            "beautiful",
-            "intricate details",
-            prompt,
-            "award winning",
-            "high resolution"
-          ].join(", "),
+          inputs: positivePrompt,
           parameters: {
             num_inference_steps: 25,
             guidance_scale: 8,
@@ -159,8 +165,56 @@ export async function newRender({
 
       const contentType = res.headers.get('content-type')
 
-      const assetUrl = `data:${contentType};base64,${Buffer.from(blob).toString('base64')}`
+      let assetUrl = `data:${contentType};base64,${Buffer.from(blob).toString('base64')}`
       
+      // note: there is no "refiner" step yet for custom inference endpoint
+      // you probably don't need it anyway, as you probably want to deploy an all-in-one model instead for perf reasons
+      if (renderingEngine === "INFERENCE_API") {
+        try {
+          const refinerModelUrl = `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiRefinerModel}`
+
+          const res = await fetch(refinerModelUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${huggingFaceToken}`,
+            },
+            body: JSON.stringify({
+              data: assetUrl,
+              parameters: {
+                prompt: positivePrompt,
+                num_inference_steps: 25,
+                guidance_scale: 8,
+                width,
+                height,
+              },
+              use_cache: false,
+            }),
+            cache: "no-store",
+            // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
+            // next: { revalidate: 1 }
+          })
+      
+      
+          // Recommendation: handle errors
+          if (res.status !== 200) {
+            const content = await res.text()
+            console.error(content)
+            // This will activate the closest `error.js` Error Boundary
+            throw new Error('Failed to fetch data')
+          }
+
+          const blob = await res.arrayBuffer()
+
+          const contentType = res.headers.get('content-type')
+
+          assetUrl = `data:${contentType};base64,${Buffer.from(blob).toString('base64')}`
+          
+        } catch (err) {
+          console.log(`Refiner step failed, but this is not a blocker. Error details: ${err}`)
+        }
+      }
+
       return {
         renderId: uuidv4(),
         status: "completed",
