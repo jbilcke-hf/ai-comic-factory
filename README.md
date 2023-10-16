@@ -11,6 +11,8 @@ disable_embedding: true
 
 # AI Comic Factory
 
+*(note: the website "aicomicfactory.com" is not affiliated with the AI Comic Factory project, nor it is created or maintained by the AI Comic Factory team. If you see their website has an issue, please contact them directly)*
+
 ## Running the project at home
 
 First, I would like to highlight that everything is open-source (see [here](https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/tree/main), [here](https://huggingface.co/spaces/jbilcke-hf/VideoChain-API/tree/main), [here](https://huggingface.co/spaces/hysts/SD-XL/tree/main), [here](https://github.com/huggingface/text-generation-inference)).
@@ -102,10 +104,13 @@ To activate it, create a `.env.local` configuration file:
 
 ```bash
 LLM_ENGINE="OPENAI"
+
 # default openai api base url is: https://api.openai.com/v1
-OPENAI_API_BASE_URL="Your OpenAI API Base URL"
-OPENAI_API_KEY="Your OpenAI API Key"
-OPENAI_API_MODEL="gpt-3.5-turbo"
+LLM_OPENAI_API_BASE_URL="Your OpenAI API Base URL"
+
+LLM_OPENAI_API_MODEL="gpt-3.5-turbo"
+
+AUTH_OPENAI_API_KEY="Your OpenAI API Key"
 ```
 
 ### Option 4: Fork and modify the code to use a different LLM system
@@ -140,11 +145,11 @@ To use Replicate, create a `.env.local` configuration file:
 ```bash
 RENDERING_ENGINE="REPLICATE"
 
-REPLICATE_API_TOKEN="Your Replicate token"
+RENDERING_REPLICATE_API_MODEL="stabilityai/sdxl"
 
-REPLICATE_API_MODEL="stabilityai/sdxl"
+RENDERING_REPLICATE_API_MODEL_VERSION="da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf"
 
-REPLICATE_API_MODEL_VERSION="da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf"
+AUTH_REPLICATE_API_TOKEN="Your Replicate token"
 ```
 
 ### Option 3: Use another SDXL API
