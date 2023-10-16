@@ -3,45 +3,45 @@
 import { HfInference, HfInferenceEndpoint } from "@huggingface/inference"
 import { LLMEngine } from "@/types"
 
-const hf = new HfInference(process.env.AUTH_HF_API_TOKEN)
+export async function predict(inputs: string): Promise<string> {
+  const hf = new HfInference(process.env.AUTH_HF_API_TOKEN)
 
-const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
-const inferenceEndpoint = `${process.env.LLM_HF_INFERENCE_ENDPOINT_URL || ""}`
-const inferenceModel = `${process.env.LLM_HF_INFERENCE_API_MODEL || ""}`
+  const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
+  const inferenceEndpoint = `${process.env.LLM_HF_INFERENCE_ENDPOINT_URL || ""}`
+  const inferenceModel = `${process.env.LLM_HF_INFERENCE_API_MODEL || ""}`
 
-let hfie: HfInferenceEndpoint = hf
+  let hfie: HfInferenceEndpoint = hf
 
-switch (llmEngine) {
-  case "INFERENCE_ENDPOINT":
-    if (inferenceEndpoint) {
-      console.log("Using a custom HF Inference Endpoint")
-      hfie = hf.endpoint(inferenceEndpoint)
-    } else {
-      const error = "No Inference Endpoint URL defined"
+  switch (llmEngine) {
+    case "INFERENCE_ENDPOINT":
+      if (inferenceEndpoint) {
+        console.log("Using a custom HF Inference Endpoint")
+        hfie = hf.endpoint(inferenceEndpoint)
+      } else {
+        const error = "No Inference Endpoint URL defined"
+        console.error(error)
+        throw new Error(error)
+      }
+      break;
+    
+    case "INFERENCE_API":
+      if (inferenceModel) {
+        console.log("Using an HF Inference API Model")
+      } else {
+        const error = "No Inference API model defined"
+        console.error(error)
+        throw new Error(error)
+      }
+      break;
+
+    default:
+      const error = "Please check your Hugging Face Inference API or Inference Endpoint settings"
       console.error(error)
       throw new Error(error)
-    }
-    break;
-  
-  case "INFERENCE_API":
-    if (inferenceModel) {
-      console.log("Using an HF Inference API Model")
-    } else {
-      const error = "No Inference API model defined"
-      console.error(error)
-      throw new Error(error)
-    }
-    break;
+  }
+    
+  const api = llmEngine === "INFERENCE_ENDPOINT" ? hfie : hf
 
-  default:
-    const error = "Please check your Hugging Face Inference API or Inference Endpoint settings"
-    console.error(error)
-    throw new Error(error)
-}
-  
-const api = llmEngine === "INFERENCE_ENDPOINT" ? hfie : hf
-
-export async function predictWithHuggingFace(inputs: string) {
   let instructions = ""
   try {
     for await (const output of api.textGenerationStream({

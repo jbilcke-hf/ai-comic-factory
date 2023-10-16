@@ -3,9 +3,8 @@
 import type { ChatCompletionMessage } from "openai/resources/chat"
 import OpenAI from "openai"
 
-const openaiApiKey = `${process.env.AUTH_OPENAI_API_KEY || ""}`
-
-export async function predictWithOpenAI(inputs: string) {
+export async function predict(inputs: string): Promise<string> {
+  const openaiApiKey = `${process.env.AUTH_OPENAI_API_KEY || ""}`
   const openaiApiBaseUrl = `${process.env.LLM_OPENAI_API_BASE_URL || "https://api.openai.com/v1"}`
   const openaiApiModel = `${process.env.LLM_OPENAI_API_MODEL || "gpt-3.5-turbo"}`
   
@@ -26,8 +25,9 @@ export async function predictWithOpenAI(inputs: string) {
       temperature: 0.8
     })
 
-    return res.choices[0].message.content
+    return res.choices[0].message.content || ""
   } catch (err) {
     console.error(`error during generation: ${err}`)
+    return ""
   }
 }
