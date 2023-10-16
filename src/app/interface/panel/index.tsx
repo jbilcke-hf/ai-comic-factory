@@ -58,7 +58,7 @@ export function Panel({
 
   const enableRateLimiter = `${process.env.NEXT_PUBLIC_ENABLE_RATE_LIMITER}`  === "true"
 
-  const delay = enableRateLimiter ? (3000 + (1000 * panel)) : 1000
+  const delay = enableRateLimiter ? (1000 + (500 * panel)) : 1000
 
 
   const startImageGeneration = ({ prompt, width, height }: { prompt: string, width: number, height: number}) => {
