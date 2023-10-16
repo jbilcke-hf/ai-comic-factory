@@ -252,21 +252,104 @@ export function Layout3() {
   )
 }
 
+// squares + vertical
+export function Layout4() {
+  return (
+    <Grid className="grid-cols-8 grid-rows-8">
+      <div className="bg-zinc-100 col-start-1 col-end-7 row-start-1 row-end-3">
+        <Panel
+          panel={0}
+          width={512}
+          height={1024}
+        />
+      </div>
+      <div className="bg-zinc-100 col-start-3 col-end-9 row-start-3 row-end-4">
+        <Panel
+          panel={1}
+          width={1024}
+          height={768}
+        />
+      </div>
+      <div className="bg-stone-100 col-start-2 col-end-8 row-start-4 row-end-6">
+        <Panel
+          panel={2}
+          width={768}
+          height={1024}
+        />
+      </div>
+      <div className="bg-slate-100 col-start-1 col-end-9 row-start-6 row-end-8">
+        <Panel
+          panel={3}
+          width={1024}
+          height={512}
+        />
+      </div>
+    </Grid>
+  )
+}
+
+// squares + horizontal
+export function Layout5() {
+  return (
+    <Grid className="grid-cols-4 grid-rows-4">
+      <div className="bg-zinc-100">
+        <Panel
+          panel={0}
+          width={1024}
+          height={1024}
+        />
+      </div>
+      <div className="bg-zinc-100">
+        <Panel
+          panel={1}
+          width={1024}
+          height={1024}
+        />
+      </div>
+      <div className="bg-stone-100">
+        <Panel
+          panel={2}
+          width={1024}
+          height={1024}
+        />
+      </div>
+      <div className="bg-slate-100">
+        <Panel
+          panel={3}
+          width={1024}
+          height={1024}
+        />
+      </div>
+    </Grid>
+  )
+}
+
 // export const layouts = { Layout1, Layout2_todo, Layout3_todo, Layout4_todo, Layout2, Layout3 }
 export const allLayouts = {
   random: <></>,
   Layout0,
   Layout1,
   Layout2,
-  Layout3 
+  Layout3,
+  Layout4
 }
 
 export const allLayoutLabels = {
   random: "Random layout",
-  Layout0: "Layout 0",
-  Layout1: "Layout 1",
-  Layout2: "Layout 2",
-  Layout3: "Layout 3",
+  Layout0: "Grid 0",
+  Layout1: "Grid 1",
+  Layout2: "Grid 2",
+  Layout3: "Grid 3",
+  // Layout4: "Blocks 1",
+}
+
+// note for reference: A4 (297mm x 210mm)
+export const allLayoutAspectRatios = {
+  Layout0: "aspect-[250/297]",
+  Layout1: "aspect-[250/297]",
+  Layout2: "aspect-[250/297]",
+  Layout3: "aspect-[250/297]",
+  // Layout4: "aspect-[1/3]",
 }
 
 export type LayoutName = keyof typeof allLayouts 

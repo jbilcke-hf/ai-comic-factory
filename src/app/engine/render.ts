@@ -169,6 +169,10 @@ export async function newRender({
       
       // note: there is no "refiner" step yet for custom inference endpoint
       // you probably don't need it anyway, as you probably want to deploy an all-in-one model instead for perf reasons
+      
+      // update: right now it is not possible to use it from the Inference API either:
+      // "Model type not found or pipeline not implemented"
+      /*
       if (renderingEngine === "INFERENCE_API") {
         try {
           const refinerModelUrl = `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiRefinerModel}`
@@ -213,7 +217,8 @@ export async function newRender({
         } catch (err) {
           console.log(`Refiner step failed, but this is not a blocker. Error details: ${err}`)
         }
-      }
+      } */
+
 
       return {
         renderId: uuidv4(),

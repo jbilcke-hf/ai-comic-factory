@@ -16,6 +16,9 @@ export const getStory = async ({
   prompt: string;
 }): Promise<LLMResponse> => {
 
+  // In case you need to quickly debug the RENDERING engine you can uncomment this:
+  // return mockLLMResponse
+
   const query = createLlamaPrompt([
     {
       role: "system",

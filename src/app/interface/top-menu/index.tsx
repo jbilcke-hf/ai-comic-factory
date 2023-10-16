@@ -31,7 +31,8 @@ const layoutIcons: Partial<Record<LayoutName, StaticImageData>> = {
   Layout0: layoutPreview0,
   Layout1: layoutPreview1,
   Layout2: layoutPreview2,
-  Layout3: layoutPreview3
+  Layout3: layoutPreview3,
+  Layout4: undefined,
 }
 
 export function TopMenu() {

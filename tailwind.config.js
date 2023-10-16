@@ -57,6 +57,14 @@ module.exports = {
       },
       screens: {
         'print': { 'raw': 'print' },
+      },
+      gridTemplateColumns: {
+        '12': 'repeat(12, minmax(0, 1fr))',
+        '16': 'repeat(16, minmax(0, 1fr))',
+      },
+      gridTemplateRows: {
+        '12': 'repeat(12, minmax(0, 1fr))',
+        '16': 'repeat(16, minmax(0, 1fr))',
       }
     },
   },
