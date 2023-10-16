@@ -38,7 +38,8 @@ export default function Main() {
       setWaitABitMore(false)
       setGeneratingStory(true)
 
-      const enableRateLimiter = `${process.env.NEXT_PUBLIC_ENABLE_RATE_LIMITER}`  === "true"
+      // I don't think we are going to need a rate limiter on the LLM part anymore
+      const enableRateLimiter = false // `${process.env.NEXT_PUBLIC_ENABLE_RATE_LIMITER}`  === "true"
 
       try {
 
