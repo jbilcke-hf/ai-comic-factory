@@ -15,7 +15,7 @@ export async function predict(inputs: string): Promise<string> {
   switch (llmEngine) {
     case "INFERENCE_ENDPOINT":
       if (inferenceEndpoint) {
-        console.log("Using a custom HF Inference Endpoint")
+       //  console.log("Using a custom HF Inference Endpoint")
         hfie = hf.endpoint(inferenceEndpoint)
       } else {
         const error = "No Inference Endpoint URL defined"
@@ -26,7 +26,7 @@ export async function predict(inputs: string): Promise<string> {
     
     case "INFERENCE_API":
       if (inferenceModel) {
-        console.log("Using an HF Inference API Model")
+        // console.log("Using an HF Inference API Model")
       } else {
         const error = "No Inference API model defined"
         console.error(error)
