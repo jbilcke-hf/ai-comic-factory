@@ -63,7 +63,6 @@ export async function newRender({
       }
       const replicate = new Replicate({ auth: replicateToken })
 
-      // console.log("Calling replicate..")
       const seed = generateSeed()
       const prediction = await replicate.predictions.create({
         version: replicateModelVersion,
@@ -80,9 +79,7 @@ export async function newRender({
           seed
         }
       })
-      
-      // console.log("prediction:", prediction)
-
+  
       // no need to reply straight away as images take time to generate, this isn't instantaneous
       // also our friends at Replicate won't like it if we spam them with requests
       await sleep(4000)
@@ -114,14 +111,6 @@ export async function newRender({
         ? huggingFaceInferenceEndpointUrl
         : `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiBaseModel}`
 
-      /*
-      console.log(`calling ${url} with params: `, {
-        num_inference_steps: 25,
-        guidance_scale: 8,
-        width,
-        height,
-      })
-      */
 
       const positivePrompt = [
         "beautiful",
@@ -230,7 +219,7 @@ export async function newRender({
         segments: []
       } as RenderedScene
     } else {
-      const res = await fetch(`${videochainApiUrl}/render`, {
+      const res = await fetch(`${videochainApiUrl}${videochainApiUrl.endsWith("/") ? "" : "/"}render`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -268,6 +257,7 @@ export async function newRender({
       }
       
       const response = (await res.json()) as RenderedScene
+
       return response
     }
   } catch (err) {
@@ -330,7 +320,6 @@ export async function getRender(renderId: string) {
         segments: []
       } as RenderedScene
     } else {
-      // console.log(`calling GET ${apiUrl}/render with renderId: ${renderId}`)
       const res = await fetch(`${videochainApiUrl}/render/${renderId}`, {
         method: "GET",
         headers: {
@@ -374,7 +363,6 @@ export async function upscaleImage(image: string): Promise<{
   }
 
   try {
-    // console.log(`calling GET ${apiUrl}/render with renderId: ${renderId}`)
     const res = await fetch(`${videochainApiUrl}/upscale`, {
       method: "POST",
       headers: {

@@ -49,6 +49,8 @@ export function Panel({
 
   const rendered = renderedScenes[panel] || getInitialRenderedScene()
 
+  const [revision, setRevision] = useState(0)
+
   // keep a ref in sync
   const renderedRef = useRef<RenderedScene>()
   const renderedKey = JSON.stringify(rendered)
@@ -62,7 +64,6 @@ export function Panel({
 
 
   const startImageGeneration = ({ prompt, width, height }: { prompt: string, width: number, height: number}) => {
-    // console.log("Panel prompt: "+ prompt)
     if (!prompt?.length) { return }
 
     // important: update the status, and clear the scene
@@ -74,8 +75,6 @@ export function Panel({
     setTimeout(() => {
       startTransition(async () => {
 
-        // console.log(`Loading panel ${panel}..`)
-      
         let newRendered: RenderedScene
         try {
           newRendered = await newRender({ prompt, width, height })
@@ -85,7 +84,6 @@ export function Panel({
         }
 
         if (newRendered) {
-          // console.log("newRendered:", newRendered)
           setRendered(panelId, newRendered)
 
           if (newRendered.status === "completed") {
@@ -108,14 +106,8 @@ export function Panel({
           return
         }
       })
-    }, enableRateLimiter ? 2000 * panel : 0)
+    }, enableRateLimiter ? 1000 * panel : 0)
   }
-
-  // since this run in its own loop, we need to use references everywhere
-  // but perhaps this could be refactored
-  useEffect(() => {
-    startImageGeneration({ prompt, width, height })
-  }, [prompt, width, height])
 
 
   const checkStatus = () => {
@@ -126,25 +118,20 @@ export function Panel({
         timeoutRef.current = setTimeout(checkStatus, delay)
         return
       }
+
       try {
         setGeneratingImages(panelId, true)
-        // console.log(`Checking job status API for job ${renderedRef.current?.renderId}`)
         const newRendered = await getRender(renderedRef.current.renderId)
-        // console.log("got a response!", newRendered)
 
         if (JSON.stringify(renderedRef.current) !== JSON.stringify(newRendered)) {
-          // console.log("updated panel:", newRendered)
           setRendered(panelId, renderedRef.current = newRendered)
           setGeneratingImages(panelId, true)
         }
-        // console.log("status:", newRendered.status)
 
         if (newRendered.status === "pending") {
-          // console.log("job not finished")
           timeoutRef.current = setTimeout(checkStatus, delay)
         } else if (newRendered.status === "error" || 
         (newRendered.status === "completed" && !newRendered.assetUrl?.length)) {
-          // console.log(`panel got an error and/or an empty asset url :/ "${newRendered.error}", but let's try to recover..`)
           try {
             const newAttempt = await newRender({ prompt, width, height })
             setRendered(panelId, newAttempt)
@@ -163,9 +150,12 @@ export function Panel({
       }
     })
   }
- 
+
   useEffect(() => {
-    // console.log("starting timeout")
+    if (!prompt.length) { return }
+
+    startImageGeneration({ prompt, width, height })
+
     clearTimeout(timeoutRef.current)
     
     // normally it should reply in < 1sec, but we could also use an interval
@@ -174,7 +164,7 @@ export function Panel({
     return () => {
       clearTimeout(timeoutRef.current)
     }
-  }, [prompt, width, height])
+  }, [prompt, width, height, revision])
 
   /*
   doing the captionning from the browser is expensive
@@ -219,7 +209,7 @@ export function Panel({
 
   const handleReload = () => {
     console.log(`Asked to reload panel ${panelId}`)
-    startImageGeneration({ prompt, width, height })
+    setRevision(revision + 1)
   }
 
   if (prompt && !rendered.assetUrl) {
