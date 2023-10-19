@@ -63,7 +63,12 @@ export function Panel({
   const delay = enableRateLimiter ? (1000 + (500 * panel)) : 1000
 
 
-  const startImageGeneration = ({ prompt, width, height }: { prompt: string, width: number, height: number}) => {
+  const startImageGeneration = ({ prompt, width, height, revision }: {
+    prompt: string
+    width: number
+    height: number
+    revision: number
+  }) => {
     if (!prompt?.length) { return }
 
     // important: update the status, and clear the scene
@@ -75,12 +80,37 @@ export function Panel({
     setTimeout(() => {
       startTransition(async () => {
 
+        const withCache = revision === 0
+
+        // atrocious and very, very, very, very, very, very, very ugly hack for the Inference API
+        // as apparently "use_cache: false" doesn't work, or doesn't do what we want it to do
+        let cacheInvalidationHack = ""
+        const nbMaxRevisions = 6
+        for (let i = 0; i < revision && revision < nbMaxRevisions; i++) {
+          const j =  Math.random() 
+          cacheInvalidationHack += j < 0.3 ? "_" : j < 0.6 ? "," : "-"
+        }
+
         let newRendered: RenderedScene
         try {
-          newRendered = await newRender({ prompt, width, height })
+  
+          newRendered = await newRender({
+            prompt: cacheInvalidationHack + " " + prompt,
+            width,
+            height,
+
+            // TODO: here we never reset the revision, so only the first user
+            // comic will be cached (we should fix that later)
+            withCache: revision === 0
+          })
         } catch (err) {
           // "Failed to load the panel! Don't worry, we are retrying..")
-          newRendered = await newRender({ prompt, width, height })
+          newRendered = await newRender({
+            prompt: cacheInvalidationHack + "   " + prompt,
+            width,
+            height,
+            withCache,
+          })
         }
 
         if (newRendered) {
@@ -133,7 +163,12 @@ export function Panel({
         } else if (newRendered.status === "error" || 
         (newRendered.status === "completed" && !newRendered.assetUrl?.length)) {
           try {
-            const newAttempt = await newRender({ prompt, width, height })
+            const newAttempt = await newRender({
+              prompt,
+              width,
+              height,
+              withCache: false,
+            })
             setRendered(panelId, newAttempt)
           } catch (err) {
             console.error("yeah sorry, something is wrong.. aborting", err)
@@ -154,7 +189,7 @@ export function Panel({
   useEffect(() => {
     if (!prompt.length) { return }
 
-    startImageGeneration({ prompt, width, height })
+    startImageGeneration({ prompt, width, height, revision })
 
     clearTimeout(timeoutRef.current)
     

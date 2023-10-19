@@ -10,6 +10,7 @@ import { Zoom } from "./interface/zoom"
 import { getStory } from "./queries/getStory"
 import { BottomBar } from "./interface/bottom-bar"
 import { Page } from "./interface/page"
+import { LLMResponse } from "@/types"
 
 export default function Main() {
   const [_isPending, startTransition] = useTransition()
@@ -41,42 +42,57 @@ export default function Main() {
       // I don't think we are going to need a rate limiter on the LLM part anymore
       const enableRateLimiter = false // `${process.env.NEXT_PUBLIC_ENABLE_RATE_LIMITER}`  === "true"
 
-      try {
+      const nbPanels = 4
 
-        const llmResponse = await getStory({ preset, prompt })
+      let llmResponse: LLMResponse = []
+
+      try {
+        llmResponse = await getStory({ preset, prompt })
         console.log("LLM responded:", llmResponse)
 
-        // we have to limit the size of the prompt, otherwise the rest of the style won't be followed
-
-        let limitedPrompt = prompt.slice(0, 77)
-        if (limitedPrompt.length !== prompt.length) {
-          console.log("Sorry folks, the prompt was cut to:", limitedPrompt)
-        }
-
-        const panelPromptPrefix = preset.imagePrompt(limitedPrompt).join(", ")
-
-        const nbPanels = 4
-        const newPanels: string[] = []
-        const newCaptions: string[] = []
-        setWaitABitMore(true)
-        console.log("Panel prompts for SDXL:")
-        for (let p = 0; p < nbPanels; p++) {
-          newCaptions.push(llmResponse[p]?.caption || "...")
-          const newPanel = [panelPromptPrefix, llmResponse[p]?.instructions || ""].map(chunk => chunk).join(", ")
-          newPanels.push(newPanel)
-          console.log(newPanel)
-        }
-   
-        setCaptions(newCaptions)
-        setPanels(newPanels)
       } catch (err) {
+        console.log("LLM step failed due to:", err)
+        console.log("we are now switching to a degraded mode, using 4 similar panels")
+        
+        llmResponse = []
+        for (let p = 0; p < nbPanels; p++) {
+          llmResponse.push({
+            panel: p,
+            instructions: `${prompt} ${".".repeat(p)}`,
+            caption: "(Sorry, LLM generation failed: using degraded mode)"
+          })
+        }
         console.error(err)
-      } finally {
-        setTimeout(() => {
-          setGeneratingStory(false)
-          setWaitABitMore(false)
-        }, enableRateLimiter ? 12000 : 0)
       }
+
+      // we have to limit the size of the prompt, otherwise the rest of the style won't be followed
+
+      let limitedPrompt = prompt.slice(0, 77)
+      if (limitedPrompt.length !== prompt.length) {
+        console.log("Sorry folks, the prompt was cut to:", limitedPrompt)
+      }
+
+      const panelPromptPrefix = preset.imagePrompt(limitedPrompt).join(", ")
+
+      const newPanels: string[] = []
+      const newCaptions: string[] = []
+      setWaitABitMore(true)
+      console.log("Panel prompts for SDXL:")
+      for (let p = 0; p < nbPanels; p++) {
+        newCaptions.push(llmResponse[p]?.caption || "...")
+        const newPanel = [panelPromptPrefix, llmResponse[p]?.instructions || ""].map(chunk => chunk).join(", ")
+        newPanels.push(newPanel)
+        console.log(newPanel)
+      }
+   
+      setCaptions(newCaptions)
+      setPanels(newPanels)
+
+      setTimeout(() => {
+        setGeneratingStory(false)
+        setWaitABitMore(false)
+      }, enableRateLimiter ? 12000 : 0)
+ 
     })
   }, [prompt, preset?.label]) // important: we need to react to preset changes too
 

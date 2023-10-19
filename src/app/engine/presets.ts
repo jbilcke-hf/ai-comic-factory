@@ -44,11 +44,12 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "japanese manga",
     imagePrompt: (prompt: string) => [
+      `grayscale`,
+      `intricate details`,
       `japanese manga about ${prompt}`,
       "single panel",
       "manga",
       "japanese",
-      "grayscale",
       "intricate",
       "detailed",
       // "drawing"
@@ -98,9 +99,9 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "Franco-Belgian comic (a \"bande dessinée\"), in the style of Franquin, Moebius etc",
     imagePrompt: (prompt: string) => [
-      `franco-belgian color comic about ${prompt}`,
       "bande dessinée",
       "franco-belgian comic",
+      `franco-belgian color comic about ${prompt}`,
       "comic album",
       // "color drawing"
     ],
@@ -123,9 +124,9 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "american comic",
     imagePrompt: (prompt: string) => [
+      "digital color comicbook style",
       `modern american comic about ${prompt}`,
       //"single panel",
-      "digital color comicbook style",
       // "2010s",
       // "digital print",
       // "color comicbook",
@@ -182,11 +183,11 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "american comic",
     imagePrompt: (prompt: string) => [
+      "1950",
+      "50s",
       `vintage american color comic about ${prompt}`,
       // "single panel",
      //  "comicbook style",
-      "1950",
-      "50s",
       // "color comicbook",
       // "color drawing"
     ],
@@ -243,10 +244,10 @@ export const presets: Record<string, Preset> = {
     llmPrompt: "new pulp science fiction",
     imagePrompt: (prompt: string) => [
       `vintage color pulp comic panel`,
-      `${prompt}`,
       "40s",
       "1940",
       "vintage science fiction",
+      `${prompt}`,
       // "single panel",
       // "comic album"
     ],
@@ -271,13 +272,14 @@ export const presets: Record<string, Preset> = {
     llmPrompt: "comic books by Moebius",
     imagePrompt: (prompt: string) => [
       `color comic panel`,
-      `${prompt}`,
       "style of Moebius",
+      `${prompt}`,
       "by Moebius",
       "french comic panel",
       "franco-belgian style",
       "bande dessinée",
       "single panel",
+      "intricate"
       // "comic album"
     ],
     negativePrompt: () => [
@@ -300,10 +302,10 @@ export const presets: Record<string, Preset> = {
     llmPrompt: "writing Tintin comic books",
     imagePrompt: (prompt: string) => [
       `color comic panel`,
-      `${prompt}`,
       "style of Hergé",
-      "by Hergé",
       "tintin style",
+      `${prompt}`,
+      "by Hergé",
       "french comic panel",
       "franco-belgian style",
      //  "color panel",
@@ -355,11 +357,11 @@ export const presets: Record<string, Preset> = {
     llmPrompt: "french style comic books set in ancient Rome and Gaul",
     imagePrompt: (prompt: string) => [
       `color comic panel`,
-      `about ${prompt}`,
       "romans",
       "gauls",
       "french comic panel",
       "franco-belgian style",
+      `about ${prompt}`,
       "bande dessinée",
       "single panel",
       // "comical",
@@ -412,6 +414,7 @@ export const presets: Record<string, Preset> = {
       `patchwork`,
       `style of Gustav Klimt`,
       `Gustav Klimt painting`,
+      `intricate details`,
       `${prompt}`,
     ],
     negativePrompt: () => [
@@ -433,9 +436,11 @@ export const presets: Record<string, Preset> = {
     imagePrompt: (prompt: string) => [
       `medieval illuminated manuscript`,
       `illuminated manuscript of`,
+      `medieval`,
+      `intricate details`,
       // `medieval color engraving`,
       `${prompt}`,
-      `medieval`
+      // `medieval`
     ],
     negativePrompt: () => [
       "manga",
@@ -506,9 +511,9 @@ export const presets: Record<string, Preset> = {
     llmPrompt: "ancient egyptian stories.",
     imagePrompt: (prompt: string) => [
       `ancient egyptian wall painting`,
+      `ancient egypt`,
       // `medieval color engraving`,
       `${prompt}`,
-      `ancient egypt`,
     ],
     negativePrompt: () => [
       "manga",

@@ -26,12 +26,14 @@ export async function newRender({
   prompt,
   // negativePrompt,
   width,
-  height
+  height,
+  withCache
 }: {
   prompt: string
   // negativePrompt: string[]
   width: number
   height: number
+  withCache: boolean
 }) {
   if (!prompt) {
     const error = `cannot call the rendering API without a prompt, aborting..`
@@ -49,6 +51,8 @@ export async function newRender({
     segments: []
   }
 
+  const nbInferenceSteps = 30
+  const guidanceScale = 9
 
   try {
     if (renderingEngine === "REPLICATE") {
@@ -69,7 +73,7 @@ export async function newRender({
         input: {
           prompt: [
             "beautiful",
-            "intricate details",
+            // "intricate details",
             prompt,
             "award winning",
             "high resolution"
@@ -111,10 +115,9 @@ export async function newRender({
         ? huggingFaceInferenceEndpointUrl
         : `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiBaseModel}`
 
-
       const positivePrompt = [
         "beautiful",
-        "intricate details",
+        // "intricate details",
         prompt,
         "award winning",
         "high resolution"
@@ -129,12 +132,14 @@ export async function newRender({
         body: JSON.stringify({
           inputs: positivePrompt,
           parameters: {
-            num_inference_steps: 25,
-            guidance_scale: 8,
+            num_inference_steps: nbInferenceSteps,
+            guidance_scale: guidanceScale,
             width,
             height,
           },
-          use_cache: false,
+
+          // this doesn't do what you think it does
+          use_cache: false, // withCache,
         }),
         cache: "no-store",
         // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
@@ -159,12 +164,11 @@ export async function newRender({
       // note: there is no "refiner" step yet for custom inference endpoint
       // you probably don't need it anyway, as you probably want to deploy an all-in-one model instead for perf reasons
       
-      // update: right now it is not possible to use it from the Inference API either:
-      // "Model type not found or pipeline not implemented"
-      /*
       if (renderingEngine === "INFERENCE_API") {
         try {
           const refinerModelUrl = `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiRefinerModel}`
+
+
 
           const res = await fetch(refinerModelUrl, {
             method: "POST",
@@ -173,15 +177,17 @@ export async function newRender({
               Authorization: `Bearer ${huggingFaceToken}`,
             },
             body: JSON.stringify({
-              data: assetUrl,
+              inputs: Buffer.from(blob).toString('base64'),
               parameters: {
                 prompt: positivePrompt,
-                num_inference_steps: 25,
-                guidance_scale: 8,
+                num_inference_steps: nbInferenceSteps,
+                guidance_scale: guidanceScale,
                 width,
                 height,
               },
-              use_cache: false,
+
+              // this doesn't do what you think it does
+              use_cache: false, // withCache,
             }),
             cache: "no-store",
             // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
@@ -191,22 +197,22 @@ export async function newRender({
       
           // Recommendation: handle errors
           if (res.status !== 200) {
-            const content = await res.text()
-            console.error(content)
-            // This will activate the closest `error.js` Error Boundary
-            throw new Error('Failed to fetch data')
+            const content = await res.json()
+            // if (content.error.include("currently loading")) {
+            // console.log("refiner isn't ready yet")
+            throw new Error(content?.error || 'Failed to fetch data')
           }
 
-          const blob = await res.arrayBuffer()
+          const refinedBlob = await res.arrayBuffer()
 
           const contentType = res.headers.get('content-type')
 
-          assetUrl = `data:${contentType};base64,${Buffer.from(blob).toString('base64')}`
+          assetUrl = `data:${contentType};base64,${Buffer.from(refinedBlob).toString('base64')}`
           
         } catch (err) {
           console.log(`Refiner step failed, but this is not a blocker. Error details: ${err}`)
         }
-      } */
+      }
 
 
       return {
@@ -230,7 +236,7 @@ export async function newRender({
           prompt,
           // negativePrompt, unused for now
           nbFrames: 1,
-          nbSteps: 30, // 20 = fast, 30 = better, 50 = best
+          nbSteps: nbInferenceSteps, // 20 = fast, 30 = better, 50 = best
           actionnables: [], // ["text block"],
           segmentation: "disabled", // "firstframe", // one day we will remove this param, to make it automatic
           width,

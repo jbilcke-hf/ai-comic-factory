@@ -72,6 +72,11 @@ export async function predict(inputs: string): Promise<string> {
     }
   } catch (err) {
     console.error(`error during generation: ${err}`)
+
+    // a common issue with Llama-2 might be that the model receives too many requests
+    if (`${err}` === "Error: Model is overloaded") {
+      instructions = ``
+    }
   }
 
   // need to do some cleanup of the garbage the LLM might have gave us
