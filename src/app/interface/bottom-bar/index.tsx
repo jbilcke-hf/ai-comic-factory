@@ -8,6 +8,7 @@ import { About } from "../about"
 import { startTransition, useState } from "react"
 import { upscaleImage } from "@/app/engine/render"
 import { sleep } from "@/lib/sleep"
+import { AIClipFactory } from "../ai-clip-factory"
 
 export function BottomBar() {
   const download = useStore(state => state.download)
@@ -114,6 +115,7 @@ ${uploadUrl
         `scale-[0.9]`
       )}>
         <About />
+        <AIClipFactory />
       </div>
       <div className={cn(
       `flex flex-row`,
