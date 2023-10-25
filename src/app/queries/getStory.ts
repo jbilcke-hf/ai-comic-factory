@@ -15,7 +15,8 @@ export const getStory = async ({
   preset: Preset;
   prompt: string;
 }): Promise<LLMResponse> => {
-
+  throw new Error("Planned maintenance, please check: https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/discussions/339")
+  
   // In case you need to quickly debug the RENDERING engine you can uncomment this:
   // return mockLLMResponse
 
