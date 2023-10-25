@@ -35,8 +35,8 @@ export async function newRender({
   height: number
   withCache: boolean
 }) {
-  throw new Error("Planned maintenance, please check: https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/discussions/339")
-  
+  // throw new Error("Planned maintenance")
+
   if (!prompt) {
     const error = `cannot call the rendering API without a prompt, aborting..`
     console.error(error)
