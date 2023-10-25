@@ -5,7 +5,7 @@ import Head from "next/head"
 import Main from "./main"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import Script from "next/script"
- import { Maintenance } from "./interface/maintenance"
+// import { Maintenance } from "./interface/maintenance"
 
 // https://nextjs.org/docs/pages/building-your-application/optimizing/fonts 
 
@@ -23,8 +23,8 @@ export default async function IndexPage({ params: { ownerId } }: { params: { own
         `}>
         <TooltipProvider delayDuration={100}>
           
-          {/*<Main />*/}
-         <Maintenance />
+          <Main />
+         {/* <Maintenance /> */}
 
         </TooltipProvider>
         <Script src="https://www.googletagmanager.com/gtag/js?id=GTM-WH4MGSHS" />
