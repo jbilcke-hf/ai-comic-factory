@@ -3,12 +3,16 @@
 import { Panel } from "@/app/interface/panel"
 import { pick } from "@/lib/pick"
 import { Grid } from "@/app/interface/grid"
+import { LayoutProps } from "@/types"
+import { NB_PANELS_PER_PAGE } from "@/config"
 
-export function Layout0() {
+export function Layout0({ page, nbPanels }: LayoutProps) {
   return (
     <Grid className="grid-cols-2 grid-rows-2">
       <div className="bg-stone-100 col-span-1 row-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={0}
           width={1024}
           height={1024}
@@ -16,6 +20,8 @@ export function Layout0() {
       </div>
       <div className="bg-zinc-100  col-span-1 row-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={1}
           width={1024}
           height={1024}
@@ -23,6 +29,8 @@ export function Layout0() {
       </div>
       <div className="bg-gray-100  col-span-1 row-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={2}
           width={1024}
           height={1024}
@@ -30,6 +38,8 @@ export function Layout0() {
       </div>
       <div className="bg-slate-100 col-span-1 row-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={3}
           width={1024}
           height={1024}
@@ -39,11 +49,13 @@ export function Layout0() {
   )
 }
 
-export function Layout1() {
+export function Layout1({ page, nbPanels }: LayoutProps) {
   return (
     <Grid className="grid-cols-2 grid-rows-3">
       <div className="bg-stone-100">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={0}
           width={1024}
           height={768}
@@ -51,6 +63,8 @@ export function Layout1() {
       </div>
       <div className="bg-zinc-100 row-span-2">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={1}
           width={768}
           height={1024}
@@ -58,6 +72,8 @@ export function Layout1() {
       </div>
       <div className="bg-gray-100 row-span-2 col-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={2}
           width={768}
           height={1024}
@@ -65,6 +81,8 @@ export function Layout1() {
       </div>
       <div className="bg-slate-100">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={3}
           width={1024}
           height={768}
@@ -74,11 +92,13 @@ export function Layout1() {
   )
 }
 
-export function Layout2_todo() {
+export function Layout2_todo({ page, nbPanels }: LayoutProps) {
   return (
     <Grid className="grid-cols-2 grid-rows-3">
       <div className="bg-gray-100 row-span-3 col-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={0}
           width={768}
           height={1024}
@@ -86,6 +106,8 @@ export function Layout2_todo() {
       </div>
       <div className="bg-slate-100">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={1}
           width={1024}
           height={768}
@@ -93,6 +115,8 @@ export function Layout2_todo() {
       </div>
       <div className="bg-stone-100">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={2}
           width={1024}
           height={768}
@@ -100,6 +124,8 @@ export function Layout2_todo() {
       </div>
       <div className="bg-zinc-100 row-span-1 col-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={3}
           width={1024}
           height={768}
@@ -109,11 +135,13 @@ export function Layout2_todo() {
   )
 }
 
-export function Layout3_todo() {
+export function Layout3_todo({ page, nbPanels }: LayoutProps) {
   return (
     <Grid className="grid-cols-5 grid-rows-2">
       <div className="bg-zinc-100 col-span-3">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={0}
           width={1024}
           height={768}
@@ -121,6 +149,8 @@ export function Layout3_todo() {
       </div>
       <div className="bg-zinc-100 col-span-2 row-span-2">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={1}
           width={768}
           height={1024}
@@ -129,6 +159,8 @@ export function Layout3_todo() {
       <div className="col-span-3 grid grid-cols-2 gap-2">
         <div className="bg-stone-100">
           <Panel
+            page={page}
+            nbPanels={nbPanels}
             panel={2}
             width={768}
             height={758}
@@ -136,6 +168,8 @@ export function Layout3_todo() {
         </div>
         <div className="bg-slate-100">
           <Panel
+            page={page}
+            nbPanels={nbPanels}
             panel={3}
             width={768}
             height={758}
@@ -146,11 +180,13 @@ export function Layout3_todo() {
   )
 }
 
-export function Layout4_todo() {
+export function Layout4_todo({ page, nbPanels }: LayoutProps) {
   return (
     <Grid className="grid-cols-2 grid-rows-3">
       <div className="bg-slate-100 row-span-2">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={0}
           width={768}
           height={1024}
@@ -158,6 +194,8 @@ export function Layout4_todo() {
       </div>
       <div className="bg-gray-100 row-span-1 col-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={1}
           width={1024}
           height={768}
@@ -165,6 +203,8 @@ export function Layout4_todo() {
       </div>
       <div className="bg-zinc-100 row-span-2">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={2}
           width={1024}
           height={768}
@@ -172,6 +212,8 @@ export function Layout4_todo() {
       </div>
       <div className="bg-stone-100">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={3}
           width={768}
           height={1024}
@@ -182,11 +224,13 @@ export function Layout4_todo() {
 }
 
 
-export function Layout2() {
+export function Layout2({ page, nbPanels }: LayoutProps) {
   return (
     <Grid className="grid-cols-3 grid-rows-2">
       <div className="bg-zinc-100 col-span-1 row-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={0}
           width={768}
           height={1024}
@@ -194,6 +238,8 @@ export function Layout2() {
       </div>
       <div className="bg-zinc-100 col-span-1 row-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={1}
           width={768}
           height={1024}
@@ -201,6 +247,8 @@ export function Layout2() {
       </div>
       <div className="bg-stone-100 row-span-2 col-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={2}
           width={512}
           height={1024}
@@ -208,6 +256,8 @@ export function Layout2() {
       </div>
       <div className="bg-slate-100 row-span-1 col-span-2">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={3}
           width={1024}
           height={768}
@@ -217,11 +267,13 @@ export function Layout2() {
   )
 }
 
-export function Layout3() {
+export function Layout3({ page, nbPanels }: LayoutProps) {
   return (
     <Grid className="grid-cols-3 grid-rows-2">
       <div className="bg-zinc-100 col-span-2 row-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={0}
           width={1024}
           height={768}
@@ -229,6 +281,8 @@ export function Layout3() {
       </div>
       <div className="bg-zinc-100 col-span-1 row-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={1}
           width={768}
           height={1024}
@@ -236,6 +290,8 @@ export function Layout3() {
       </div>
       <div className="bg-stone-100 row-span-1 col-span-1">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={2}
           width={768}
           height={1024}
@@ -243,6 +299,8 @@ export function Layout3() {
       </div>
       <div className="bg-slate-100 row-span-1 col-span-2">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={3}
           width={1024}
           height={768}
@@ -253,11 +311,13 @@ export function Layout3() {
 }
 
 // squares + vertical
-export function Layout4() {
+export function Layout4({ page, nbPanels }: LayoutProps) {
   return (
     <Grid className="grid-cols-8 grid-rows-8">
       <div className="bg-zinc-100 col-start-1 col-end-7 row-start-1 row-end-3">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={0}
           width={512}
           height={1024}
@@ -265,6 +325,8 @@ export function Layout4() {
       </div>
       <div className="bg-zinc-100 col-start-3 col-end-9 row-start-3 row-end-4">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={1}
           width={1024}
           height={768}
@@ -272,6 +334,8 @@ export function Layout4() {
       </div>
       <div className="bg-stone-100 col-start-2 col-end-8 row-start-4 row-end-6">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={2}
           width={768}
           height={1024}
@@ -279,6 +343,8 @@ export function Layout4() {
       </div>
       <div className="bg-slate-100 col-start-1 col-end-9 row-start-6 row-end-8">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={3}
           width={1024}
           height={512}
@@ -289,11 +355,13 @@ export function Layout4() {
 }
 
 // squares + horizontal
-export function Layout5() {
+export function Layout5({ page, nbPanels }: LayoutProps) {
   return (
     <Grid className="grid-cols-4 grid-rows-4">
       <div className="bg-zinc-100">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={0}
           width={1024}
           height={1024}
@@ -301,6 +369,8 @@ export function Layout5() {
       </div>
       <div className="bg-zinc-100">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={1}
           width={1024}
           height={1024}
@@ -308,6 +378,8 @@ export function Layout5() {
       </div>
       <div className="bg-stone-100">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={2}
           width={1024}
           height={1024}
@@ -315,6 +387,8 @@ export function Layout5() {
       </div>
       <div className="bg-slate-100">
         <Panel
+          page={page}
+          nbPanels={nbPanels}
           panel={3}
           width={1024}
           height={1024}
@@ -352,6 +426,15 @@ export const allLayoutAspectRatios = {
   // Layout4: "aspect-[1/3]",
 }
 
+export const allLayoutsNbPanels = {
+  // TODO: this is gonna be tricky to implement, but this should be unique / dynamic
+  Layout0: NB_PANELS_PER_PAGE,
+  Layout1: NB_PANELS_PER_PAGE,
+  Layout2: NB_PANELS_PER_PAGE,
+  Layout3: NB_PANELS_PER_PAGE,
+  // Layout4: NB_PANELS_PER_PAGE
+}
+
 export type LayoutName = keyof typeof allLayouts 
 
 export const defaultLayout: LayoutName = "Layout1"
@@ -367,4 +450,3 @@ export const getRandomLayoutName = (): LayoutName => {
 export function getRandomLayoutNames(): LayoutName[] {
   return nonRandomLayouts.sort(() => Math.random() - 0.5) as LayoutName[]
 }
-

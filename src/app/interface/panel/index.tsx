@@ -13,17 +13,36 @@ import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
 import { Progress } from "@/app/interface/progress"
 
 export function Panel({
+  page,
+  nbPanels,
   panel,
   className = "",
   width = 1,
   height = 1,
 }: {
+  // page number of which the panel is
+  page: number
+
+  // the number of panels should be unique to each layout
+  nbPanels: number
+
+  // panel id, between 0 and (nbPanels - 1)
   panel: number
+
+
   className?: string
   width?: number
   height?: number
  }) {
-  const panelId = `${panel}`
+
+  // index of the panel in the whole app
+  const panelIndex = page * nbPanels + panel
+
+  // console.log("debug:", { page, nbPanels, panel })
+  // the panel Id must be unique across all pages
+  const panelId = `${panelIndex}`
+
+  // console.log("panelId: " + panelId)
 
   const [mouseOver, setMouseOver] = useState(false)
   const ref = useRef<HTMLImageElement>(null)
@@ -33,10 +52,10 @@ export function Panel({
   const setGeneratingImages = useStore(state => state.setGeneratingImages)
 
   const panels = useStore(state => state.panels)
-  const prompt = panels[panel] || ""
+  const prompt = panels[panelIndex] || ""
 
   const captions = useStore(state => state.captions)
-  const caption = captions[panel] || ""
+  const caption = captions[panelIndex] || ""
 
   const zoomLevel = useStore(state => state.zoomLevel)
   const showCaptions = useStore(state => state.showCaptions)
@@ -47,7 +66,7 @@ export function Panel({
   const renderedScenes = useStore(state => state.renderedScenes)
   const setRendered = useStore(state => state.setRendered)
 
-  const rendered = renderedScenes[panel] || getInitialRenderedScene()
+  const rendered = renderedScenes[panelIndex] || getInitialRenderedScene()
 
   const [revision, setRevision] = useState(0)
 
@@ -59,9 +78,9 @@ export function Panel({
   const timeoutRef = useRef<any>(null)
 
   const enableRateLimiter = `${process.env.NEXT_PUBLIC_ENABLE_RATE_LIMITER}`  === "true"
+ 
 
-  const delay = enableRateLimiter ? (1000 + (500 * panel)) : 1000
-
+  const delay = enableRateLimiter ? (1000 + (500 * panelIndex)) : 1000
 
   const startImageGeneration = ({ prompt, width, height, revision }: {
     prompt: string
@@ -85,7 +104,7 @@ export function Panel({
         // atrocious and very, very, very, very, very, very, very ugly hack for the Inference API
         // as apparently "use_cache: false" doesn't work, or doesn't do what we want it to do
         let cacheInvalidationHack = ""
-        const nbMaxRevisions = 6
+        const nbMaxRevisions = 10
         for (let i = 0; i < revision && revision < nbMaxRevisions; i++) {
           const j =  Math.random() 
           cacheInvalidationHack += j < 0.3 ? "_" : j < 0.6 ? "," : "-"

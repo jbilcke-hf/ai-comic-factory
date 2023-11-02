@@ -1,18 +1,20 @@
 "use client"
 
 import { create } from "zustand"
+import html2canvas from "html2canvas"
 
 import { FontName } from "@/lib/fonts"
 import { Preset, PresetName, defaultPreset, getPreset, getRandomPreset } from "@/app/engine/presets"
-import { LayoutName, defaultLayout, getRandomLayoutName, getRandomLayoutNames } from "../layouts"
-import html2canvas from "html2canvas"
 import { RenderedScene } from "@/types"
+import { LayoutName, defaultLayout, getRandomLayoutName } from "../layouts"
+import { MAX_NB_PAGES, NB_PANELS_PER_PAGE } from "@/config"
 
 export const useStore = create<{
   prompt: string
   font: FontName
   preset: Preset
-  nbFrames: number
+  nbPages: number
+  nbTotalPanels: number
   panels: string[]
   captions: string[]
   upscaleQueue: Record<string, RenderedScene>
@@ -49,7 +51,11 @@ export const useStore = create<{
   prompt: "",
   font: "actionman",
   preset: getPreset(defaultPreset),
-  nbFrames: 1,
+  nbPages: MAX_NB_PAGES,
+
+  // TODO: make this dynamic!
+  nbTotalPanels: NB_PANELS_PER_PAGE * MAX_NB_PAGES,
+
   panels: [],
   captions: [],
   upscaleQueue: {} as Record<string, RenderedScene>,
@@ -109,13 +115,6 @@ export const useStore = create<{
       preset,
     })
   },
-  setNbFrames: (nbFrames: number) => {
-    const existingNbFrames = get().nbFrames
-    if (nbFrames === existingNbFrames) { return }
-    set({
-      nbFrames,
-    })
-  },
   setPanels: (panels: string[]) => set({ panels }),
   setCaptions: (captions: string[]) => {
     set({
@@ -128,13 +127,27 @@ export const useStore = create<{
     })
   },
   setLayout: (layoutName: LayoutName) => {
+
+    const { nbPages } = get()
+
     const layout = layoutName === "random"
-      ? getRandomLayoutName()
-      : layoutName
+    ? getRandomLayoutName()
+    : layoutName
+
+    const layouts: LayoutName[] = []
+    for (let i = 0; i < nbPages; i++) {
+      layouts.push(
+        layoutName === "random"
+          ? getRandomLayoutName()
+          : layoutName
+      )
+
+      // TODO: update the number of total panels here!
+    }
 
     set({
       layout,
-      layouts: [layout, layout]
+      layouts,
     })
   },
   setLayouts: (layouts: LayoutName[]) => set({ layouts }),
@@ -186,9 +199,24 @@ export const useStore = create<{
     }
   },
   generate: (prompt: string, presetName: PresetName, layoutName: LayoutName) => {
+
+    const { nbPages } = get()
+    
     const layout = layoutName === "random"
-      ? getRandomLayoutName()
-      : layoutName
+    ? getRandomLayoutName()
+    : layoutName
+
+    const layouts: LayoutName[] = []
+    for (let i = 0; i < nbPages; i++) {
+      layouts.push(
+        layoutName === "random"
+          ? getRandomLayoutName()
+          : layoutName
+      )
+
+      // TODO: update the number of total panels here!
+    }
+
     set({
       prompt,
       panels: [],
@@ -197,7 +225,7 @@ export const useStore = create<{
         ? getRandomPreset()
         : getPreset(presetName),
       layout,
-      layouts: [layout, layout],
+      layouts,
     })
   }
 }))

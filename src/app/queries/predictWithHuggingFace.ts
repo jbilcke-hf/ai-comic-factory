@@ -3,7 +3,7 @@
 import { HfInference, HfInferenceEndpoint } from "@huggingface/inference"
 import { LLMEngine } from "@/types"
 
-export async function predict(inputs: string): Promise<string> {
+export async function predict(inputs: string, nbPanels: number): Promise<string> {
   const hf = new HfInference(process.env.AUTH_HF_API_TOKEN)
 
   const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
@@ -11,6 +11,10 @@ export async function predict(inputs: string): Promise<string> {
   const inferenceModel = `${process.env.LLM_HF_INFERENCE_API_MODEL || ""}`
 
   let hfie: HfInferenceEndpoint = hf
+
+  // we don't require a lot of token for our task
+  // but to be safe, let's count ~110 tokens per panel
+  const nbMaxNewTokens = nbPanels * 110
 
   switch (llmEngine) {
     case "INFERENCE_ENDPOINT":
@@ -49,9 +53,7 @@ export async function predict(inputs: string): Promise<string> {
       inputs,
       parameters: {
         do_sample: true,
-        // we don't require a lot of token for our task
-        // but to be safe, let's count ~110 tokens per panel
-        max_new_tokens: 450, // 1150,
+        max_new_tokens: nbMaxNewTokens,
         return_full_text: false,
       }
     })) {

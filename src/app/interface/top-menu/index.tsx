@@ -54,10 +54,10 @@ export function TopMenu() {
   
   const searchParams = useSearchParams()
 
-  const requestedPreset = (searchParams.get('preset') as PresetName) || defaultPreset
-  const requestedFont = (searchParams.get('font') as FontName) || defaultFont
-  const requestedPrompt = (searchParams.get('prompt') as string) || ""
-  const requestedLayout = (searchParams.get('layout') as LayoutName) || defaultLayout
+  const requestedPreset = (searchParams?.get('preset') as PresetName) || defaultPreset
+  const requestedFont = (searchParams?.get('font') as FontName) || defaultFont
+  const requestedPrompt = (searchParams?.get('prompt') as string) || ""
+  const requestedLayout = (searchParams?.get('layout') as LayoutName) || defaultLayout
 
   const [draftPrompt, setDraftPrompt] = useState(requestedPrompt)
   const [draftPreset, setDraftPreset] = useState<PresetName>(requestedPreset)

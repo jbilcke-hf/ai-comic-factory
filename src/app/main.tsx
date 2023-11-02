@@ -22,7 +22,8 @@ export default function Main() {
   const preset = useStore(state => state.preset)
   const prompt = useStore(state => state.prompt)
 
-  const setLayouts = useStore(state => state.setLayouts)
+  const nbPages = useStore(state => state.nbPages)
+  const nbTotalPanels = useStore(state => state.nbTotalPanels)
 
   const setPanels = useStore(state => state.setPanels)
   const setCaptions = useStore(state => state.setCaptions)
@@ -42,12 +43,10 @@ export default function Main() {
       // I don't think we are going to need a rate limiter on the LLM part anymore
       const enableRateLimiter = false // `${process.env.NEXT_PUBLIC_ENABLE_RATE_LIMITER}`  === "true"
 
-      const nbPanels = 4
-
       let llmResponse: LLMResponse = []
 
       try {
-        llmResponse = await getStory({ preset, prompt })
+        llmResponse = await getStory({ preset, prompt, nbTotalPanels })
         console.log("LLM responded:", llmResponse)
 
       } catch (err) {
@@ -55,7 +54,7 @@ export default function Main() {
         console.log("we are now switching to a degraded mode, using 4 similar panels")
         
         llmResponse = []
-        for (let p = 0; p < nbPanels; p++) {
+        for (let p = 0; p < nbTotalPanels; p++) {
           llmResponse.push({
             panel: p,
             instructions: `${prompt} ${".".repeat(p)}`,
@@ -78,7 +77,7 @@ export default function Main() {
       const newCaptions: string[] = []
       setWaitABitMore(true)
       console.log("Panel prompts for SDXL:")
-      for (let p = 0; p < nbPanels; p++) {
+      for (let p = 0; p < nbTotalPanels; p++) {
         newCaptions.push(llmResponse[p]?.caption || "...")
         const newPanel = [panelPromptPrefix, llmResponse[p]?.instructions || ""].map(chunk => chunk).join(", ")
         newPanels.push(newPanel)
@@ -94,7 +93,7 @@ export default function Main() {
       }, enableRateLimiter ? 12000 : 0)
  
     })
-  }, [prompt, preset?.label]) // important: we need to react to preset changes too
+  }, [prompt, preset?.label, nbTotalPanels]) // important: we need to react to preset changes too
 
   return (
     <div>
@@ -114,18 +113,14 @@ export default function Main() {
           <div
             className={cn(
               `comic-page`,
-              `flex flex-col md:flex-row md:space-x-16 md:items-center md:justify-start`,
+              `flex flex-col md:flex-row md:space-x-8 lg:space-x-12 xl:space-x-16 md:items-center md:justify-start print:space-x-4`,
             )}
             style={{
               width: `${zoomLevel}%`
             }}>
             <Page page={0} />
 
-            {/*
-            // we could support multiple pages here,
-            // but let's disable it for now
             <Page page={1} />
-            */}
           </div>
         </div>
       </div>

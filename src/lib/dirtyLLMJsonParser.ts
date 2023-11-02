@@ -1,5 +1,6 @@
 import { LLMResponse } from "@/types"
 import { cleanJson } from "./cleanJson"
+import { parseBadJSON } from "./parseBadJSON"
 
 export function dirtyLLMJsonParser(input: string): LLMResponse {
 
@@ -9,7 +10,7 @@ export function dirtyLLMJsonParser(input: string): LLMResponse {
   // we only keep what's after the first [
   let jsonOrNot = cleanJson(input)
 
-  const jsonData = JSON.parse(jsonOrNot) as LLMResponse
+  const jsonData = parseBadJSON(jsonOrNot) as LLMResponse
 
   const results = jsonData.map((item, i) => {
     let panel = i

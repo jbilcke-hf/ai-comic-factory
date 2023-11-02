@@ -11,9 +11,11 @@ import { cleanJson } from "@/lib/cleanJson"
 export const getStory = async ({
   preset,
   prompt = "",
+  nbTotalPanels = 4,
 }: {
   preset: Preset;
   prompt: string;
+  nbTotalPanels: number;
 }): Promise<LLMResponse> => {
   // throw new Error("Planned maintenance")
   
@@ -25,10 +27,10 @@ export const getStory = async ({
       role: "system",
       content: [
         `You are a comic book author specialized in ${preset.llmPrompt}`,
-        `Please write detailed drawing instructions and a one-sentence short caption for the 4 panels of a new silent comic book page.`,
+        `Please write detailed drawing instructions and a one-sentence short caption for the ${nbTotalPanels} panels of a new silent comic book page.`,
         `Give your response as a VALID JSON array like this: \`Array<{ panel: number; instructions: string; caption: string}>\`.`,
         // `Give your response as Markdown bullet points.`,
-        `Be brief in your 4 instructions and captions, don't add your own comments. Be straight to the point, and never reply things like "Sure, I can.." etc. Reply using valid JSON.`
+        `Be brief in your ${nbTotalPanels} instructions and captions, don't add your own comments. Be straight to the point, and never reply things like "Sure, I can.." etc. Reply using valid JSON.`
       ].filter(item => item).join("\n")
     },
     {
@@ -41,14 +43,14 @@ export const getStory = async ({
   let result = ""
 
   try {
-    result = `${await predict(query) || ""}`.trim()
+    result = `${await predict(query, nbTotalPanels) || ""}`.trim()
     if (!result.length) {
       throw new Error("empty result!")
     }
   } catch (err) {
     console.log(`prediction of the story failed, trying again..`)
     try {
-      result = `${await predict(query+".") || ""}`.trim()
+      result = `${await predict(query+".", nbTotalPanels) || ""}`.trim()
       if (!result.length) {
         throw new Error("empty result!")
       }

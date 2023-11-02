@@ -243,10 +243,10 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "new pulp science fiction",
     imagePrompt: (prompt: string) => [
-      `vintage color pulp comic panel`,
-      "40s",
+      `vintage science fiction`,
+      // "40s",
+      "color pulp comic panel",
       "1940",
-      "vintage science fiction",
       `${prompt}`,
       // "single panel",
       // "comic album"

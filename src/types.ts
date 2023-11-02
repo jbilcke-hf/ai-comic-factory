@@ -128,3 +128,8 @@ export type GetAppPostResponse = {
   error?: string
   post: Post
 }
+
+export type LayoutProps = {
+  page: number
+  nbPanels: number
+}

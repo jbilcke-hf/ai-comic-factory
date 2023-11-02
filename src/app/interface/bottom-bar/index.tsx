@@ -81,10 +81,10 @@ export function BottomBar() {
 #### Comic:
 ${uploadUrl
   ? (`![${prompt}](${uploadUrl})`)
-  : (`(please drag & drop your JPG image here)`)}
+  : (`(please drag & drop a capture of your comic here - we recommend you to print the PDF and convert it to JPG for best quality!)`)}
 `;
 
-    console.log("descriptionMd:", descriptionMd)
+    // console.log("descriptionMd:", descriptionMd)
 
     const params = new URLSearchParams({
       title: `[Comic] ${prompt}`,
@@ -140,6 +140,7 @@ ${uploadUrl
         // : null
       }
       </div>
+        {/*
         <div>
           <Button
             onClick={handlePrint}
@@ -158,6 +159,20 @@ ${uploadUrl
             }</span>
             <span className="inline md:hidden">{
               remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save`
+            }</span>
+           </Button>
+        </div>
+          */}
+          <div>
+          <Button
+            onClick={handlePrint}
+            disabled={!prompt?.length}
+          >
+            <span className="hidden md:inline">{
+            remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} panels ⌛` : `Save PDF`
+            }</span>
+            <span className="inline md:hidden">{
+              remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save PDF`
             }</span>
            </Button>
         </div>
