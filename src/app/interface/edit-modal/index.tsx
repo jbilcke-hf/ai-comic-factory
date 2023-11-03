@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
+import { Textarea } from "@/components/ui/textarea"
 
 
 export function EditModal({
@@ -33,9 +34,7 @@ export function EditModal({
   return (
     <Dialog open={isOpen} onOpenChange={() => isEnabled ? setOpen(true) : undefined}>
       <DialogTrigger asChild>
-        <Button variant="outline">
-          {children}
-        </Button>
+        {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -45,7 +44,7 @@ export function EditModal({
           </DialogDescription>
         </DialogHeader>
           <div className="flex flex-row flex-grow w-full">
-            <Input
+            <Textarea
               placeholder="Story"
               className="w-full bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 rounded-r-none"
               // disabled={atLeastOnePanelIsBusy}

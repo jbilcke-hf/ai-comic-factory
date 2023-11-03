@@ -387,9 +387,10 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "new movie",
     imagePrompt: (prompt: string) => [
-      `3D render`,
-      `Blender`,
-      `3D animation`,
+      `3D render animation`,
+      `Pixar`,
+      `cute`,
+      `funny`,
       `Unreal engine`,
       `${prompt}`,
     ],
@@ -572,6 +573,58 @@ export const presets: Record<string, Preset> = {
     ],
   },
   */
+  photonovel: {
+    id: "photonovel",
+    label: "Vintage photonovel",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new movie",
+    imagePrompt: (prompt: string) => [
+      `vintage`,
+      `1950`,
+      `1960`,
+      `french new wave`,
+      `faded colors`,
+      `color movie`,
+      `screencap`,
+      `${prompt}`,
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "painting"
+    ],
+  },
+  stockphoto: {
+    id: "stockphoto",
+    label: "Stock photo",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new movie",
+    imagePrompt: (prompt: string) => [
+      `cinematic`,
+      `hyperrealistic`,
+      `footage`,
+      `sharp 8k`,
+      `analog`,
+      `instagram`,
+      `photoshoot`,
+      `${prompt}`,
+    ],
+    negativePrompt: () => [
+      "manga",
+      "anime",
+      "american comic",
+      "grayscale",
+      "monochrome",
+      "painting"
+    ],
+  },
 }
 
 export type PresetName = keyof typeof presets

@@ -349,22 +349,22 @@ export function Panel({
           // there is an issue, this env check doesn't work..
         // process.env.NEXT_PUBLIC_CAN_REDRAW === "true" ?
          <div
-        className={cn(`relative -mt-14 ml-4`,)}>
+        className={cn(`relative -mt-8 ml-2 md:-mt-12md:ml-3 lg:-mt-14 lg:ml-4`,)}>
           <div className="flex flex-row space-x-2">
             <div
               onClick={rendered.status === "completed" ? handleReload : undefined}
               className={cn(
                 `bg-stone-100 rounded-lg`,
                 `flex flex-row space-x-2 items-center`,
-                `py-2 px-3 cursor-pointer`,
+                `py-1 px-2 md:py-2 md:px-3 cursor-pointer`,
                 `transition-all duration-200 ease-in-out`,
                 rendered.status === "completed" ? "opacity-95" : "opacity-50",
                 mouseOver && rendered.assetUrl ? `scale-95 hover:scale-100 hover:opacity-100`: `scale-0`
               )}>
               <RxReload
-                className="w-5 h-5"
+                className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5"
               />
-              <span className="text-sm">Redraw</span>
+              <span className="text-2xs md:text-xs lg:text-sm">Redraw</span>
             </div>
             <EditModal
               isEnabled={rendered.status === "completed"}
@@ -375,15 +375,15 @@ export function Panel({
                 className={cn(
                   `bg-stone-100 rounded-lg`,
                   `flex flex-row space-x-2 items-center`,
-                  `py-2 px-3 cursor-pointer`,
+                  `py-1 px-3 md:py-2 md:px-3 cursor-pointer`,
                   `transition-all duration-200 ease-in-out`,
                   rendered.status === "completed" ? "opacity-95" : "opacity-50",
                   mouseOver && rendered.assetUrl ? `scale-95 hover:scale-100 hover:opacity-100`: `scale-0`
                 )}>
                 <RxPencil2
-                  className="w-5 h-5"
+                  className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5"
                 />
-                <span className="text-sm">Edit</span>
+                <span className="text-2xs md:text-xs lg:text-sm">Edit</span>
               </div>
                         
             </EditModal>
