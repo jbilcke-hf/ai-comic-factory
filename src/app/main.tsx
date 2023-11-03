@@ -78,12 +78,14 @@ export default function Main() {
         console.log("Sorry folks, the style prompt was cut to:", limitedStylePrompt)
       }
 
-      // new experimental prompt: let's drop the user prompt!
-      const lightPanelPromptPrefix = preset.imagePrompt("").filter(x => x).join(", ")
+      // new experimental prompt: let's drop the user prompt, and only use the style
+      const lightPanelPromptPrefix = preset.imagePrompt(limitedStylePrompt).filter(x => x).join(", ")
 
       // this prompt will be used if the LLM generation failed
       const degradedPanelPromptPrefix = [
         ...preset.imagePrompt(limitedStylePrompt),
+
+        // we re-inject the story, then
         userStoryPrompt,
       ].filter(x => x).join(", ")
 
