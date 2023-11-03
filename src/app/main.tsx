@@ -72,8 +72,8 @@ export default function Main() {
       }
 
       // new experimental prompt: let's drop the user prompt!
-      const lightPanelPromptPrefix = preset.imagePrompt("").join(", ")
-      const degradedPanelPromptPrefix = preset.imagePrompt(limitedPrompt).join(", ")
+      const lightPanelPromptPrefix = preset.imagePrompt("").filter(x => x).join(", ")
+      const degradedPanelPromptPrefix = preset.imagePrompt(limitedPrompt).filter(x => x).join(", ")
 
       const newPanels: string[] = []
       const newCaptions: string[] = []

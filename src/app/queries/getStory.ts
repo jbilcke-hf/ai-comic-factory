@@ -26,8 +26,8 @@ export const getStory = async ({
     {
       role: "system",
       content: [
-        `You are a comic book author specialized in ${preset.llmPrompt}`,
-        `Please write detailed drawing instructions and a one-sentence short caption for the ${nbTotalPanels} panels of a new silent comic book page.`,
+        `You are a writer specialized in ${preset.llmPrompt}`,
+        `Please write detailed drawing instructions and a one-sentence short caption for the ${nbTotalPanels} panels of a new silent story. Please make sure each of the ${nbTotalPanels} panels include info about character gender, age, origin, clothes, colors, location, lights, etc.`,
         `Give your response as a VALID JSON array like this: \`Array<{ panel: number; instructions: string; caption: string}>\`.`,
         // `Give your response as Markdown bullet points.`,
         `Be brief in your ${nbTotalPanels} instructions and captions, don't add your own comments. Be straight to the point, and never reply things like "Sure, I can.." etc. Reply using valid JSON.`
