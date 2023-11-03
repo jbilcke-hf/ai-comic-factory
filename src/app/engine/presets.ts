@@ -46,12 +46,13 @@ export const presets: Record<string, Preset> = {
     imagePrompt: (prompt: string) => [
       `grayscale`,
       `intricate details`,
-      `japanese manga about ${prompt}`,
-      "single panel",
-      "manga",
-      "japanese",
-      "intricate",
-      "detailed",
+      `japanese manga`,
+      prompt,
+      // "single panel",
+      // "manga",
+      //  "japanese",
+      // "intricate",
+      // "detailed",
       // "drawing"
     ],
     negativePrompt: () => [

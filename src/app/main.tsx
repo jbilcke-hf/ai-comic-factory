@@ -71,7 +71,9 @@ export default function Main() {
         console.log("Sorry folks, the prompt was cut to:", limitedPrompt)
       }
 
-      const panelPromptPrefix = preset.imagePrompt(limitedPrompt).join(", ")
+      // new experimental prompt: let's drop the user prompt!
+      const lightPanelPromptPrefix = preset.imagePrompt("").join(", ")
+      const degradedPanelPromptPrefix = preset.imagePrompt(limitedPrompt).join(", ")
 
       const newPanels: string[] = []
       const newCaptions: string[] = []
@@ -79,7 +81,16 @@ export default function Main() {
       console.log("Panel prompts for SDXL:")
       for (let p = 0; p < nbTotalPanels; p++) {
         newCaptions.push(llmResponse[p]?.caption || "...")
-        const newPanel = [panelPromptPrefix, llmResponse[p]?.instructions || ""].map(chunk => chunk).join(", ")
+        const newPanel = [
+
+          // what we do here is that ideally we give full control to the LLM for prompting,
+          // unless there was a catastrophic failure, in that case we preserve the original prompt
+          llmResponse[p]?.instructions
+          ? lightPanelPromptPrefix
+          : degradedPanelPromptPrefix,
+
+          llmResponse[p]?.instructions || ""
+        ].map(chunk => chunk).join(", ")
         newPanels.push(newPanel)
         console.log(newPanel)
       }
