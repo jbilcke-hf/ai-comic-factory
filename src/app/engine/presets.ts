@@ -581,13 +581,12 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "new movie",
     imagePrompt: (prompt: string) => [
-      `vintage`,
+      `vintage photo`,
       `1950`,
       `1960`,
       `french new wave`,
       `faded colors`,
-      `color movie`,
-      `screencap`,
+      `color movie screencap`,
       `${prompt}`,
     ],
     negativePrompt: () => [
