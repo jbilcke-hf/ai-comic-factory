@@ -59,11 +59,15 @@ export function TopMenu() {
   const requestedPrompt = (searchParams?.get('prompt') as string) || ""
   const requestedLayout = (searchParams?.get('layout') as LayoutName) || defaultLayout
 
-  const [draftPrompt, setDraftPrompt] = useState(requestedPrompt)
+  const [draftPromptA, setDraftPromptA] = useState(requestedPrompt)
+  const [draftPromptB, setDraftPromptB] = useState(requestedPrompt)
+  const draftPrompt = `${draftPromptA}||${draftPromptB}`
+
   const [draftPreset, setDraftPreset] = useState<PresetName>(requestedPreset)
   const [draftLayout, setDraftLayout] = useState<LayoutName>(requestedLayout)
 
   const handleSubmit = () => {
+
     const promptChanged = draftPrompt.trim() !== prompt.trim()
     const presetChanged = draftPreset !== preset.id
     const layoutChanged = draftLayout !== layout
@@ -195,22 +199,38 @@ export function TopMenu() {
           `transition-all duration-200 ease-in-out`,
           `flex  flex-grow flex-col space-y-2 md:space-y-0 md:flex-row items-center md:space-x-3 font-mono w-full md:w-auto`
         )}>
+        <div className="flex flex-row flex-grow w-full">
           <div className="flex flex-row flex-grow w-full">
-        <Input
-          placeholder="Story"
-          className="w-full bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 rounded-r-none"
-          // disabled={atLeastOnePanelIsBusy}
-          onChange={(e) => {
-            setDraftPrompt(e.target.value)
-          }}
-          onKeyDown={({ key }) => {
-            if (key === 'Enter') {
-              handleSubmit()
-            }
-          }}
-          value={draftPrompt}
-         />
-        <Button
+            <Input
+              placeholder="1. style and theme.."
+              className="w-1/2 bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 rounded-r-none"
+              // disabled={atLeastOnePanelIsBusy}
+              onChange={(e) => {
+                setDraftPromptA(e.target.value)
+              }}
+              onKeyDown={({ key }) => {
+                if (key === 'Enter') {
+                  handleSubmit()
+                }
+              }}
+              value={draftPromptA}
+            />
+            <Input
+              placeholder="2. add a story.."
+              className="w-1/2 bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 rounded-l-none rounded-r-none"
+              // disabled={atLeastOnePanelIsBusy}
+              onChange={(e) => {
+                setDraftPromptB(e.target.value)
+              }}
+              onKeyDown={({ key }) => {
+                if (key === 'Enter') {
+                  handleSubmit()
+                }
+              }}
+              value={draftPromptB}
+            />
+          </div>
+          <Button
           className={cn(
             `rounded-l-none cursor-pointer`,
             `transition-all duration-200 ease-in-out`,

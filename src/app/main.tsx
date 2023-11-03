@@ -45,8 +45,15 @@ export default function Main() {
 
       let llmResponse: LLMResponse = []
 
+      const [stylePrompt, userStoryPrompt] = prompt.split("||")
+
       try {
-        llmResponse = await getStory({ preset, prompt, nbTotalPanels })
+        llmResponse = await getStory({
+          preset,
+          prompt: [
+            `${userStoryPrompt}`,
+            stylePrompt ? `in the following context: ${stylePrompt}` : ''
+          ].filter(x => x).join(", "), nbTotalPanels })
         console.log("LLM responded:", llmResponse)
 
       } catch (err) {
@@ -66,14 +73,19 @@ export default function Main() {
 
       // we have to limit the size of the prompt, otherwise the rest of the style won't be followed
 
-      let limitedPrompt = prompt.slice(0, 77)
-      if (limitedPrompt.length !== prompt.length) {
-        console.log("Sorry folks, the prompt was cut to:", limitedPrompt)
+      let limitedStylePrompt = stylePrompt.slice(0, 77)
+      if (limitedStylePrompt.length !== stylePrompt.length) {
+        console.log("Sorry folks, the style prompt was cut to:", limitedStylePrompt)
       }
 
       // new experimental prompt: let's drop the user prompt!
       const lightPanelPromptPrefix = preset.imagePrompt("").filter(x => x).join(", ")
-      const degradedPanelPromptPrefix = preset.imagePrompt(limitedPrompt).filter(x => x).join(", ")
+
+      // this prompt will be used if the LLM generation failed
+      const degradedPanelPromptPrefix = [
+        ...preset.imagePrompt(limitedStylePrompt),
+        userStoryPrompt,
+      ].filter(x => x).join(", ")
 
       const newPanels: string[] = []
       const newCaptions: string[] = []
