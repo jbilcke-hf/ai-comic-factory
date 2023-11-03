@@ -46,6 +46,7 @@ export function EditModal({
           <div className="flex flex-row flex-grow w-full">
             <Textarea
               placeholder="Story"
+              rows={10}
               className="w-full bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 rounded-r-none"
               // disabled={atLeastOnePanelIsBusy}
               onChange={(e) => {
