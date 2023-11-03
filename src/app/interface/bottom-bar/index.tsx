@@ -65,7 +65,7 @@ export function BottomBar() {
     let uploadUrl = ""
     try {
       uploadUrl = await uploadToHuggingFace(fileToUpload)
-      console.log("uploadUrl:", uploadUrl)
+      // console.log("uploadUrl:", uploadUrl)
     } catch (err) {
       console.error("Failed to upload the image to Hugging Face")
     }

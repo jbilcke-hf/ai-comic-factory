@@ -35,6 +35,7 @@ export const useStore = create<{
   setFont: (font: FontName) => void
   setPreset: (preset: Preset) => void
   setPanels: (panels: string[]) => void
+  setPanelPrompt: (newPrompt: string, index: number) => void
   setShowCaptions: (showCaptions: boolean) => void
   setLayout: (layout: LayoutName) => void
   setLayouts: (layouts: LayoutName[]) => void
@@ -116,6 +117,14 @@ export const useStore = create<{
     })
   },
   setPanels: (panels: string[]) => set({ panels }),
+  setPanelPrompt: (newPrompt, index) => {
+    const { panels } = get()
+    set({
+      panels: panels.map((p, i) => (
+        index === i ? newPrompt : p
+      ))
+    })
+  },
   setCaptions: (captions: string[]) => {
     set({
       captions,

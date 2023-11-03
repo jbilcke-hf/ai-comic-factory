@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState, useTransition } from "react"
-import { RxReload } from "react-icons/rx"
+import { RxReload, RxPencil2 } from "react-icons/rx"
 
 import { RenderedScene } from "@/types"
 
@@ -11,6 +11,7 @@ import { useStore } from "@/app/store"
 import { cn } from "@/lib/utils"
 import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
 import { Progress } from "@/app/interface/progress"
+import { EditModal } from "../edit-modal"
 
 export function Panel({
   page,
@@ -53,6 +54,8 @@ export function Panel({
 
   const panels = useStore(state => state.panels)
   const prompt = panels[panelIndex] || ""
+
+  const setPanelPrompt = useStore(state => state.setPanelPrompt)
 
   const captions = useStore(state => state.captions)
   const caption = captions[panelIndex] || ""
@@ -266,6 +269,12 @@ export function Panel({
     setRevision(revision + 1)
   }
 
+
+  const handleSavePrompt = (newPrompt: string) => {
+    console.log(`Asked to save a new prompt: ${newPrompt}`)
+    setPanelPrompt(newPrompt, panelIndex)
+  }
+
   if (prompt && !rendered.assetUrl) {
     return (
       <div className={cn(
@@ -341,7 +350,7 @@ export function Panel({
         // process.env.NEXT_PUBLIC_CAN_REDRAW === "true" ?
          <div
         className={cn(`relative -mt-14 ml-4`,)}>
-          <div className="flex flex-row">
+          <div className="flex flex-row space-x-2">
             <div
               onClick={rendered.status === "completed" ? handleReload : undefined}
               className={cn(
@@ -355,8 +364,29 @@ export function Panel({
               <RxReload
                 className="w-5 h-5"
               />
-              <span className="text-base">Redraw</span>
+              <span className="text-sm">Redraw</span>
             </div>
+            <EditModal
+              isEnabled={rendered.status === "completed"}
+              existingPrompt={prompt}
+              onSave={handleSavePrompt}
+            >
+              <div
+                className={cn(
+                  `bg-stone-100 rounded-lg`,
+                  `flex flex-row space-x-2 items-center`,
+                  `py-2 px-3 cursor-pointer`,
+                  `transition-all duration-200 ease-in-out`,
+                  rendered.status === "completed" ? "opacity-95" : "opacity-50",
+                  mouseOver && rendered.assetUrl ? `scale-95 hover:scale-100 hover:opacity-100`: `scale-0`
+                )}>
+                <RxPencil2
+                  className="w-5 h-5"
+                />
+                <span className="text-sm">Edit</span>
+              </div>
+                        
+            </EditModal>
           </div>
         </div> 
         //: null

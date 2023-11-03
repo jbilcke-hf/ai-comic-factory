@@ -1,0 +1,73 @@
+import { ReactNode, useState } from "react"
+import { RxReload, RxPencil2 } from "react-icons/rx"
+
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
+
+
+export function EditModal({
+    existingPrompt,
+    isEnabled,
+    className,
+    children,
+    onSave,
+  }: {
+    existingPrompt: string;
+    isEnabled: boolean;
+    className?: string;
+    children?: ReactNode;
+    onSave: (newPrompt: string) => void;
+  }) {
+  const [draftPrompt, setDraftPrompt] = useState(existingPrompt)
+  const [isOpen, setOpen] = useState(false)
+
+  const handleSubmit = () => {
+    if (draftPrompt) {
+      onSave(draftPrompt)
+      setOpen(false)
+    }
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={() => isEnabled ? setOpen(true) : undefined}>
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          {children}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit Prompt</DialogTitle>
+          <DialogDescription className="w-full text-center text-lg font-bold text-stone-800">
+            Edit Prompt
+          </DialogDescription>
+        </DialogHeader>
+          <div className="flex flex-row flex-grow w-full">
+            <Input
+              placeholder="Story"
+              className="w-full bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 rounded-r-none"
+              // disabled={atLeastOnePanelIsBusy}
+              onChange={(e) => {
+                setDraftPrompt(e.target.value)
+              }}
+              onKeyDown={({ key }) => {
+                if (key === 'Enter') {
+                  handleSubmit()
+                }
+              }}
+              value={draftPrompt}
+            />
+          </div>
+        <DialogFooter>
+          <Button
+            type="submit"
+            onClick={() => handleSubmit()}
+            disabled={!draftPrompt.length}
+            >Save</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
