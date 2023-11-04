@@ -42,7 +42,7 @@ Rendering config:
 - `RENDERING_REPLICATE_API_MODEL_VERSION`: optional, in case you want to change the version
 
 Language model config:
-- `LLM_HF_INFERENCE_ENDPOINT_URL`: "https://llama-v2-70b-chat.ngrok.io"
+- `LLM_HF_INFERENCE_ENDPOINT_URL`: "<use your own>"
 - `LLM_HF_INFERENCE_API_MODEL`: "codellama/CodeLlama-7b-hf"
 
 In addition, there are some community sharing variables that you can just ignore.
