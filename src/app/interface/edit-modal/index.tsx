@@ -45,7 +45,6 @@ export function EditModal({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] text-stone-800">
         <DialogHeader>
-          <DialogTitle>Edit Prompt</DialogTitle>
           <DialogDescription className="w-full text-center text-lg font-bold text-stone-800">
             Edit Prompt
           </DialogDescription>
