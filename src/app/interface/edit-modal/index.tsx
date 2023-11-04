@@ -32,11 +32,18 @@ export function EditModal({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => isEnabled ? setOpen(true) : undefined}>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      if (!open || isEnabled) {
+        setOpen(open)
+        if (!open) {
+          setDraftPrompt(existingPrompt)
+        }
+      }
+    }}>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] text-stone-800">
         <DialogHeader>
           <DialogTitle>Edit Prompt</DialogTitle>
           <DialogDescription className="w-full text-center text-lg font-bold text-stone-800">
@@ -61,6 +68,14 @@ export function EditModal({
             />
           </div>
         <DialogFooter>
+        <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setOpen(false)
+              setDraftPrompt(existingPrompt)
+            }}
+            >cancel</Button>
           <Button
             type="submit"
             onClick={() => handleSubmit()}
