@@ -11,6 +11,9 @@ export function dirtyCaptionCleaner({
   let newInstructions = (
     // need to remove from LLM garbage here, too
     (instructions.split(":").pop() || "")
+    .replaceAll("Draw a", "")
+    .replaceAll("Draw the", "")
+    .replaceAll("Draw", "")
     .replaceAll("Show a", "")
     .replaceAll("Show the", "")
     .replaceAll("Opens with a", "")
