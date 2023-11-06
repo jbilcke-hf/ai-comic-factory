@@ -46,6 +46,7 @@ export function Bubble({ children, onChange }: {
       zoomLevel > 90 ? `p-1.5 md:p-4` :
       zoomLevel > 40 ? `p-1 md:p-2` :
       `p-0.5 md:p-2`,
+      `print:p-2`
     )}>
       <div
         ref={ref}
@@ -68,7 +69,8 @@ export function Bubble({ children, onChange }: {
         zoomLevel > 100 ? `p-1.5 md:p-2` :
         zoomLevel > 90 ? `p-1 md:p-1` :
         zoomLevel > 40 ? `p-0.5 md:p-0.5` :
-        `p-0.5 md:p-0.5]`,
+        `p-0.5 md:p-0.5`,
+        `print:p-1.5`,
 
         zoomLevel > 220 ? `text-base md:text-lg` :
         zoomLevel > 200 ? `text-sm md:text-md` :
@@ -79,12 +81,14 @@ export function Bubble({ children, onChange }: {
         zoomLevel > 90 ? `text-5xs md:text-3xs` :
         zoomLevel > 40 ? `text-6xs md:text-4xs`
         : `text-7xs md:text-5xs`,
+        `print:text-4xs`,
 
         zoomLevel > 140 ? `rounded-lg md:rounded-xl` :
         zoomLevel > 120 ? `rounded-md md:rounded-lg` :
         zoomLevel > 90 ? `rounded-sm md:rounded-md` :
         zoomLevel > 40 ? `rounded-xs md:rounded-sm` :
         `rounded-none md:rounded-none`,
+        `print:rounded-lg`,
 
         showCaptions ? (
           zoomLevel > 90 ? `block` : `hidden md:block`

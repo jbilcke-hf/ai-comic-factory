@@ -157,8 +157,8 @@ export default function Main() {
         `flex flex-row items-center justify-center`,
         `transition-all duration-300 ease-in-out`,
         isGeneratingStory
-          ? `bg-zinc-100/10 backdrop-blur-md`
-          : `bg-zinc-100/0 backdrop-blur-none pointer-events-none`,
+          ? `bg-zinc-50/30 backdrop-blur-md`
+          : `bg-zinc-50/0 backdrop-blur-none pointer-events-none`,
         fonts.actionman.className
       )}>
         <div className={cn(

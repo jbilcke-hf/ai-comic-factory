@@ -310,7 +310,8 @@ export function Panel({
             `absolute`,
             `top-0 w-full`,
             `flex justify-between`,
-            `p-2 space-x-2`
+            `p-2 space-x-2`,
+            `print:hidden`
             )}>
             <div
               onClick={rendered.status === "completed" ? handleReload : undefined}
