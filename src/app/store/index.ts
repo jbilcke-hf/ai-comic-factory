@@ -40,6 +40,7 @@ export const useStore = create<{
   setLayout: (layout: LayoutName) => void
   setLayouts: (layouts: LayoutName[]) => void
   setCaptions: (captions: string[]) => void
+  setPanelCaption: (newCaption: string, index: number) => void
   setZoomLevel: (zoomLevel: number) => void
   setPage: (page: HTMLDivElement) => void
   setGeneratingStory: (isGeneratingStory: boolean) => void
@@ -133,6 +134,14 @@ export const useStore = create<{
   setShowCaptions: (showCaptions: boolean) => {
     set({
       showCaptions,
+    })
+  },
+  setPanelCaption: (newCaption, index) => {
+    const { captions } = get()
+    set({
+      captions: captions.map((c, i) => (
+        index === i ? newCaption : c
+      ))
     })
   },
   setLayout: (layoutName: LayoutName) => {

@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils"
 import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
 import { Progress } from "@/app/interface/progress"
 import { EditModal } from "../edit-modal"
+import { Bubble } from "./bubble"
 
 export function Panel({
   page,
@@ -59,9 +60,9 @@ export function Panel({
 
   const captions = useStore(state => state.captions)
   const caption = captions[panelIndex] || ""
-
+  const setPanelCaption = useStore(state => state.setPanelCaption)
+  
   const zoomLevel = useStore(state => state.zoomLevel)
-  const showCaptions = useStore(state => state.showCaptions)
 
   const addToUpscaleQueue = useStore(state => state.addToUpscaleQueue)
 
@@ -251,6 +252,7 @@ export function Panel({
 
   const frameClassName = cn(
     //`flex`,
+    `relative`,
     `w-full h-full`,
     `border-stone-800`,
     `transition-all duration-200 ease-in-out`,
@@ -275,6 +277,10 @@ export function Panel({
     setPanelPrompt(newPrompt, panelIndex)
   }
 
+  const handleSaveCaption = (newCaption: string) => {
+    console.log(`Asked to save a new caption: ${newCaption}`)
+    setPanelCaption(newCaption, panelIndex)
+  }
   if (prompt && !rendered.assetUrl) {
     return (
       <div className={cn(
@@ -296,61 +302,16 @@ export function Panel({
     onMouseEnter={() => setMouseOver(true)}
     onMouseLeave={() => setMouseOver(false)}
     >
-        <div className={cn(
-        `bg-stone-50`,
-        `border-stone-800`,
-        `transition-all duration-200 ease-in-out`,
-        zoomLevel > 140 ? `border-b-[2px] md:border-b-[4px]` :
-        zoomLevel > 120 ? `border-b-[1.5px] md:border-b-[3px]` :
-        zoomLevel > 90 ? `border-b-[1px] md:border-b-[2px]` :
-        zoomLevel > 40 ? `border-b-[0.5px] md:border-b-[1px]` :
-        `border-transparent md:border-b-[0.5px]`,
-        `print:border-b-[1.5px]`,
-        `truncate`,
-
-        zoomLevel > 200 ? `p-4 md:p-8` :
-        zoomLevel > 180 ? `p-[14px] md:p-8` :
-        zoomLevel > 160 ? `p-[12px] md:p-[28px]` :
-        zoomLevel > 140 ? `p-[10px] md:p-[26px]` :
-        zoomLevel > 120 ? `p-2 md:p-6` :
-        zoomLevel > 100 ? `p-1.5 md:p-[20px]` :
-        zoomLevel > 90 ? `p-1.5 md:p-4` :
-        zoomLevel > 40 ? `p-1 md:p-2` :
-        `p-0.5 md:p-2`,
-
-        zoomLevel > 220 ? `text-xl md:text-4xl` :
-        zoomLevel > 200 ? `text-lg md:text-3xl` :
-        zoomLevel > 180 ? `text-md md:text-2xl` :
-        zoomLevel > 140 ? `text-2xs md:text-2xl` :
-        zoomLevel > 120 ? `text-3xs md:text-xl` :
-        zoomLevel > 100 ? `text-4xs md:text-lg` :
-        zoomLevel > 90 ? `text-5xs md:text-sm` :
-        zoomLevel > 40 ? `md:text-xs` : `md:text-2xs`,
-
-        showCaptions ? (
-          zoomLevel > 90 ? `block` : `hidden md:block`
-        ) : `hidden`,
-      )}
-      >{caption || ""}
-        </div>
-        {rendered.assetUrl &&
-        <img
-          ref={ref}
-          src={rendered.assetUrl}
-          width={width}
-          height={height}
-          alt={rendered.alt}
+      {(prompt && rendered.assetUrl && caption)
+        ? <Bubble onChange={handleSaveCaption}>{caption}</Bubble>
+        : null}
+      <div
           className={cn(
-            `comic-panel w-full h-full object-cover max-w-max`,
-            // showCaptions ? `-mt-11` : ''
-            )}
-        />}
-        {
-          // there is an issue, this env check doesn't work..
-        // process.env.NEXT_PUBLIC_CAN_REDRAW === "true" ?
-         <div
-        className={cn(`relative -mt-8 ml-2 md:-mt-12md:ml-3 lg:-mt-14 lg:ml-4`,)}>
-          <div className="flex flex-row space-x-2">
+            `absolute`,
+            `top-0 w-full`,
+            `flex justify-between`,
+            `p-2 space-x-2`
+            )}>
             <div
               onClick={rendered.status === "completed" ? handleReload : undefined}
               className={cn(
@@ -364,7 +325,13 @@ export function Panel({
               <RxReload
                 className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5"
               />
-              <span className="text-2xs md:text-xs lg:text-sm">Redraw</span>
+              <span className={cn(
+                zoomLevel > 80
+                ? `text-xs md:text-sm lg:text-base` :
+                zoomLevel > 40
+                ? `text-2xs md:text-xs lg:text-sm` :
+                  `text-3xs md:text-2xs lg:text-xs`
+              )}>Redraw</span>
             </div>
             <EditModal
               isEnabled={rendered.status === "completed"}
@@ -383,14 +350,30 @@ export function Panel({
                 <RxPencil2
                   className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5"
                 />
-                <span className="text-2xs md:text-xs lg:text-sm">Edit</span>
+                <span className={cn(
+                  zoomLevel > 80
+                  ? `text-xs md:text-sm lg:text-base` :
+                  zoomLevel > 40
+                  ? `text-2xs md:text-xs lg:text-sm` :
+                    `text-3xs md:text-2xs lg:text-xs`
+                  )}>Edit</span>
               </div>
                         
             </EditModal>
-          </div>
-        </div> 
-        //: null
-      }
+       </div>
+
+      {rendered.assetUrl &&
+        <img
+          ref={ref}
+          src={rendered.assetUrl}
+          width={width}
+          height={height}
+          alt={rendered.alt}
+          className={cn(
+            `comic-panel w-full h-full object-cover max-w-max`,
+            // showCaptions ? `-mt-11` : ''
+            )}
+        />}
     </div>
   )
 }
