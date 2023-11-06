@@ -83,12 +83,12 @@ export function Bubble({ children, onChange }: {
         : `text-7xs md:text-5xs`,
         `print:text-4xs`,
 
-        zoomLevel > 140 ? `rounded-lg md:rounded-xl` :
-        zoomLevel > 120 ? `rounded-md md:rounded-lg` :
-        zoomLevel > 90 ? `rounded-sm md:rounded-md` :
-        zoomLevel > 40 ? `rounded-xs md:rounded-sm` :
-        `rounded-none md:rounded-none`,
-        `print:rounded-lg`,
+        zoomLevel > 140 ? `rounded-xl md:rounded-2xl` :
+        zoomLevel > 120 ? `rounded-lg md:rounded-xl` :
+        zoomLevel > 90 ? `rounded-md md:rounded-lg` :
+        zoomLevel > 40 ? `rounded-sm md:rounded-md` :
+        `rounded-sm md:rounded-sm`,
+        `print:rounded-xl`,
 
         showCaptions ? (
           zoomLevel > 90 ? `block` : `hidden md:block`
