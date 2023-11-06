@@ -146,7 +146,7 @@ ${comicFileMd}`;
         </Button>
           </p>
           <p>
-            👉 Step 2: Select &quot;Print to PDF&quot; in the printing options
+            👉 Step 2: Select &quot;Print to PDF&quot; in the printing options (Note: if you use Safari, print from the OS menu)
           </p>
           <p>
             👉 Step 3: Open your PDF and convert it to a JPG image (using &quot;Export to&quot; or &quot;Convert to&quot;)
