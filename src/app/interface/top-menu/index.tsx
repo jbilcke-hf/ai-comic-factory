@@ -216,7 +216,7 @@ export function TopMenu() {
               value={draftPromptB}
             />
             <Input
-              placeholder="2. Style prompt (optional)"
+              placeholder="2. Style/character prompt"
               className="w-1/2 bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 border-l-stone-100 rounded-l-none rounded-r-none"
               // disabled={atLeastOnePanelIsBusy}
               onChange={(e) => {

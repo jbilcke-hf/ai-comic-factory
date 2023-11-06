@@ -53,7 +53,7 @@ ${uploadUrl
     const stylePrompt = (prompt.split("||")[0] || "")
 
     const stylePromptMd = stylePrompt ? `
-#### Style prompt:
+#### Style/character prompt:
 \`\`\`${stylePrompt}\`\`\`
 ` : ``
 
