@@ -1,14 +1,12 @@
 import { useStore } from "@/app/store"
-import { HuggingClap } from "@/components/icons/hugging-clap"
 import { Button } from "@/components/ui/button"
-import { base64ToFile } from "@/lib/base64ToFile"
-import { uploadToHuggingFace } from "@/lib/uploadToHuggingFace"
 import { cn } from "@/lib/utils"
 import { About } from "../about"
 import { startTransition, useState } from "react"
 import { upscaleImage } from "@/app/engine/render"
 import { sleep } from "@/lib/sleep"
 import { AIClipFactory } from "../ai-clip-factory"
+import { Share } from "../share"
 
 export function BottomBar() {
   const download = useStore(state => state.download)
@@ -58,45 +56,10 @@ export function BottomBar() {
     })
   }
 
-  const handleShare = async () => {
-    const dataUrl = await pageToImage()
-    // console.log("dataUrl:", dataUrl)
-    const fileToUpload = base64ToFile(dataUrl, "comic.png")
-    let uploadUrl = ""
-    try {
-      uploadUrl = await uploadToHuggingFace(fileToUpload)
-      // console.log("uploadUrl:", uploadUrl)
-    } catch (err) {
-      console.error("Failed to upload the image to Hugging Face")
-    }
-
-
-    const descriptionMd = `
-#### Prompt:
-\`\`\`${prompt}\`\`\`
-
-#### Preset:
-\`\`\`${preset.label}\`\`\`
-
-#### Comic:
-${uploadUrl
-  ? (`![${prompt}](${uploadUrl})`)
-  : (`(please drag & drop a capture of your comic here - we recommend you to print the PDF and convert it to JPG for best quality!)`)}
-`;
-
-    // console.log("descriptionMd:", descriptionMd)
-
-    const params = new URLSearchParams({
-      title: `[Comic] ${prompt}`,
-      description: descriptionMd,
-      });
-    const paramsStr = params.toString();
-    window.open(`https://huggingface.co/spaces/jbilcke-hf/comic-factory/discussions/new?${paramsStr}`, '_blank');
-  }
-
   const handlePrint = () => {
     window.print()
   }
+  
   return (
     <div className={cn(
       `print:hidden`,
@@ -163,7 +126,6 @@ ${uploadUrl
            </Button>
         </div>
           */}
-          <div>
           <Button
             onClick={handlePrint}
             disabled={!prompt?.length}
@@ -172,28 +134,10 @@ ${uploadUrl
             remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} panels ⌛` : `Save PDF`
             }</span>
             <span className="inline md:hidden">{
-              remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save PDF`
+              remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save`
             }</span>
-           </Button>
-        </div>
-        <div>
-          {
-          // there is an issue, this env check doesn't work..
-          // process.env.NEXT_PUBLIC_ENABLE_COMMUNITY_SHARING === "true" ? 
-          <Button
-            onClick={handleShare}
-            disabled={!prompt?.length}
-            className="space-x-2"
-          >
-            <div className="scale-105"><HuggingClap /></div>
-            <div>
-              <span className="hidden md:inline">Share to community</span>
-              <span className="inline md:hidden">Share</span>
-            </div>
-          </Button> 
-          //: null
-        }
-        </div>
+        </Button>
+        <Share />
       </div>
     </div>
   )
