@@ -2,6 +2,7 @@
 
 import { v4 as uuidv4 } from "uuid"
 import Replicate from "replicate"
+import OpenAI from "openai"
 
 import { RenderRequest, RenderedScene, RenderingEngine } from "@/types"
 import { generateSeed } from "@/lib/generateSeed"
@@ -21,6 +22,10 @@ const replicateModelVersion = `${process.env.RENDERING_REPLICATE_API_MODEL_VERSI
 
 const videochainToken = `${process.env.AUTH_VIDEOCHAIN_API_TOKEN || ""}`
 const videochainApiUrl = `${process.env.RENDERING_VIDEOCHAIN_API_URL || ""}`
+
+const openaiApiKey = `${process.env.AUTH_OPENAI_API_KEY || ""}`
+const openaiApiBaseUrl = `${process.env.RENDERING_OPENAI_API_BASE_URL || "https://api.openai.com/v1"}`
+const openaiApiModel = `${process.env.RENDERING_OPENAI_API_MODEL || "dall-e-3"}`
 
 export async function newRender({
   prompt,
@@ -57,7 +62,69 @@ export async function newRender({
   const guidanceScale = 9
 
   try {
-    if (renderingEngine === "REPLICATE") {
+    if (renderingEngine === "OPENAI") {
+
+      /*
+      const openai = new OpenAI({
+        apiKey: openaiApiKey
+      });
+      */
+
+      // When using DALL·E 3, images can have a size of 1024x1024, 1024x1792 or 1792x1024 pixels.
+      // the improved resolution is nice, but the AI Comic Factory needs a special ratio
+      // anyway, let's see what we can do
+      
+      const size =
+        width > height ? '1792x1024' :
+        width < height ? '1024x1792' :
+        '1024x1024'
+
+      /*
+      const response = await openai.createImage({
+        model: "dall-e-3",
+        prompt,
+        n: 1,
+        size: size as any,
+        // quality: "standard",
+      })
+      */
+
+      const res = await fetch(`${openaiApiBaseUrl}/images/generations`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${openaiApiKey}`,
+        },
+        body: JSON.stringify({
+          model: "dall-e-3",
+          prompt,
+          n: 1,
+          size,
+          // quality: "standard",
+        }),
+        cache: 'no-store',
+      // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
+      // next: { revalidate: 1 }
+      })
+
+      if (res.status !== 200) {
+        throw new Error('Failed to fetch data')
+      }
+      
+      const response = (await res.json()) as { data: { url: string }[] }
+
+      console.log("response:", response)
+      return {
+        renderId: uuidv4(),
+        status: "completed",
+        assetUrl: response.data[0].url || "", 
+        alt: prompt,
+        error: "",
+        maskUrl: "",
+        segments: []
+      } as RenderedScene
+    } else if (renderingEngine === "REPLICATE") {
       if (!replicateToken) {
         throw new Error(`you need to configure your REPLICATE_API_TOKEN in order to use the REPLICATE rendering engine`)
       }

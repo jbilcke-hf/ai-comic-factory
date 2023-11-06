@@ -24,7 +24,7 @@ If you try to duplicate the project, open the `.env` you will see it requires so
 
 Provider config:
 - `LLM_ENGINE`: can be one of: "INFERENCE_API", "INFERENCE_ENDPOINT", "OPENAI"
-- `RENDERING_ENGINE`: can be one of: "INFERENCE_API", "INFERENCE_ENDPOINT", "REPLICATE", "VIDEOCHAIN" for now, unless you code your custom solution
+- `RENDERING_ENGINE`: can be one of: "INFERENCE_API", "INFERENCE_ENDPOINT", "REPLICATE", "VIDEOCHAIN", "OPENAI" for now, unless you code your custom solution
 
 Auth config:
 - `AUTH_HF_API_TOKEN`: only if you decide to use OpenAI for the LLM engine necessary if you decide to use an inference api model or a custom inference endpoint
