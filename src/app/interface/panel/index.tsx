@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from "react"
 import { RxReload, RxPencil2 } from "react-icons/rx"
 
-import { RenderedScene } from "@/types"
+import { RenderedScene, RenderingModelVendor } from "@/types"
 
 import { getRender, newRender } from "@/app/engine/render"
 import { useStore } from "@/app/store"
@@ -14,6 +14,9 @@ import { Progress } from "@/app/interface/progress"
 import { EditModal } from "../edit-modal"
 import { Bubble } from "./bubble"
 import { getSettings } from "../settings-dialog/getSettings"
+import { useLocalStorage } from "usehooks-ts"
+import { localStorageKeys } from "../settings-dialog/localStorageKeys"
+import { defaultSettings } from "../settings-dialog/defaultSettings"
 
 export function Panel({
   page,
@@ -83,9 +86,18 @@ export function Panel({
   const timeoutRef = useRef<any>(null)
 
   const enableRateLimiter = `${process.env.NEXT_PUBLIC_ENABLE_RATE_LIMITER}`  === "true"
- 
 
-  const delay = enableRateLimiter ? (1000 + (500 * panelIndex)) : 1000
+  const [renderingModelVendor, _setRenderingModelVendor] = useLocalStorage<RenderingModelVendor>(
+    localStorageKeys.renderingModelVendor,
+    defaultSettings.renderingModelVendor
+  )
+  
+  let delay = enableRateLimiter ? (1000 + (500 * panelIndex)) : 1000
+
+  // Let's be gentle with Replicate or else they will believe they are under attack
+  if (renderingModelVendor === "REPLICATE") {
+    delay += 8000
+  }
 
   const startImageGeneration = ({ prompt, width, height, revision }: {
     prompt: string
