@@ -71,7 +71,7 @@ export function SettingsDialog() {
           </div>
         </Button> 
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] overflow-y-auto h-[80vh]">
         <DialogHeader>
           <DialogDescription className="w-full text-center text-lg font-bold text-stone-800">
             Custom Settings
