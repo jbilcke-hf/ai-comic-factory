@@ -105,7 +105,7 @@ export function SettingsDialog() {
 
           {renderingModelVendor === "HUGGINGFACE" && <>
             <Field>
-              <Label>Hugging Face API Token (a <a className="text-stone-600 underline" href="https://huggingface.co/subscribe/pro" target="_blank">PRO account</a> is recommended for faster inference):</Label>
+              <Label>Hugging Face API Token (<a className="text-stone-600 underline" href="https://huggingface.co/subscribe/pro" target="_blank">PRO account</a> recommended for higher rate limit):</Label>
               <Input
                 className="font-mono"
                 type="password"
