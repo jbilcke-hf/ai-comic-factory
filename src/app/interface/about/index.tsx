@@ -25,7 +25,7 @@ export function About() {
            The AI Comic Factory is a free and open-source application made to demonstrate the capabilities of AI models.
          </p>
          <p>
-           And yes, you can use your <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/discussions/402#654ab848fa25dfb780aa19fb">own art to generate comic panels!</a>
+           And yes, you can use your <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/discussions/402#654ab848fa25dfb780aa19fb" target="_blank">own art to generate comic panels!</a>
          </p>
          <p>
          👉 The language model used to generate the descriptions of each panel is <a className="text-stone-600 underline" href="https://huggingface.co/blog/llama2" target="_blank">Llama-2 70b</a>.
