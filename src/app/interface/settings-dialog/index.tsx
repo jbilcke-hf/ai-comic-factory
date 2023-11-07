@@ -211,7 +211,7 @@ export function SettingsDialog() {
                 <Label>LoRA model trigger (optional):</Label>
                 <Input
                   className="font-mono"
-                  placeholder="In the style of TOK"
+                  placeholder={'Eg. "In the style of TOK" etc'}
                   onChange={(x) => {
                     setReplicateApiModelTrigger(x.target.value)
                   }}
