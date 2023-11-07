@@ -38,7 +38,7 @@ export const presets: Record<string, Preset> = {
   },
   neutral: {
     id: "neutral",
-    label: "Neutral (base model)",
+    label: "Neutral (no style)",
     family: "american",
     color: "color",
     font: "actionman",
