@@ -96,8 +96,8 @@ export function SettingsDialog() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="SERVER">Use server settings (default, recommended)</SelectItem>
-                <SelectItem value="HUGGINGFACE">Custom Hugging Face model (expert users)</SelectItem>
-                <SelectItem value="REPLICATE">Custom Replicate model (expert users)</SelectItem>
+                <SelectItem value="HUGGINGFACE">Custom Hugging Face model (requires a PRO account)</SelectItem>
+                <SelectItem value="REPLICATE">Custom Replicate model (will bill your own account)</SelectItem>
                 <SelectItem value="OPENAI">DALL·E 3 by OpenAI (partial support, in alpha)</SelectItem>
               </SelectContent>
             </Select>
@@ -117,7 +117,7 @@ export function SettingsDialog() {
               />
             </Field>
             <Field>
-              <Label>Hugging Face Inference API model:</Label>
+              <Label>Hugging Face Inference API model (note: a PRO account is required):</Label>
               <Input
                 className="font-mono"
                 placeholder="Name of the Inference API model"
@@ -171,7 +171,7 @@ export function SettingsDialog() {
 
           {renderingModelVendor === "REPLICATE" && <>
               <Field>
-                <Label>Replicate API Token:</Label>
+                <Label>Replicate API Token (your own account will be billed per Replicate pricing):</Label>
                 <Input
                   className="font-mono"
                   type="password"
