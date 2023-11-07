@@ -97,8 +97,8 @@ export function SettingsDialog() {
               <SelectContent>
                 <SelectItem value="SERVER">Use server settings (default, recommended)</SelectItem>
                 <SelectItem value="HUGGINGFACE">Custom Hugging Face model (requires a PRO account)</SelectItem>
-                <SelectItem value="REPLICATE">Custom Replicate model (will bill your own account)</SelectItem>
-                <SelectItem value="OPENAI">DALL·E 3 by OpenAI (partial support, in alpha)</SelectItem>
+                <SelectItem value="REPLICATE">Custom Replicate model (will use your own account)</SelectItem>
+                <SelectItem value="OPENAI">DALL·E 3 by OpenAI (partial support, will use your own account)</SelectItem>
               </SelectContent>
             </Select>
           </Field>
@@ -117,7 +117,7 @@ export function SettingsDialog() {
               />
             </Field>
             <Field>
-              <Label>Hugging Face Inference API model (note: a PRO account is required):</Label>
+              <Label>Inference API model (requires a <a className="text-stone-600 underline" href="https://huggingface.co/subscribe/pro" target="_blank">Hugging Face PRO account</a>):</Label>
               <Input
                 className="font-mono"
                 placeholder="Name of the Inference API model"
@@ -145,7 +145,7 @@ export function SettingsDialog() {
 
           {renderingModelVendor === "OPENAI" && <>
             <Field>
-              <Label>OpenAI API Token:</Label>
+              <Label>OpenAI API Token (you will be billed based on OpenAI pricing):</Label>
               <Input
                 className="font-mono"
                 type="password"
@@ -171,7 +171,7 @@ export function SettingsDialog() {
 
           {renderingModelVendor === "REPLICATE" && <>
               <Field>
-                <Label>Replicate API Token (your own account will be billed per Replicate pricing):</Label>
+                <Label>Replicate API Token (you will be billed based on Replicate pricing):</Label>
                 <Input
                   className="font-mono"
                   type="password"
