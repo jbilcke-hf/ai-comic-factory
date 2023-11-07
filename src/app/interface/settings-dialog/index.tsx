@@ -95,8 +95,8 @@ export function SettingsDialog() {
                 <SelectValue placeholder="Theme" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="SERVER">Use server settings (default, recommended)</SelectItem>
-                <SelectItem value="HUGGINGFACE">Custom Hugging Face model (requires a PRO account)</SelectItem>
+                <SelectItem value="SERVER">Use server settings (default)</SelectItem>
+                <SelectItem value="HUGGINGFACE">Custom Hugging Face model (recommended)</SelectItem>
                 <SelectItem value="REPLICATE">Custom Replicate model (will use your own account)</SelectItem>
                 <SelectItem value="OPENAI">DALL·E 3 by OpenAI (partial support, will use your own account)</SelectItem>
               </SelectContent>
@@ -105,7 +105,7 @@ export function SettingsDialog() {
 
           {renderingModelVendor === "HUGGINGFACE" && <>
             <Field>
-              <Label>Hugging Face API Token:</Label>
+              <Label>Hugging Face API Token (a <a className="text-stone-600 underline" href="https://huggingface.co/subscribe/pro" target="_blank">PRO account</a> is recommended for faster inference):</Label>
               <Input
                 className="font-mono"
                 type="password"
@@ -117,7 +117,7 @@ export function SettingsDialog() {
               />
             </Field>
             <Field>
-              <Label>Inference API model (requires a <a className="text-stone-600 underline" href="https://huggingface.co/subscribe/pro" target="_blank">Hugging Face PRO account</a>):</Label>
+              <Label>Inference API model (custom SDXL or SDXL LoRA):</Label>
               <Input
                 className="font-mono"
                 placeholder="Name of the Inference API model"
