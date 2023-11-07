@@ -14,7 +14,7 @@ export async function predict(inputs: string, nbPanels: number): Promise<string>
   })
 
   const messages: ChatCompletionMessage[] = [
-    { role: "system", content: inputs },
+    { role: "assistant", content: inputs },
   ]
 
   try {
