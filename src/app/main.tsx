@@ -52,7 +52,11 @@ export default function Main() {
           preset,
           prompt: [
             `${userStoryPrompt}`,
-            stylePrompt ? `in the following context: ${stylePrompt}` : ''
+
+            // not necessary + it confuses the LLM if we use custom 
+            // + the LLM may reject some of the styles
+            // stylePrompt ? `in the following context: ${stylePrompt}` : ''
+
           ].filter(x => x).join(", "), nbTotalPanels })
         console.log("LLM responded:", llmResponse)
 

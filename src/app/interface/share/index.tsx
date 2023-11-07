@@ -88,26 +88,7 @@ ${comicFileMd}`;
     const paramsStr = params.toString();
     window.open(`https://huggingface.co/spaces/jbilcke-hf/comic-factory/discussions/new?${paramsStr}`, '_blank');
   }
-
-  <div>
-    {
-    // there is an issue, this env check doesn't work..
-    // process.env.NEXT_PUBLIC_ENABLE_COMMUNITY_SHARING === "true" ? 
-    <Button
-      onClick={handleShare}
-      disabled={!prompt?.length}
-      className="space-x-2"
-    >
-      <div className="scale-105"><HuggingClap /></div>
-      <div>
-        <span className="hidden md:inline">{remainingImages ? `⌛` : `Share to community`}</span>
-        <span className="inline md:hidden">{remainingImages ? `⌛` : `Share`}</span>
-      </div>
-    </Button> 
-    //: null
-  }
-  </div>
-
+  
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>

@@ -13,6 +13,7 @@ import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
 import { Progress } from "@/app/interface/progress"
 import { EditModal } from "../edit-modal"
 import { Bubble } from "./bubble"
+import { getSettings } from "../settings-dialog/getSettings"
 
 export function Panel({
   page,
@@ -124,7 +125,8 @@ export function Panel({
 
             // TODO: here we never reset the revision, so only the first user
             // comic will be cached (we should fix that later)
-            withCache: revision === 0
+            withCache: revision === 0,
+            settings: getSettings(),
           })
         } catch (err) {
           // "Failed to load the panel! Don't worry, we are retrying..")
@@ -133,6 +135,7 @@ export function Panel({
             width,
             height,
             withCache,
+            settings: getSettings(),
           })
         }
 
@@ -174,7 +177,7 @@ export function Panel({
 
       try {
         setGeneratingImages(panelId, true)
-        const newRendered = await getRender(renderedRef.current.renderId)
+        const newRendered = await getRender(renderedRef.current.renderId, getSettings())
 
         if (JSON.stringify(renderedRef.current) !== JSON.stringify(newRendered)) {
           setRendered(panelId, renderedRef.current = newRendered)
@@ -191,6 +194,7 @@ export function Panel({
               width,
               height,
               withCache: false,
+              settings: getSettings(),
             })
             setRendered(panelId, newAttempt)
           } catch (err) {

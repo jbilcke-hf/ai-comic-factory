@@ -7,6 +7,7 @@ import { upscaleImage } from "@/app/engine/render"
 import { sleep } from "@/lib/sleep"
 import { AIClipFactory } from "../ai-clip-factory"
 import { Share } from "../share"
+import { SettingsDialog } from "../settings-dialog"
 
 export function BottomBar() {
   const download = useStore(state => state.download)
@@ -88,21 +89,16 @@ export function BottomBar() {
       `space-x-3`,
       `scale-[0.9]`
     )}>
-      <div>
-        {
-       // there is an issue, this env check doesn't work..
-        // process.env.NEXT_PUBLIC_CAN_UPSCALE === "true" ?
-        <Button
-          onClick={handleUpscale}
-          disabled={!prompt?.length || remainingImages > 0 || isUpscaling || !Object.values(upscaleQueue).length}
-        >
-          {isUpscaling
+      <SettingsDialog />
+      <Button
+        onClick={handleUpscale}
+        disabled={!prompt?.length || remainingImages > 0 || isUpscaling || !Object.values(upscaleQueue).length}
+      >
+        {isUpscaling
             ? `${allStatus.length - Object.values(upscaleQueue).length}/${allStatus.length} ⌛`
             : "Upscale"}
-        </Button>
-        // : null
-      }
-      </div>
+      </Button>
+
         {/*
         <div>
           <Button

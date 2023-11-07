@@ -36,6 +36,18 @@ export const presets: Record<string, Preset> = {
     imagePrompt: (prompt: string) => [],
     negativePrompt: () => [],
   },
+  neutral: {
+    id: "neutral",
+    label: "Neutral (no style)",
+    family: "american",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "",
+    imagePrompt: (prompt: string) => [
+      prompt,
+    ],
+    negativePrompt: () => [ ],
+  },
   japanese_manga: {
     id: "japanese_manga",
     label: "Japanese",

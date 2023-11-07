@@ -2,43 +2,46 @@
 
 import { v4 as uuidv4 } from "uuid"
 import Replicate from "replicate"
-import OpenAI from "openai"
 
-import { RenderRequest, RenderedScene, RenderingEngine } from "@/types"
+import { RenderRequest, RenderedScene, RenderingEngine, Settings } from "@/types"
 import { generateSeed } from "@/lib/generateSeed"
 import { sleep } from "@/lib/sleep"
 
-const renderingEngine = `${process.env.RENDERING_ENGINE || ""}` as RenderingEngine
+const serverRenderingEngine = `${process.env.RENDERING_ENGINE || ""}` as RenderingEngine
 
 // TODO: we should split Hugging Face and Replicate backends into separate files
-const huggingFaceToken = `${process.env.AUTH_HF_API_TOKEN || ""}`
-const huggingFaceInferenceEndpointUrl = `${process.env.RENDERING_HF_INFERENCE_ENDPOINT_URL || ""}`
-const huggingFaceInferenceApiBaseModel = `${process.env.RENDERING_HF_INFERENCE_API_BASE_MODEL || ""}`
-const huggingFaceInferenceApiRefinerModel = `${process.env.RENDERING_HF_INFERENCE_API_REFINER_MODEL || ""}`
+const serverHuggingfaceApiKey = `${process.env.AUTH_HF_API_TOKEN || ""}`
+const serverHuggingfaceApiUrl = `${process.env.RENDERING_HF_INFERENCE_ENDPOINT_URL || ""}`
+const serverHuggingfaceInferenceApiModel = `${process.env.RENDERING_HF_INFERENCE_API_BASE_MODEL || ""}`
+const serverHuggingfaceInferenceApiModelRefinerModel = `${process.env.RENDERING_HF_INFERENCE_API_REFINER_MODEL || ""}`
+const serverHuggingfaceInferenceApiModelTrigger = `${process.env.RENDERING_HF_INFERENCE_API_MODEL_TRIGGER || "style of TOK"}`
 
-const replicateToken = `${process.env.AUTH_REPLICATE_API_TOKEN || ""}`
-const replicateModel = `${process.env.RENDERING_REPLICATE_API_MODEL || ""}`
-const replicateModelVersion = `${process.env.RENDERING_REPLICATE_API_MODEL_VERSION || ""}`
+const serverReplicateApiKey = `${process.env.AUTH_REPLICATE_API_TOKEN || ""}`
+const serverReplicateApiModel = `${process.env.RENDERING_REPLICATE_API_MODEL || ""}`
+const serverReplicateApiModelVersion = `${process.env.RENDERING_REPLICATE_API_MODEL_VERSION || ""}`
+const serverReplicateApiModelTrigger = `${process.env.RENDERING_REPLICATE_API_MODEL_TRIGGER || ""}`
 
 const videochainToken = `${process.env.AUTH_VIDEOCHAIN_API_TOKEN || ""}`
 const videochainApiUrl = `${process.env.RENDERING_VIDEOCHAIN_API_URL || ""}`
 
-const openaiApiKey = `${process.env.AUTH_OPENAI_API_KEY || ""}`
-const openaiApiBaseUrl = `${process.env.RENDERING_OPENAI_API_BASE_URL || "https://api.openai.com/v1"}`
-const openaiApiModel = `${process.env.RENDERING_OPENAI_API_MODEL || "dall-e-3"}`
+const serverOpenaiApiKey = `${process.env.AUTH_OPENAI_API_KEY || ""}`
+const serverOpenaiApiBaseUrl = `${process.env.RENDERING_OPENAI_API_BASE_URL || "https://api.openai.com/v1"}`
+const serverOpenaiApiModel = `${process.env.RENDERING_OPENAI_API_MODEL || "dall-e-3"}`
 
 export async function newRender({
   prompt,
   // negativePrompt,
   width,
   height,
-  withCache
+  withCache,
+  settings,
 }: {
   prompt: string
   // negativePrompt: string[]
   width: number
   height: number
   withCache: boolean
+  settings: Settings
 }) {
   // throw new Error("Planned maintenance")
 
@@ -60,6 +63,59 @@ export async function newRender({
 
   const nbInferenceSteps = 30
   const guidanceScale = 9
+
+  let renderingEngine = serverRenderingEngine
+  let openaiApiKey = serverOpenaiApiKey
+  let openaiApiModel = serverOpenaiApiModel
+
+  let replicateApiKey = serverReplicateApiKey
+  let replicateApiModel = serverReplicateApiModel
+  let replicateApiModelVersion = serverReplicateApiModelVersion
+  let replicateApiModelTrigger = serverReplicateApiModelTrigger
+
+  let huggingfaceApiKey = serverHuggingfaceApiKey
+  let huggingfaceInferenceApiModel = serverHuggingfaceInferenceApiModel
+  let huggingfaceApiUrl = serverHuggingfaceApiUrl
+  let huggingfaceInferenceApiModelRefinerModel = serverHuggingfaceInferenceApiModelRefinerModel 
+  let huggingfaceInferenceApiModelTrigger = serverHuggingfaceInferenceApiModelTrigger
+
+  const placeholder = "<USE YOUR OWN TOKEN>"
+
+  if (
+    settings.renderingModelVendor === "OPENAI" && 
+    settings.openaiApiKey &&
+    settings.openaiApiKey !== placeholder &&
+    settings.openaiApiModel
+  ) {
+    console.log("using OpenAI using user credentials (hidden)")
+    renderingEngine = "OPENAI"
+    openaiApiKey = settings.openaiApiKey
+    openaiApiModel = settings.openaiApiModel
+  } if (
+    settings.renderingModelVendor === "REPLICATE" &&
+    settings.replicateApiKey &&
+    settings.replicateApiKey !== placeholder &&
+    settings.replicateApiModel &&
+    settings.replicateApiModelVersion
+  ) {
+    console.log("using Replicate using user credentials (hidden)")
+    renderingEngine = "REPLICATE"
+    replicateApiKey = settings.replicateApiKey
+    replicateApiModel = settings.replicateApiModel
+    replicateApiModelVersion = settings.replicateApiModelVersion
+    replicateApiModelTrigger = settings.replicateApiModelTrigger
+  } else if (
+      settings.renderingModelVendor === "HUGGINGFACE" &&
+      settings.huggingfaceApiKey &&
+      settings.huggingfaceApiKey !== placeholder &&
+      settings.huggingfaceInferenceApiModel
+    ) {
+      console.log("using Hugging Face using user credentials (hidden)")
+    renderingEngine = "INFERENCE_API"
+    huggingfaceApiKey = settings.huggingfaceApiKey
+    huggingfaceInferenceApiModel = settings.huggingfaceInferenceApiModel
+    huggingfaceInferenceApiModelTrigger = settings.huggingfaceInferenceApiModelTrigger
+  } 
 
   try {
     if (renderingEngine === "OPENAI") {
@@ -89,7 +145,7 @@ export async function newRender({
       })
       */
 
-      const res = await fetch(`${openaiApiBaseUrl}/images/generations`, {
+      const res = await fetch(`${serverOpenaiApiBaseUrl}/images/generations`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -97,7 +153,7 @@ export async function newRender({
           Authorization: `Bearer ${openaiApiKey}`,
         },
         body: JSON.stringify({
-          model: "dall-e-3",
+          model: openaiApiModel,
           prompt,
           n: 1,
           size,
@@ -125,28 +181,29 @@ export async function newRender({
         segments: []
       } as RenderedScene
     } else if (renderingEngine === "REPLICATE") {
-      if (!replicateToken) {
-        throw new Error(`you need to configure your REPLICATE_API_TOKEN in order to use the REPLICATE rendering engine`)
+      if (!replicateApiKey) {
+        throw new Error(`invalid replicateApiKey, you need to configure your REPLICATE_API_TOKEN in order to use the REPLICATE rendering engine`)
       }
-      if (!replicateModel) {
-        throw new Error(`you need to configure your REPLICATE_API_MODEL in order to use the REPLICATE rendering engine`)
+      if (!replicateApiModel) {
+        throw new Error(`invalid replicateApiModel, you need to configure your REPLICATE_API_MODEL in order to use the REPLICATE rendering engine`)
       }
-      if (!replicateModelVersion) {
-        throw new Error(`you need to configure your REPLICATE_API_MODEL_VERSION in order to use the REPLICATE rendering engine`)
+      if (!replicateApiModelVersion) {
+        throw new Error(`invalid replicateApiModelVersion, you need to configure your REPLICATE_API_MODEL_VERSION in order to use the REPLICATE rendering engine`)
       }
-      const replicate = new Replicate({ auth: replicateToken })
+      const replicate = new Replicate({ auth: replicateApiKey })
 
       const seed = generateSeed()
       const prediction = await replicate.predictions.create({
-        version: replicateModelVersion,
+        version: replicateApiModelVersion,
         input: {
           prompt: [
             "beautiful",
             // "intricate details",
+            replicateApiModelTrigger || "",
             prompt,
             "award winning",
             "high resolution"
-          ].join(", "),
+          ].filter(x => x).join(", "),
           width,
           height,
           seed
@@ -167,36 +224,37 @@ export async function newRender({
         segments: []
       } as RenderedScene
     } if (renderingEngine === "INFERENCE_ENDPOINT" || renderingEngine === "INFERENCE_API") {
-      if (!huggingFaceToken) {
-        throw new Error(`you need to configure your HF_API_TOKEN in order to use the ${renderingEngine} rendering engine`)
+      if (!huggingfaceApiKey) {
+        throw new Error(`invalid huggingfaceApiKey, you need to configure your HF_API_TOKEN in order to use the ${renderingEngine} rendering engine`)
       }
-      if (renderingEngine === "INFERENCE_ENDPOINT" && !huggingFaceInferenceEndpointUrl) {
-        throw new Error(`you need to configure your RENDERING_HF_INFERENCE_ENDPOINT_URL in order to use the INFERENCE_ENDPOINT rendering engine`)
+      if (renderingEngine === "INFERENCE_ENDPOINT" && !huggingfaceApiUrl) {
+        throw new Error(`invalid huggingfaceApiUrl, you need to configure your RENDERING_HF_INFERENCE_ENDPOINT_URL in order to use the INFERENCE_ENDPOINT rendering engine`)
       }
-      if (renderingEngine === "INFERENCE_API" && !huggingFaceInferenceApiBaseModel) {
-        throw new Error(`you need to configure your RENDERING_HF_INFERENCE_API_BASE_MODEL in order to use the INFERENCE_API rendering engine`)
+      if (renderingEngine === "INFERENCE_API" && !huggingfaceInferenceApiModel) {
+        throw new Error(`invalid huggingfaceInferenceApiModel, you need to configure your RENDERING_HF_INFERENCE_API_BASE_MODEL in order to use the INFERENCE_API rendering engine`)
       }
-      if (renderingEngine === "INFERENCE_API" && !huggingFaceInferenceApiRefinerModel) {
-        throw new Error(`you need to configure your RENDERING_HF_INFERENCE_API_REFINER_MODEL in order to use the INFERENCE_API rendering engine`)
+      if (renderingEngine === "INFERENCE_API" && !huggingfaceInferenceApiModelRefinerModel) {
+        throw new Error(`invalid huggingfaceInferenceApiModelRefinerModel, you need to configure your RENDERING_HF_INFERENCE_API_REFINER_MODEL in order to use the INFERENCE_API rendering engine`)
       }
 
       const baseModelUrl = renderingEngine === "INFERENCE_ENDPOINT"
-        ? huggingFaceInferenceEndpointUrl
-        : `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiBaseModel}`
+        ? huggingfaceApiUrl
+        : `https://api-inference.huggingface.co/models/${huggingfaceInferenceApiModel}`
 
       const positivePrompt = [
         "beautiful",
         // "intricate details",
+        huggingfaceInferenceApiModelTrigger || "",
         prompt,
         "award winning",
         "high resolution"
-      ].join(", ")
+      ].filter(x => x).join(", ")
 
       const res = await fetch(baseModelUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${huggingFaceToken}`,
+          Authorization: `Bearer ${huggingfaceApiKey}`,
         },
         body: JSON.stringify({
           inputs: positivePrompt,
@@ -235,15 +293,13 @@ export async function newRender({
       
       if (renderingEngine === "INFERENCE_API") {
         try {
-          const refinerModelUrl = `https://api-inference.huggingface.co/models/${huggingFaceInferenceApiRefinerModel}`
-
-
+          const refinerModelUrl = `https://api-inference.huggingface.co/models/${huggingfaceInferenceApiModelRefinerModel}`
 
           const res = await fetch(refinerModelUrl, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${huggingFaceToken}`,
+              Authorization: `Bearer ${huggingfaceApiKey}`,
             },
             body: JSON.stringify({
               inputs: Buffer.from(blob).toString('base64'),
@@ -282,7 +338,6 @@ export async function newRender({
           console.log(`Refiner step failed, but this is not a blocker. Error details: ${err}`)
         }
       }
-
 
       return {
         renderId: uuidv4(),
@@ -341,12 +396,64 @@ export async function newRender({
   }
 }
 
-export async function getRender(renderId: string) {
+export async function getRender(renderId: string, settings: Settings) {
   if (!renderId) {
     const error = `cannot call the rendering API without a renderId, aborting..`
     console.error(error)
     throw new Error(error)
   }
+
+
+  let renderingEngine = serverRenderingEngine
+  let openaiApiKey = serverOpenaiApiKey
+  let openaiApiModel = serverOpenaiApiModel
+
+  let replicateApiKey = serverReplicateApiKey
+  let replicateApiModel = serverReplicateApiModel
+  let replicateApiModelVersion = serverReplicateApiModelVersion
+  let replicateApiModelTrigger = serverReplicateApiModelTrigger
+
+  let huggingfaceApiKey = serverHuggingfaceApiKey
+  let huggingfaceInferenceApiModel = serverHuggingfaceInferenceApiModel
+  let huggingfaceInferenceApiModelTrigger = serverHuggingfaceInferenceApiModelTrigger
+  let huggingfaceApiUrl = serverHuggingfaceApiUrl
+  let huggingfaceInferenceApiModelRefinerModel = serverHuggingfaceInferenceApiModelRefinerModel 
+
+  const placeholder = "<USE YOUR OWN TOKEN>"
+
+  if (
+    settings.renderingModelVendor === "OPENAI" && 
+    settings.openaiApiKey &&
+    settings.openaiApiKey !== placeholder &&
+    settings.openaiApiModel
+  ) {
+    renderingEngine = "OPENAI"
+    openaiApiKey = settings.openaiApiKey
+    openaiApiModel = settings.openaiApiModel
+  } if (
+    settings.renderingModelVendor === "REPLICATE" &&
+    settings.replicateApiKey &&
+    settings.replicateApiKey !== placeholder &&
+    settings.replicateApiModel &&
+    settings.replicateApiModelVersion
+  ) {
+    renderingEngine = "REPLICATE"
+    replicateApiKey = settings.replicateApiKey
+    replicateApiModel = settings.replicateApiModel
+    replicateApiModelVersion = settings.replicateApiModelVersion
+    replicateApiModelTrigger = settings.replicateApiModelTrigger
+  } else if (
+      settings.renderingModelVendor === "HUGGINGFACE" &&
+      settings.huggingfaceApiKey &&
+      settings.huggingfaceApiKey !== placeholder &&
+      settings.huggingfaceInferenceApiModel
+    ) {
+    // console.log("using Hugging Face using user credentials (hidden)")
+    renderingEngine = "INFERENCE_API"
+    huggingfaceApiKey = settings.huggingfaceApiKey
+    huggingfaceInferenceApiModel = settings.huggingfaceInferenceApiModel
+    huggingfaceInferenceApiModelTrigger = settings.huggingfaceInferenceApiModelTrigger
+  } 
 
   let defaulResult: RenderedScene = {
     renderId: "",
@@ -360,17 +467,14 @@ export async function getRender(renderId: string) {
 
   try {
     if (renderingEngine === "REPLICATE") {
-      if (!replicateToken) {
-        throw new Error(`you need to configure your AUTH_REPLICATE_API_TOKEN in order to use the REPLICATE rendering engine`)
-      }
-      if (!replicateModel) {
-        throw new Error(`you need to configure your RENDERING_REPLICATE_API_MODEL in order to use the REPLICATE rendering engine`)
+      if (!replicateApiKey) {
+        throw new Error(`invalid replicateApiKey, you need to configure your AUTH_REPLICATE_API_TOKEN in order to use the REPLICATE rendering engine`)
       }
 
        const res = await fetch(`https://api.replicate.com/v1/predictions/${renderId}`, {
         method: "GET",
         headers: {
-          Authorization: `Token ${replicateToken}`,
+          Authorization: `Token ${replicateApiKey}`,
         },
         cache: 'no-store',
       // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)

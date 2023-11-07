@@ -87,12 +87,18 @@ export type LLMEngine =
   | "OPENAI"
   | "REPLICATE"
 
-export type RenderingEngine =
+  export type RenderingEngine =
   | "VIDEOCHAIN"
   | "OPENAI"
   | "REPLICATE"
   | "INFERENCE_API"
   | "INFERENCE_ENDPOINT"
+
+  export type RenderingModelVendor =
+  | "SERVER"
+  | "OPENAI"
+  | "REPLICATE"
+  | "HUGGINGFACE"
 
 export type PostVisibility =
   | "featured" // featured by admins
@@ -132,4 +138,17 @@ export type GetAppPostResponse = {
 export type LayoutProps = {
   page: number
   nbPanels: number
+}
+
+export type Settings = {
+  renderingModelVendor: RenderingModelVendor
+  huggingfaceApiKey: string
+  huggingfaceInferenceApiModel: string
+  huggingfaceInferenceApiModelTrigger: string
+  replicateApiKey: string
+  replicateApiModel: string
+  replicateApiModelVersion: string
+  replicateApiModelTrigger: string
+  openaiApiKey: string
+  openaiApiModel: string
 }
