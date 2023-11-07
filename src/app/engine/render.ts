@@ -14,7 +14,7 @@ const serverHuggingfaceApiKey = `${process.env.AUTH_HF_API_TOKEN || ""}`
 const serverHuggingfaceApiUrl = `${process.env.RENDERING_HF_INFERENCE_ENDPOINT_URL || ""}`
 const serverHuggingfaceInferenceApiModel = `${process.env.RENDERING_HF_INFERENCE_API_BASE_MODEL || ""}`
 const serverHuggingfaceInferenceApiModelRefinerModel = `${process.env.RENDERING_HF_INFERENCE_API_REFINER_MODEL || ""}`
-const serverHuggingfaceInferenceApiModelTrigger = `${process.env.RENDERING_HF_INFERENCE_API_MODEL_TRIGGER || "style of TOK"}`
+const serverHuggingfaceInferenceApiModelTrigger = `${process.env.RENDERING_HF_INFERENCE_API_MODEL_TRIGGER || ""}`
 
 const serverReplicateApiKey = `${process.env.AUTH_REPLICATE_API_TOKEN || ""}`
 const serverReplicateApiModel = `${process.env.RENDERING_REPLICATE_API_MODEL || ""}`
@@ -206,7 +206,10 @@ export async function newRender({
           ].filter(x => x).join(", "),
           width,
           height,
-          seed
+          seed,
+          ...replicateApiModelTrigger && {
+            lora_scale: 0.85 // we generally want something high here
+          },
         }
       })
   
