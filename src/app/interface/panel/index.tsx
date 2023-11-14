@@ -309,6 +309,10 @@ export function Panel({
     )
   }
 
+  const hasSucceededOrFailed =
+    rendered.status === "completed" ||
+    rendered.status === "error"
+
   return (
     <div className={cn(
       frameClassName,
@@ -330,14 +334,21 @@ export function Panel({
             `print:hidden`
             )}>
             <div
-              onClick={rendered.status === "completed" ? handleReload : undefined}
+              onClick={
+                hasSucceededOrFailed
+                ? handleReload
+                : undefined}
               className={cn(
                 `bg-stone-100 rounded-lg`,
                 `flex flex-row space-x-2 items-center`,
-                `py-1 px-2 md:py-2 md:px-3 cursor-pointer`,
+                `py-1 px-2 md:py-2 md:px-3`,
                 `transition-all duration-200 ease-in-out`,
-                rendered.status === "completed" ? "opacity-95" : "opacity-50",
-                mouseOver && rendered.assetUrl ? `scale-95 hover:scale-100 hover:opacity-100`: `scale-0`
+                hasSucceededOrFailed
+                ?  "opacity-95 cursor-pointer"
+                : "opacity-50 cursor-wait",
+                mouseOver && (
+                  hasSucceededOrFailed
+                ) ? `scale-95 hover:scale-100 hover:opacity-100`: `scale-0`
               )}>
               <RxReload
                 className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5"
@@ -351,7 +362,7 @@ export function Panel({
               )}>Redraw</span>
             </div>
             <EditModal
-              isEnabled={rendered.status === "completed"}
+              isEnabled={hasSucceededOrFailed}
               existingPrompt={prompt}
               onSave={handleSavePrompt}
             >
@@ -361,8 +372,8 @@ export function Panel({
                   `flex flex-row space-x-2 items-center`,
                   `py-1 px-3 md:py-2 md:px-3 cursor-pointer`,
                   `transition-all duration-200 ease-in-out`,
-                  rendered.status === "completed" ? "opacity-95" : "opacity-50",
-                  mouseOver && rendered.assetUrl ? `scale-95 hover:scale-100 hover:opacity-100`: `scale-0`
+                  hasSucceededOrFailed ? "opacity-95" : "opacity-50",
+                  mouseOver && hasSucceededOrFailed ? `scale-95 hover:scale-100 hover:opacity-100`: `scale-0`
                 )}>
                 <RxPencil2
                   className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5"
