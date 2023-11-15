@@ -57,7 +57,7 @@ export const presets: Record<string, Preset> = {
     llmPrompt: "japanese manga",
     imagePrompt: (prompt: string) => [
       `grayscale`,
-      `intricate details`,
+      `detailed drawing`,
       `japanese manga`,
       prompt,
       // "single panel",
@@ -90,6 +90,7 @@ export const presets: Record<string, Preset> = {
       "ancient japanese painting",
       "intricate",
       "detailed",
+      "detailed painting"
       // "drawing"
     ],
     negativePrompt: () => [
@@ -116,6 +117,7 @@ export const presets: Record<string, Preset> = {
       "franco-belgian comic",
       `franco-belgian color comic about ${prompt}`,
       "comic album",
+      "detailed drawing"
       // "color drawing"
     ],
     negativePrompt: () => [
@@ -139,6 +141,7 @@ export const presets: Record<string, Preset> = {
     imagePrompt: (prompt: string) => [
       "digital color comicbook style",
       `modern american comic about ${prompt}`,
+      "detailed drawing"
       //"single panel",
       // "2010s",
       // "digital print",
@@ -199,6 +202,7 @@ export const presets: Record<string, Preset> = {
       "1950",
       "50s",
       `vintage american color comic about ${prompt}`,
+      "detailed drawing"
       // "single panel",
      //  "comicbook style",
       // "color comicbook",
@@ -261,6 +265,7 @@ export const presets: Record<string, Preset> = {
       "color pulp comic panel",
       "1940",
       `${prompt}`,
+      "detailed drawing"
       // "single panel",
       // "comic album"
     ],
@@ -287,12 +292,11 @@ export const presets: Record<string, Preset> = {
       `color comic panel`,
       "style of Moebius",
       `${prompt}`,
-      "by Moebius",
+      "detailed drawing",
       "french comic panel",
       "franco-belgian style",
       "bande dessinée",
       "single panel",
-      "intricate"
       // "comic album"
     ],
     negativePrompt: () => [
@@ -406,6 +410,8 @@ export const presets: Record<string, Preset> = {
       `funny`,
       `Unreal engine`,
       `${prompt}`,
+      `crisp`,
+      `sharp`
     ],
     negativePrompt: () => [
       "manga",
@@ -428,8 +434,9 @@ export const presets: Record<string, Preset> = {
       `patchwork`,
       `style of Gustav Klimt`,
       `Gustav Klimt painting`,
-      `intricate details`,
       `${prompt}`,
+      `detailed painting`,
+      `intricate details`
     ],
     negativePrompt: () => [
       "manga",
@@ -451,9 +458,9 @@ export const presets: Record<string, Preset> = {
       `medieval illuminated manuscript`,
       `illuminated manuscript of`,
       `medieval`,
-      `intricate details`,
       // `medieval color engraving`,
       `${prompt}`,
+      `intricate details`,
       // `medieval`
     ],
     negativePrompt: () => [
@@ -627,6 +634,7 @@ export const presets: Record<string, Preset> = {
       `instagram`,
       `photoshoot`,
       `${prompt}`,
+      `crisp details`
     ],
     negativePrompt: () => [
       "manga",

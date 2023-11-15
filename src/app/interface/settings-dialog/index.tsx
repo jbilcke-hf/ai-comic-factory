@@ -18,12 +18,18 @@ import { Label } from "./label"
 import { Field } from "./field"
 import { localStorageKeys } from "./localStorageKeys"
 import { defaultSettings } from "./defaultSettings"
+import { Switch } from "@/components/ui/switch"
+import { cn } from "@/lib/utils"
 
 export function SettingsDialog() {
   const [isOpen, setOpen] = useState(false)
   const [renderingModelVendor, setRenderingModelVendor] = useLocalStorage<RenderingModelVendor>(
     localStorageKeys.renderingModelVendor,
     defaultSettings.renderingModelVendor
+  )
+  const [renderingUseTurbo, setRenderingUseTurbo] = useLocalStorage<boolean>(
+    localStorageKeys.renderingUseTurbo,
+    defaultSettings.renderingUseTurbo
   )
   const [huggingfaceApiKey, setHuggingfaceApiKey] = useLocalStorage<string>(
     localStorageKeys.huggingfaceApiKey,
@@ -71,7 +77,7 @@ export function SettingsDialog() {
           </div>
         </Button> 
       </DialogTrigger>
-      <DialogContent className="w-full sm:max-w-[500px] md:max-w-[700px] overflow-y-auto h-[100vh] md:h-[80vh]">
+      <DialogContent className="w-full sm:max-w-[500px] md:max-w-[700px] overflow-y-auto h-max-[100vh] md:h-max-[80vh]">
         <DialogHeader>
           <DialogDescription className="w-full text-center text-lg font-bold text-stone-800">
             Custom Settings
@@ -102,6 +108,21 @@ export function SettingsDialog() {
               </SelectContent>
             </Select>
           </Field>
+
+          {renderingModelVendor === "SERVER" && <>
+            <Field>
+              <Label>Quality over performance ratio:</Label>
+              <div className="flex flex-row space-x-2 text-zinc-500">
+                <Switch
+                  checked={renderingUseTurbo}
+                  onCheckedChange={setRenderingUseTurbo}
+                />
+                <span
+                  onClick={() => setRenderingUseTurbo(!renderingUseTurbo)}
+                  className={cn("cursor-pointer", { "text-zinc-800": renderingUseTurbo })}>Use a faster model, but with inferior quality of images (you are warned!).</span>
+              </div>
+            </Field>
+          </>}
 
           {renderingModelVendor === "HUGGINGFACE" && <>
             <Field>

@@ -3,11 +3,13 @@ import { RenderingModelVendor, Settings } from "@/types"
 import { getValidString } from "@/lib/getValidString"
 import { localStorageKeys } from "./localStorageKeys"
 import { defaultSettings } from "./defaultSettings"
+import { getValidBoolean } from "@/lib/getValidBoolean"
 
 export function getSettings(): Settings {
   try {
     return {
       renderingModelVendor: getValidString(localStorage?.getItem?.(localStorageKeys.renderingModelVendor), defaultSettings.renderingModelVendor) as RenderingModelVendor,
+      renderingUseTurbo: getValidBoolean(localStorage?.getItem?.(localStorageKeys.renderingUseTurbo), defaultSettings.renderingUseTurbo),
       huggingfaceApiKey: getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceApiKey), defaultSettings.huggingfaceApiKey),
       huggingfaceInferenceApiModel: getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceInferenceApiModel), defaultSettings.huggingfaceInferenceApiModel),
       huggingfaceInferenceApiModelTrigger: getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceInferenceApiModelTrigger), defaultSettings.huggingfaceInferenceApiModelTrigger),

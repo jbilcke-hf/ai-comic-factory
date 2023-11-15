@@ -43,19 +43,20 @@ export const getStory = async ({
   let result = ""
 
   try {
+    // console.log(`calling predict(${query}, ${nbTotalPanels})`)
     result = `${await predict(query, nbTotalPanels) || ""}`.trim()
     if (!result.length) {
       throw new Error("empty result!")
     }
   } catch (err) {
-    console.log(`prediction of the story failed, trying again..`)
+    // console.log(`prediction of the story failed, trying again..`)
     try {
       result = `${await predict(query+".", nbTotalPanels) || ""}`.trim()
       if (!result.length) {
         throw new Error("empty result!")
       }
     } catch (err) {
-      console.error(`prediction of the story failed again!`)
+      console.error(`prediction of the story failed again 💩`)
       throw new Error(`failed to generate the story ${err}`)
     }
   }
@@ -68,8 +69,8 @@ export const getStory = async ({
   try {
     llmResponse = dirtyLLMJsonParser(tmp)
   } catch (err) {
-    console.log(`failed to read LLM response: ${err}`)
-    console.log(`original response was:`, result)
+    // console.log(`failed to read LLM response: ${err}`)
+    // console.log(`original response was:`, result)
 
       // in case of failure here, it might be because the LLM hallucinated a completely different response,
       // such as markdown. There is no real solution.. but we can try a fallback:

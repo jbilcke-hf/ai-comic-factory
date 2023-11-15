@@ -45,7 +45,7 @@ export default function Main() {
 
       let llmResponse: LLMResponse = []
 
-      const [stylePrompt, userStoryPrompt] = prompt.split("||")
+      const [stylePrompt, userStoryPrompt] = prompt.split("||").map(x => x.trim())
 
       try {
         llmResponse = await getStory({
@@ -57,7 +57,9 @@ export default function Main() {
             // + the LLM may reject some of the styles
             // stylePrompt ? `in the following context: ${stylePrompt}` : ''
 
-          ].filter(x => x).join(", "), nbTotalPanels })
+          ].map(x => x.trim()).filter(x => x).join(", "),
+          nbTotalPanels
+        })
         console.log("LLM responded:", llmResponse)
 
       } catch (err) {
@@ -68,7 +70,11 @@ export default function Main() {
         for (let p = 0; p < nbTotalPanels; p++) {
           llmResponse.push({
             panel: p,
-            instructions: `${prompt} ${".".repeat(p)}`,
+            instructions: [
+              stylePrompt,
+              userStoryPrompt,
+              `${".".repeat(p)}`,
+            ].map(x => x.trim()).filter(x => x).join(", "),
             caption: "(Sorry, LLM generation failed: using degraded mode)"
           })
         }
@@ -77,20 +83,20 @@ export default function Main() {
 
       // we have to limit the size of the prompt, otherwise the rest of the style won't be followed
 
-      let limitedStylePrompt = stylePrompt.slice(0, 77)
+      let limitedStylePrompt = stylePrompt.trim().slice(0, 77).trim()
       if (limitedStylePrompt.length !== stylePrompt.length) {
         console.log("Sorry folks, the style prompt was cut to:", limitedStylePrompt)
       }
 
       // new experimental prompt: let's drop the user prompt, and only use the style
-      const lightPanelPromptPrefix = preset.imagePrompt(limitedStylePrompt).filter(x => x).join(", ")
+      const lightPanelPromptPrefix = preset.imagePrompt(limitedStylePrompt).map(x => x.trim()).filter(x => x).join(", ")
 
       // this prompt will be used if the LLM generation failed
       const degradedPanelPromptPrefix = [
         ...preset.imagePrompt(limitedStylePrompt),
 
         // we re-inject the story, then
-        userStoryPrompt,
+        userStoryPrompt.trim(),
       ].filter(x => x).join(", ")
 
       const newPanels: string[] = []
@@ -98,7 +104,7 @@ export default function Main() {
       setWaitABitMore(true)
       console.log("Panel prompts for SDXL:")
       for (let p = 0; p < nbTotalPanels; p++) {
-        newCaptions.push(llmResponse[p]?.caption || "...")
+        newCaptions.push(llmResponse[p]?.caption.trim() || "...")
         const newPanel = [
 
           // what we do here is that ideally we give full control to the LLM for prompting,
@@ -108,7 +114,7 @@ export default function Main() {
           : degradedPanelPromptPrefix,
 
           llmResponse[p]?.instructions || ""
-        ].map(chunk => chunk).join(", ")
+        ].map(x => x.trim()).filter(x => x).join(", ")
         newPanels.push(newPanel)
         console.log(newPanel)
       }

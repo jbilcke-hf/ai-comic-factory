@@ -140,15 +140,34 @@ export function Panel({
             withCache: revision === 0,
             settings: getSettings(),
           })
+          if (!newRendered.status || newRendered.status === "error") {
+            throw new Error("invalid status")
+          }
         } catch (err) {
           // "Failed to load the panel! Don't worry, we are retrying..")
-          newRendered = await newRender({
-            prompt: cacheInvalidationHack + "   " + prompt,
-            width,
-            height,
-            withCache,
-            settings: getSettings(),
-          })
+
+          try {
+            newRendered = await newRender({
+              prompt: cacheInvalidationHack + "   " + prompt,
+              width,
+              height,
+              withCache,
+              settings: getSettings(),
+            })
+            if (!newRendered.status || newRendered.status === "error") {
+              throw new Error("invalid status")
+            }
+          } catch (err2) {
+            newRendered = {
+              renderId: "",
+              status: "error",
+              assetUrl: "",
+              alt: "",
+              maskUrl: "",
+              error: `${err2 || "unknown error"}`,
+              segments: []
+            }
+          }
         }
 
         if (newRendered) {
@@ -157,17 +176,22 @@ export function Panel({
           if (newRendered.status === "completed") {
             setGeneratingImages(panelId, false)
             addToUpscaleQueue(panelId, newRendered)
+          } else if (!newRendered.status || newRendered.status === "error") {
+            setGeneratingImages(panelId, false)
+          } else {
+            // still loading
           }
 
-          // but we are still loading!
+
         } else {
+          // 
           setRendered(panelId, {
             renderId: "",
-            status: "pending",
+            status: "error",
             assetUrl: "",
             alt: "",
             maskUrl: "",
-            error: "",
+            error: "empty newRendered",
             segments: []
           })
           setGeneratingImages(panelId, false)
@@ -198,9 +222,10 @@ export function Panel({
 
         if (newRendered.status === "pending") {
           timeoutRef.current = setTimeout(checkStatus, delay)
-        } else if (newRendered.status === "error" || 
+        } else if (!newRendered.status || newRendered.status === "error" || 
         (newRendered.status === "completed" && !newRendered.assetUrl?.length)) {
           try {
+            // we try only once
             const newAttempt = await newRender({
               prompt,
               width,
@@ -208,6 +233,9 @@ export function Panel({
               withCache: false,
               settings: getSettings(),
             })
+            if (!newAttempt.status || newAttempt.status === "error") {
+              throw new Error("invalid status")
+            }
             setRendered(panelId, newAttempt)
           } catch (err) {
             console.error("yeah sorry, something is wrong.. aborting", err)
@@ -217,6 +245,7 @@ export function Panel({
           console.log("panel finished!")
           setGeneratingImages(panelId, false)
           addToUpscaleQueue(panelId, newRendered)
+  
         }
       } catch (err) {
         console.error(err)
