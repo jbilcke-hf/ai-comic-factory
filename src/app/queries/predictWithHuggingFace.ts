@@ -62,11 +62,16 @@ export async function predict(inputs: string, nbPanels: number): Promise<string>
       if (
         instructions.includes("</s>") || 
         instructions.includes("<s>") ||
+        instructions.includes("/s>") ||
         instructions.includes("[INST]") ||
         instructions.includes("[/INST]") ||
         instructions.includes("<SYS>") ||
+        instructions.includes("<<SYS>>") ||
         instructions.includes("</SYS>") ||
+        instructions.includes("<</SYS>>") ||
+        instructions.includes("<|user|>") ||
         instructions.includes("<|end|>") ||
+        instructions.includes("<|system|>") ||
         instructions.includes("<|assistant|>")
       ) {
         break
@@ -87,10 +92,16 @@ export async function predict(inputs: string, nbPanels: number): Promise<string>
     .replaceAll("<|end|>", "")
     .replaceAll("<s>", "")
     .replaceAll("</s>", "")
+    .replaceAll("/s>", "")
     .replaceAll("[INST]", "")
     .replaceAll("[/INST]", "") 
     .replaceAll("<SYS>", "")
+    .replaceAll("<<SYS>>", "")
     .replaceAll("</SYS>", "")
+    .replaceAll("<</SYS>>", "")
+    .replaceAll("<|system|>", "")
+    .replaceAll("<|user|>", "")
+    .replaceAll("<|all|>", "")
     .replaceAll("<|assistant|>", "")
     .replaceAll('""', '"')
   )

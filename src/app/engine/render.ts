@@ -353,6 +353,7 @@ export async function newRender({
         segments: []
       } as RenderedScene
     } else {
+      /*
       console.log("sending:", {
         prompt,
         // negativePrompt, unused for now
@@ -376,6 +377,7 @@ export async function newRender({
 
         cache: "ignore"
       })
+      */
       const res = await fetch(`${videochainApiUrl}${videochainApiUrl.endsWith("/") ? "" : "/"}render`, {
         method: "POST",
         headers: {

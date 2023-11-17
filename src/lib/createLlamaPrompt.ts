@@ -3,7 +3,7 @@ export function createLlamaPrompt(messages: Array<{ role: string, content: strin
   const B_INST = "[INST]", E_INST = "[/INST]";
   const B_SYS = "<<SYS>>\n", E_SYS = "\n<</SYS>>\n\n";
   const BOS = "<s>", EOS = "</s>";
-  const DEFAULT_SYSTEM_PROMPT = "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe. Please ensure that your responses are socially unbiased and positive in nature. If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information.";
+  const DEFAULT_SYSTEM_PROMPT = "You are a helpful, respectful and honest storywriting assistant. Always answer in a creative and entertaining way, while being safe. Please ensure that your stories and captions are socially unbiased and positive in nature. If a request does not make any sense, go on anyway, as we are writing a fantasy story.";
 
   if (messages[0].role != "system"){
       messages = [

@@ -1,5 +1,4 @@
-import { createLlamaPrompt } from "@/lib/createLlamaPrompt"
-import { dirtyLLMResponseCleaner } from "@/lib/dirtyLLMResponseCleaner"
+
 import { dirtyLLMJsonParser } from "@/lib/dirtyLLMJsonParser"
 import { dirtyCaptionCleaner } from "@/lib/dirtyCaptionCleaner"
 
@@ -7,6 +6,7 @@ import { predict } from "./predict"
 import { Preset } from "../engine/presets"
 import { LLMResponse } from "@/types"
 import { cleanJson } from "@/lib/cleanJson"
+import { createZephyrPrompt } from "@/lib/createZephyrPrompt"
 
 export const getStory = async ({
   preset,
@@ -22,22 +22,22 @@ export const getStory = async ({
   // In case you need to quickly debug the RENDERING engine you can uncomment this:
   // return mockLLMResponse
 
-  const query = createLlamaPrompt([
+  const query = createZephyrPrompt([
     {
       role: "system",
       content: [
         `You are a writer specialized in ${preset.llmPrompt}`,
-        `Please write detailed drawing instructions and a short (1 or 2 sentences long) speech caption for the ${nbTotalPanels} panels of a new story. Please make sure each of the ${nbTotalPanels} panels include info about character gender, age, origin, clothes, colors, location, lights, etc.`,
+        `Please write detailed drawing instructions and a short (2-3 sentences long) speech caption for the ${nbTotalPanels} panels of a new story. Please make sure each of the ${nbTotalPanels} panels include info about character gender, age, origin, clothes, colors, location, lights, etc.`,
         `Give your response as a VALID JSON array like this: \`Array<{ panel: number; instructions: string; caption: string}>\`.`,
         // `Give your response as Markdown bullet points.`,
-        `Be brief in your ${nbTotalPanels} instructions and narrative captions, don't add your own comments. Be straight to the point, and never reply things like "Sure, I can.." etc. Reply using valid JSON.`
+        `Be brief in your ${nbTotalPanels} instructions and narrative captions, don't add your own comments. The whole story must be captivating, smart, entertaining. Be straight to the point, and never reply things like "Sure, I can.." etc. Reply using valid JSON.`
       ].filter(item => item).join("\n")
     },
     {
       role: "user",
       content: `The story is: ${prompt}`,
     }
-  ]) + "```json\n["
+  ]) + "[{"
 
 
   let result = ""

@@ -115,7 +115,7 @@ export const presets: Record<string, Preset> = {
     imagePrompt: (prompt: string) => [
       "bande dessinée",
       "franco-belgian comic",
-      `franco-belgian color comic about ${prompt}`,
+       prompt,
       "comic album",
       "detailed drawing"
       // "color drawing"
@@ -140,7 +140,8 @@ export const presets: Record<string, Preset> = {
     llmPrompt: "american comic",
     imagePrompt: (prompt: string) => [
       "digital color comicbook style",
-      `modern american comic about ${prompt}`,
+      `modern american comic`,
+      prompt,
       "detailed drawing"
       //"single panel",
       // "2010s",
@@ -169,7 +170,8 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "american comic",
     imagePrompt: (prompt: string) => [
-      `american comic about ${prompt}`,
+      `american comic`,
+      prompt,
       "single panel",
       "american comic",
       "comicbook style",
@@ -201,7 +203,8 @@ export const presets: Record<string, Preset> = {
     imagePrompt: (prompt: string) => [
       "1950",
       "50s",
-      `vintage american color comic about ${prompt}`,
+      `vintage american color comic`,
+      prompt,
       "detailed drawing"
       // "single panel",
      //  "comicbook style",
@@ -228,7 +231,8 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "american comic",
     imagePrompt: (prompt: string) => [
-      `american comic about ${prompt}`,
+      `american comic`,
+      prompt,
       "single panel",
       "american comic",
       "comicbook style",
