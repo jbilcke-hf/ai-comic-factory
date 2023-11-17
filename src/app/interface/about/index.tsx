@@ -28,10 +28,10 @@ export function About() {
            And yes, you can use your <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/discussions/402#654ab848fa25dfb780aa19fb" target="_blank">own art to generate comic panels!</a>
          </p>
          <p>
-         👉 The language model used to generate the descriptions of each panel is <a className="text-stone-600 underline" href="https://huggingface.co/blog/llama2" target="_blank">Llama-2 70b</a>.
+         👉 The language model used to generate the story is <a className="text-stone-600 underline" href="https://huggingface.co/HuggingFaceH4/zephyr-7b-beta" target="_blank">Zephyr-7b-beta</a>.
          </p>
          <p>
-         👉 The stable diffusion model used to generate the images is the base <a className="text-stone-600 underline" href="https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0" target="_blank">SDXL 1.0</a>.
+         👉 The diffusion model used by default is <a className="text-stone-600 underline" href="https://huggingface.co/latent-consistency/lcm-sdxl" target="_blank">LCM SDXL</a>, which is fast but doesn't have the highest quality. You can decide to use a slower model in the settings.
         </p>
         <p>
            The code is public and can be deployed at home with some changes in the code. See the <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/blob/main/README.md" target="_blank">README</a> for details about the architecture.
