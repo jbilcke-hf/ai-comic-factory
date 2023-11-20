@@ -7,7 +7,6 @@
   /**
    * Formats the messages for the chat with the LLM model in the style of a pirate.
    * @param messages - Array of message objects with role and content.
-   * @param systemMessage - The system's initial instructions, defaulted to a friendly pirate-style chatbot.
    * @returns The formatted chat prompt.
    */
   export function createZephyrPrompt(messages: Message[]): string {

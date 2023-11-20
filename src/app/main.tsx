@@ -11,6 +11,7 @@ import { getStory } from "./queries/getStory"
 import { BottomBar } from "./interface/bottom-bar"
 import { Page } from "./interface/page"
 import { LLMResponse } from "@/types"
+import { joinWords } from "@/lib/joinWords"
 
 export default function Main() {
   const [_isPending, startTransition] = useTransition()
@@ -50,14 +51,7 @@ export default function Main() {
       try {
         llmResponse = await getStory({
           preset,
-          prompt: [
-            `${userStoryPrompt}`,
-
-            // not necessary + it confuses the LLM if we use custom 
-            // + the LLM may reject some of the styles
-            // stylePrompt ? `in the following context: ${stylePrompt}` : ''
-
-          ].map(x => x.trim()).filter(x => x).join(", "),
+          prompt: joinWords([ userStoryPrompt ]),
           nbTotalPanels
         })
         console.log("LLM responded:", llmResponse)
@@ -70,11 +64,11 @@ export default function Main() {
         for (let p = 0; p < nbTotalPanels; p++) {
           llmResponse.push({
             panel: p,
-            instructions: [
+            instructions: joinWords([
               stylePrompt,
               userStoryPrompt,
               `${".".repeat(p)}`,
-            ].map(x => x.trim()).filter(x => x).join(", "),
+            ]),
             caption: "(Sorry, LLM generation failed: using degraded mode)"
           })
         }
@@ -89,15 +83,15 @@ export default function Main() {
       }
 
       // new experimental prompt: let's drop the user prompt, and only use the style
-      const lightPanelPromptPrefix = preset.imagePrompt(limitedStylePrompt).map(x => x.trim()).filter(x => x).join(", ")
+      const lightPanelPromptPrefix = joinWords(preset.imagePrompt(limitedStylePrompt))
 
       // this prompt will be used if the LLM generation failed
-      const degradedPanelPromptPrefix = [
+      const degradedPanelPromptPrefix = joinWords([
         ...preset.imagePrompt(limitedStylePrompt),
 
         // we re-inject the story, then
-        userStoryPrompt.trim(),
-      ].filter(x => x).join(", ")
+        userStoryPrompt
+      ])
 
       const newPanels: string[] = []
       const newCaptions: string[] = []
@@ -105,7 +99,7 @@ export default function Main() {
       console.log("Panel prompts for SDXL:")
       for (let p = 0; p < nbTotalPanels; p++) {
         newCaptions.push(llmResponse[p]?.caption.trim() || "...")
-        const newPanel = [
+        const newPanel = joinWords([
 
           // what we do here is that ideally we give full control to the LLM for prompting,
           // unless there was a catastrophic failure, in that case we preserve the original prompt
@@ -113,8 +107,8 @@ export default function Main() {
           ? lightPanelPromptPrefix
           : degradedPanelPromptPrefix,
 
-          llmResponse[p]?.instructions || ""
-        ].map(x => x.trim()).filter(x => x).join(", ")
+          llmResponse[p]?.instructions
+        ])
         newPanels.push(newPanel)
         console.log(newPanel)
       }
