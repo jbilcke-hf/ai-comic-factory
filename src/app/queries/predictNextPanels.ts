@@ -18,6 +18,7 @@ export const predictNextPanels = async ({
   nbPanelsToGenerate: number;
   existingPanels: GeneratedPanel[];
 }): Promise<GeneratedPanel[]> => {
+  // console.log("predictNextPanels: ", { prompt, nbPanelsToGenerate })
   // throw new Error("Planned maintenance")
   
   // In case you need to quickly debug the RENDERING engine you can uncomment this:

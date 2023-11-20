@@ -17,7 +17,7 @@ export const getStory = async ({
   prompt: string;
   nbTotalPanels: number;
 }): Promise<GeneratedPanels> => {
-  // throw new Error("Planned maintenance")
+  throw new Error("legacy, deprecated")
   
   // In case you need to quickly debug the RENDERING engine you can uncomment this:
   // return mockGeneratedPanels

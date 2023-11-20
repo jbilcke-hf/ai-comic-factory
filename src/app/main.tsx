@@ -7,7 +7,6 @@ import { TopMenu } from "./interface/top-menu"
 import { fonts } from "@/lib/fonts"
 import { useStore } from "./store"
 import { Zoom } from "./interface/zoom"
-import { getStory } from "./queries/getStory"
 import { BottomBar } from "./interface/bottom-bar"
 import { Page } from "./interface/page"
 import { GeneratedPanel } from "@/types"
@@ -88,7 +87,8 @@ export default function Main() {
             nbPanelsToGenerate,
             existingPanels,
           })
-          console.log("LLM generated some new panels:", candidatePanels)
+          console.log("LLM generated some new panels:")
+          console.table(candidatePanels)
 
           existingPanels.push(...candidatePanels)
 
@@ -114,7 +114,7 @@ export default function Main() {
           }
 
           // update the frontend
-          console.log("updating the frontend..")
+          // console.log("updating the frontend..")
           setCaptions(newCaptions)
           setPanels(newPanelsPrompts)    
 

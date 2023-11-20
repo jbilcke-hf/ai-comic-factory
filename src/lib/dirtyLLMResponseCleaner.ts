@@ -2,12 +2,14 @@ export function dirtyLLMResponseCleaner(input: string): string {
   let str = (
     `${input || ""}`
     // a summary of all the weird hallucinations I saw it make..
+    .replaceAll(`"\n`, `",\n`) // fix missing commas at the end of a line
     .replaceAll(`"]`, `"}]`)
-    .replaceAll(`" ]`, `"}]`)
-    .replaceAll(`"  ]`, `"}]`)
-    .replaceAll(`"\n]`, `"}]`)
-    .replaceAll(`"\n ]`, `"}]`)
-    .replaceAll(`"\n  ]`, `"}]`)
+    .replaceAll(/"\S*,?\S*\]/gi, `"}]`)
+    .replaceAll(/"\S*,?\S*\}\S*]/gi, `"}]`)
+
+    // this removes the trailing commas (which are valid in JS but not JSON)
+    .replace(/,(?=\s*?[\}\]])/g, '')
+    
     .replaceAll("}}", "}")
     .replaceAll("]]", "]")
     .replaceAll("[[", "[")
