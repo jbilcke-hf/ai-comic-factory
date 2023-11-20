@@ -87,7 +87,13 @@ export interface ImageAnalysisResponse {
   error?: string
 }
 
-export type LLMResponse = Array<{panel: number; instructions: string; caption: string }>
+export type GeneratedPanel = {
+  panel: number
+  instructions: string
+  caption: string
+}
+
+export type GeneratedPanels = GeneratedPanel[]
 
 export type LLMEngine =
   | "INFERENCE_API"
@@ -154,6 +160,7 @@ export type Settings = {
   huggingfaceApiKey: string
   huggingfaceInferenceApiModel: string
   huggingfaceInferenceApiModelTrigger: string
+  huggingfaceInferenceApiFileType: string
   replicateApiKey: string
   replicateApiModel: string
   replicateApiModelVersion: string

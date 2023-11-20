@@ -1,16 +1,14 @@
-export function dirtyCaptionCleaner({
+import { GeneratedPanel } from "@/types"
+
+export function dirtyGeneratedPanelCleaner({
   panel,
   instructions,
   caption
-}: {
-  panel: number;
-  instructions: string;
-  caption: string
-}) {
-  let newCaption = caption.split(":").pop()?.trim() || ""
+}: GeneratedPanel): GeneratedPanel {
+  let newCaption = `${caption || ""}`.split(":").pop()?.trim() || ""
   let newInstructions = (
     // need to remove from LLM garbage here, too
-    (instructions.split(":").pop() || "")
+    (`${instructions || ""}`.split(":").pop() || "")
     .replaceAll("Draw a", "")
     .replaceAll("Draw the", "")
     .replaceAll("Draw", "")

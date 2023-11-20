@@ -10,8 +10,9 @@ import { Zoom } from "./interface/zoom"
 import { getStory } from "./queries/getStory"
 import { BottomBar } from "./interface/bottom-bar"
 import { Page } from "./interface/page"
-import { LLMResponse } from "@/types"
+import { GeneratedPanel } from "@/types"
 import { joinWords } from "@/lib/joinWords"
+import { getStoryContinuation } from "./queries/getStoryContinuation"
 
 export default function Main() {
   const [_isPending, startTransition] = useTransition()
@@ -44,36 +45,7 @@ export default function Main() {
       // I don't think we are going to need a rate limiter on the LLM part anymore
       const enableRateLimiter = false // `${process.env.NEXT_PUBLIC_ENABLE_RATE_LIMITER}`  === "true"
 
-      let llmResponse: LLMResponse = []
-
       const [stylePrompt, userStoryPrompt] = prompt.split("||").map(x => x.trim())
-
-      try {
-        llmResponse = await getStory({
-          preset,
-          prompt: joinWords([ userStoryPrompt ]),
-          nbTotalPanels
-        })
-        console.log("LLM responded:", llmResponse)
-
-      } catch (err) {
-        console.log("LLM step failed due to:", err)
-        console.log("we are now switching to a degraded mode, using 4 similar panels")
-        
-        llmResponse = []
-        for (let p = 0; p < nbTotalPanels; p++) {
-          llmResponse.push({
-            panel: p,
-            instructions: joinWords([
-              stylePrompt,
-              userStoryPrompt,
-              `${".".repeat(p)}`,
-            ]),
-            caption: "(Sorry, LLM generation failed: using degraded mode)"
-          })
-        }
-        console.error(err)
-      }
 
       // we have to limit the size of the prompt, otherwise the rest of the style won't be followed
 
@@ -81,45 +53,85 @@ export default function Main() {
       if (limitedStylePrompt.length !== stylePrompt.length) {
         console.log("Sorry folks, the style prompt was cut to:", limitedStylePrompt)
       }
-
+    
       // new experimental prompt: let's drop the user prompt, and only use the style
       const lightPanelPromptPrefix = joinWords(preset.imagePrompt(limitedStylePrompt))
-
+    
       // this prompt will be used if the LLM generation failed
       const degradedPanelPromptPrefix = joinWords([
         ...preset.imagePrompt(limitedStylePrompt),
-
+    
         // we re-inject the story, then
         userStoryPrompt
       ])
 
-      const newPanels: string[] = []
+      let existingPanels: GeneratedPanel[] = []
+      const newPanelsPrompts: string[] = []
       const newCaptions: string[] = []
-      setWaitABitMore(true)
-      console.log("Panel prompts for SDXL:")
-      for (let p = 0; p < nbTotalPanels; p++) {
-        newCaptions.push(llmResponse[p]?.caption.trim() || "...")
-        const newPanel = joinWords([
 
-          // what we do here is that ideally we give full control to the LLM for prompting,
-          // unless there was a catastrophic failure, in that case we preserve the original prompt
-          llmResponse[p]?.instructions
-          ? lightPanelPromptPrefix
-          : degradedPanelPromptPrefix,
+      const nbPanelsToGenerate = 2
 
-          llmResponse[p]?.instructions
-        ])
-        newPanels.push(newPanel)
-        console.log(newPanel)
+      for (
+        let currentPanel = 0;
+        currentPanel < nbTotalPanels;
+        currentPanel += nbPanelsToGenerate
+      ) {
+        if (currentPanel > (nbTotalPanels / 2)) {
+          console.log("good, we are half way there, hold tight!")
+          // setWaitABitMore(true)
+        }
+        try {
+          const candidatePanels = await getStoryContinuation({
+            preset,
+            stylePrompt,
+            userStoryPrompt,
+            nbPanelsToGenerate,
+            existingPanels,
+          })
+          console.log("LLM generated some new panels:", candidatePanels)
+
+          existingPanels.push(...candidatePanels)
+
+          console.log(`Converting the ${nbPanelsToGenerate} new panels into image prompts..`)
+         
+          const startAt = currentPanel
+          const endAt = currentPanel + nbPanelsToGenerate
+          for (let p = startAt; p < endAt; p++) {
+            newCaptions.push(existingPanels[p]?.caption.trim() || "...")
+            const newPanel = joinWords([
+    
+              // what we do here is that ideally we give full control to the LLM for prompting,
+              // unless there was a catastrophic failure, in that case we preserve the original prompt
+              existingPanels[p]?.instructions
+              ? lightPanelPromptPrefix
+              : degradedPanelPromptPrefix,
+    
+              existingPanels[p]?.instructions
+            ])
+            newPanelsPrompts.push(newPanel)
+
+            console.log(`Image prompt for panel ${p} => "${newPanel}"`)
+          }
+
+          // update the frontend
+          console.log("updating the frontend..")
+          setCaptions(newCaptions)
+          setPanels(newPanelsPrompts)    
+
+          setGeneratingStory(false)
+        } catch (err) {
+          console.log("failed to generate the story, aborting here")
+          setGeneratingStory(false)
+          break
+        }
       }
    
-      setCaptions(newCaptions)
-      setPanels(newPanels)
-
+      /*
       setTimeout(() => {
         setGeneratingStory(false)
         setWaitABitMore(false)
       }, enableRateLimiter ? 12000 : 0)
+      */
  
     })
   }, [prompt, preset?.label, nbTotalPanels]) // important: we need to react to preset changes too

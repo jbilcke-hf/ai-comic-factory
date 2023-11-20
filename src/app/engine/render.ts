@@ -15,6 +15,7 @@ const serverHuggingfaceApiUrl = `${process.env.RENDERING_HF_INFERENCE_ENDPOINT_U
 const serverHuggingfaceInferenceApiModel = `${process.env.RENDERING_HF_INFERENCE_API_BASE_MODEL || ""}`
 const serverHuggingfaceInferenceApiModelRefinerModel = `${process.env.RENDERING_HF_INFERENCE_API_REFINER_MODEL || ""}`
 const serverHuggingfaceInferenceApiModelTrigger = `${process.env.RENDERING_HF_INFERENCE_API_MODEL_TRIGGER || ""}`
+const serverHuggingfaceInferenceApiFileType = `${process.env.RENDERING_HF_INFERENCE_API_FILE_TYPE || ""}`
 
 const serverReplicateApiKey = `${process.env.AUTH_REPLICATE_API_TOKEN || ""}`
 const serverReplicateApiModel = `${process.env.RENDERING_REPLICATE_API_MODEL || ""}`
@@ -77,6 +78,7 @@ export async function newRender({
   let huggingfaceApiUrl = serverHuggingfaceApiUrl
   let huggingfaceInferenceApiModelRefinerModel = serverHuggingfaceInferenceApiModelRefinerModel 
   let huggingfaceInferenceApiModelTrigger = serverHuggingfaceInferenceApiModelTrigger
+  let huggingfaceInferenceApiFileType = serverHuggingfaceInferenceApiFileType
 
   const placeholder = "<USE YOUR OWN TOKEN>"
 
@@ -116,6 +118,7 @@ export async function newRender({
     huggingfaceApiKey = settings.huggingfaceApiKey
     huggingfaceInferenceApiModel = settings.huggingfaceInferenceApiModel
     huggingfaceInferenceApiModelTrigger = settings.huggingfaceInferenceApiModelTrigger
+    huggingfaceInferenceApiFileType = settings.huggingfaceInferenceApiFileType
   } 
 
   try {
@@ -258,6 +261,7 @@ export async function newRender({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Accept: huggingfaceInferenceApiFileType,
           Authorization: `Bearer ${huggingfaceApiKey}`,
         },
         body: JSON.stringify({

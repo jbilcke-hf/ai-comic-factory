@@ -1,6 +1,6 @@
-import { LLMResponse } from "@/types"
+import { GeneratedPanels } from "@/types"
 
-export const mockLLMResponse: LLMResponse = [{
+export const mockGeneratedPanels: GeneratedPanels = [{
   "panel": 1,
   "instructions": "wide shot of detective walking towards a UFO crash site",
   "caption": "Detective Jameson investigates a UFO crash in the desert"

@@ -13,6 +13,7 @@ export function getSettings(): Settings {
       huggingfaceApiKey: getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceApiKey), defaultSettings.huggingfaceApiKey),
       huggingfaceInferenceApiModel: getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceInferenceApiModel), defaultSettings.huggingfaceInferenceApiModel),
       huggingfaceInferenceApiModelTrigger: getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceInferenceApiModelTrigger), defaultSettings.huggingfaceInferenceApiModelTrigger),
+      huggingfaceInferenceApiFileType:  getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceInferenceApiFileType), defaultSettings.huggingfaceInferenceApiFileType),
       replicateApiKey: getValidString(localStorage?.getItem?.(localStorageKeys.replicateApiKey), defaultSettings.replicateApiKey),
       replicateApiModel: getValidString(localStorage?.getItem?.(localStorageKeys.replicateApiModel), defaultSettings.replicateApiModel),
       replicateApiModelVersion: getValidString(localStorage?.getItem?.(localStorageKeys.replicateApiModelVersion), defaultSettings.replicateApiModelVersion),

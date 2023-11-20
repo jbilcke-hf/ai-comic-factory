@@ -1,8 +1,8 @@
-import { LLMResponse } from "@/types"
+import { GeneratedPanel } from "@/types"
 import { cleanJson } from "./cleanJson"
 import { parseBadJSON } from "./parseBadJSON"
 
-export function dirtyLLMJsonParser(input: string): LLMResponse {
+export function dirtyGeneratedPanelsParser(input: string): GeneratedPanel[] {
 
   if (input.includes("```")) {
     input = input.split("```")[0]
@@ -10,7 +10,7 @@ export function dirtyLLMJsonParser(input: string): LLMResponse {
   // we only keep what's after the first [
   let jsonOrNot = cleanJson(input)
 
-  const jsonData = parseBadJSON(jsonOrNot) as LLMResponse
+  const jsonData = parseBadJSON(jsonOrNot) as GeneratedPanel[]
 
   const results = jsonData.map((item, i) => {
     let panel = i

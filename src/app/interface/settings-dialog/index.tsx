@@ -43,6 +43,10 @@ export function SettingsDialog() {
     localStorageKeys.huggingfaceInferenceApiModelTrigger,
     defaultSettings.huggingfaceInferenceApiModelTrigger
   )
+  const [huggingfaceInferenceApiFileType, setHuggingfaceInferenceApiFileType] = useLocalStorage<string>(
+    localStorageKeys.huggingfaceInferenceApiFileType,
+    defaultSettings.huggingfaceInferenceApiFileType
+  )
   const [replicateApiKey, setReplicateApiKey] = useLocalStorage<string>(
     localStorageKeys.replicateApiKey,
     defaultSettings.replicateApiKey
@@ -146,6 +150,17 @@ export function SettingsDialog() {
                   setHuggingfaceInferenceApiModel(x.target.value)
                 }}
                 value={huggingfaceInferenceApiModel}
+              />
+            </Field>
+            <Field>
+              <Label>The file type supported by the model (jpg, webp..):</Label>
+              <Input
+                className="font-mono"
+                placeholder="Inference API file type"
+                onChange={(x) => {
+                  setHuggingfaceInferenceApiFileType(x.target.value)
+                }}
+                value={huggingfaceInferenceApiFileType}
               />
             </Field>
             <p className="text-sm text-zinc-700">

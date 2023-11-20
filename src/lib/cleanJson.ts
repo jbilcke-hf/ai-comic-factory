@@ -1,6 +1,6 @@
 import { dirtyLLMResponseCleaner } from "./dirtyLLMResponseCleaner"
 
-export function cleanJson(input: string) {
+export function cleanJson(input: string): string {
   
   if (input.includes('```')) {
     input = input.split('```')[0]

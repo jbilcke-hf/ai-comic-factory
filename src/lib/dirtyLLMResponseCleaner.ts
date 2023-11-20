@@ -1,4 +1,4 @@
-export function dirtyLLMResponseCleaner(input: string) {
+export function dirtyLLMResponseCleaner(input: string): string {
   let str = (
     `${input || ""}`
     // a summary of all the weird hallucinations I saw it make..

@@ -1,9 +1,9 @@
-import { LLMResponse } from "@/types"
+import { GeneratedPanels } from "@/types"
 
-export function parseBadJSON(jsonLikeString: string): LLMResponse {
+export function parseBadJSON(jsonLikeString: string): GeneratedPanels {
 
   try {
-    return JSON.parse(jsonLikeString) as LLMResponse
+    return JSON.parse(jsonLikeString) as GeneratedPanels
   } catch (err) {
     var regex = /\{\s*"panel":\s*(\d+),\s*"instructions"\s*:\s*"([^"]+)",\s*"caption":\s*"([^"]*)"\s*\}/gs;
       
@@ -19,6 +19,6 @@ export function parseBadJSON(jsonLikeString: string): LLMResponse {
       results.push(json);
     }
     
-    return results as LLMResponse
+    return results as GeneratedPanels
   }
 }
