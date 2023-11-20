@@ -36,14 +36,14 @@ export const predictNextPanels = async ({
         `Please write detailed drawing instructions and short (2-3 sentences long) speech captions for the next ${nbPanelsToGenerate} panels of a new story, but keep it open-ended (it will be continued and expanded later). Please make sure each of those ${nbPanelsToGenerate} panels include info about character gender, age, origin, clothes, colors, location, lights, etc.`,
         `Give your response as a VALID JSON array like this: \`Array<{ panel: number; instructions: string; caption: string; }>\`.`,
         // `Give your response as Markdown bullet points.`,
-        `Be brief in your ${nbPanelsToGenerate} instructions and narrative captions, don't add your own comments. The captions must be captivating, smart, entertaining. Be straight to the point, and never reply things like "Sure, I can.." etc. Reply using valid JSON.`
+        `Be brief in your ${nbPanelsToGenerate} instructions and narrative captions, don't add your own comments. The captions must be captivating, smart, entertaining. Be straight to the point, and never reply things like "Sure, I can.." etc. Reply using valid JSON!! Important: Write valid JSON!`
       ].filter(item => item).join("\n")
     },
     {
       role: "user",
       content: `The story is about: ${prompt}.${existingPanelsTemplate}`,
     }
-  ]) + "\n```[{"
+  ]) + "\n[{"
 
 
   let result = ""

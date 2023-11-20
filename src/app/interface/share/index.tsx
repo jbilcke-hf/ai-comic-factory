@@ -98,7 +98,7 @@ ${comicFileMd}`;
           >
           <div className="scale-105"><HuggingClap /></div>
           <div>
-          <span className="hidden md:inline">{remainingImages ? `⌛` : `Share to community`}</span>
+          <span className="hidden md:inline">{remainingImages ? `⌛` : `Share`}</span>
         <span className="inline md:hidden">{remainingImages ? `⌛` : `Share`}</span>
           </div>
         </Button> 

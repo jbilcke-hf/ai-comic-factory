@@ -77,7 +77,7 @@ export function SettingsDialog() {
       <DialogTrigger asChild>
         <Button className="space-x-1 md:space-x-2">
           <div>
-            <span className="hidden md:inline">Settings</span>
+            <span className="hidden md:inline">Improve quality</span>
           </div>
         </Button> 
       </DialogTrigger>
@@ -123,7 +123,7 @@ export function SettingsDialog() {
                 />
                 <span
                   onClick={() => setRenderingUseTurbo(!renderingUseTurbo)}
-                  className={cn("cursor-pointer", { "text-zinc-800": renderingUseTurbo })}>Use a faster model, but with inferior quality of images (you are warned!).</span>
+                  className={cn("cursor-pointer", { "text-zinc-800": renderingUseTurbo })}>Use a faster by low-quality model (uncheck this for improved quality).</span>
               </div>
             </Field>
           </>}

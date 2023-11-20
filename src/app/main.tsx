@@ -87,8 +87,7 @@ export default function Main() {
             nbPanelsToGenerate,
             existingPanels,
           })
-          console.log("LLM generated some new panels:")
-          console.table(candidatePanels)
+          console.log("LLM generated some new panels:", candidatePanels)
 
           existingPanels.push(...candidatePanels)
 
