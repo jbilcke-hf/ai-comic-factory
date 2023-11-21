@@ -20,7 +20,7 @@ export const getStoryContinuation = async ({
 }): Promise<GeneratedPanel[]> => {
 
   let panels: GeneratedPanel[] = []
-  const startAt: number = existingPanels.at(-1)?.panel || existingPanels.length || 0
+  const startAt: number = (existingPanels.length + 1) || 0
   const endAt: number = startAt + nbPanelsToGenerate
 
   try {
