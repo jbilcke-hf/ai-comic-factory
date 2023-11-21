@@ -61,19 +61,21 @@ export const predictNextPanels = async ({
   try {
     // console.log(`calling predict(${query}, ${nbTotalPanels})`)
     result = `${await predict(query, nbPanelsToGenerate) || ""}`.trim()
+    console.log("LLM result (1st trial):", result)
     if (!result.length) {
-      throw new Error("empty result!")
+      throw new Error("empty result on 1st trial!")
     }
   } catch (err) {
     // console.log(`prediction of the story failed, trying again..`)
     try {
-      result = `${await predict(query+".", nbPanelsToGenerate) || ""}`.trim()
+      result = `${await predict(query + " \n ", nbPanelsToGenerate) || ""}`.trim()
+      console.log("LLM result (2nd trial):", result)
       if (!result.length) {
-        throw new Error("empty result!")
+        throw new Error("empty result on 2nd trial!")
       }
     } catch (err) {
-      console.error(`prediction of the story failed again 💩`)
-      throw new Error(`failed to generate the story ${err}`)
+      console.error(`prediction of the story failed twice 💩`)
+      throw new Error(`failed to generate the story twice 💩 ${err}`)
     }
   }
 

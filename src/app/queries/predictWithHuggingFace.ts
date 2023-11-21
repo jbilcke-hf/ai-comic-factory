@@ -14,7 +14,7 @@ export async function predict(inputs: string, nbPanels: number): Promise<string>
 
   // we don't require a lot of token for our task
   // but to be safe, let's count ~110 tokens per panel
-  const nbMaxNewTokens = nbPanels * 110
+  const nbMaxNewTokens = nbPanels * 130 // 110 isn't enough anymore for long dialogues
 
   switch (llmEngine) {
     case "INFERENCE_ENDPOINT":
