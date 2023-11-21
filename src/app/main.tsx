@@ -75,16 +75,13 @@ export default function Main() {
         currentPanel < nbTotalPanels;
         currentPanel += nbPanelsToGenerate
       ) {
-        if (currentPanel > (nbTotalPanels / 2)) {
-          console.log("good, we are half way there, hold tight!")
-          // setWaitABitMore(true)
-        }
         try {
           const candidatePanels = await getStoryContinuation({
             preset,
             stylePrompt,
             userStoryPrompt,
             nbPanelsToGenerate,
+            nbTotalPanels,
             existingPanels,
           })
           console.log("LLM generated some new panels:", candidatePanels)
@@ -122,6 +119,10 @@ export default function Main() {
           console.log("failed to generate the story, aborting here")
           setGeneratingStory(false)
           break
+        }
+        if (currentPanel > (nbTotalPanels / 2)) {
+          console.log("good, we are half way there, hold tight!")
+          // setWaitABitMore(true)
         }
       }
    

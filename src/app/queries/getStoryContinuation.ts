@@ -8,13 +8,15 @@ export const getStoryContinuation = async ({
   stylePrompt = "",
   userStoryPrompt = "",
   nbPanelsToGenerate = 2,
+  nbTotalPanels = 8,
   existingPanels = [],
 }: {
   preset: Preset;
-  stylePrompt: string;
-  userStoryPrompt: string;
-  nbPanelsToGenerate: number;
-  existingPanels: GeneratedPanel[];
+  stylePrompt?: string;
+  userStoryPrompt?: string;
+  nbPanelsToGenerate?: number;
+  nbTotalPanels?: number;
+  existingPanels?: GeneratedPanel[];
 }): Promise<GeneratedPanel[]> => {
 
   let panels: GeneratedPanel[] = []
@@ -29,6 +31,7 @@ export const getStoryContinuation = async ({
       preset,
       prompt,
       nbPanelsToGenerate,
+      nbTotalPanels,
       existingPanels,
     })
 
@@ -49,7 +52,7 @@ export const getStoryContinuation = async ({
     // console.log("LLM step failed due to:", err)
     // console.log("we are now switching to a degraded mode, using 4 similar panels")
     panels = []
-    for (let p = startAt; p < endAt; p++) {
+    for (let p = startAt; p < endAt && p; p++) {
       panels.push({
         panel: p,
         instructions: joinWords([
