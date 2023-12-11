@@ -79,7 +79,10 @@ export function BottomBar() {
         `scale-[0.9]`
       )}>
         <About />
-        <AIClipFactory />
+       {/* 
+       Thank you clip factory for your service 🫡
+       <AIClipFactory />
+       */}
       </div>
       <div className={cn(
       `flex flex-row`,
