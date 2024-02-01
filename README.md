@@ -1,6 +1,5 @@
 ---
 title: AI Comic Factory
-header: mini
 emoji: 👩‍🎨
 colorFrom: red
 colorTo: yellow
