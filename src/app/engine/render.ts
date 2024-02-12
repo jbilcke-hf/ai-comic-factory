@@ -32,6 +32,7 @@ const serverOpenaiApiModel = `${process.env.RENDERING_OPENAI_API_MODEL || "dall-
 export async function newRender({
   prompt,
   // negativePrompt,
+  nbFrames,
   width,
   height,
   withCache,
@@ -41,6 +42,7 @@ export async function newRender({
   // negativePrompt: string[]
   width: number
   height: number
+  nbFrames: number
   withCache: boolean
   settings: Settings
 }) {
@@ -392,7 +394,9 @@ export async function newRender({
         body: JSON.stringify({
           prompt,
           // negativePrompt, unused for now
-          nbFrames: 1,
+
+          nbFrames,
+
           nbSteps: nbInferenceSteps, // 20 = fast, 30 = better, 50 = best
           actionnables: [], // ["text block"],
           segmentation: "disabled", // "firstframe", // one day we will remove this param, to make it automatic

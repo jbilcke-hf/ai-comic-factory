@@ -99,10 +99,22 @@ export function Panel({
     delay += 8000
   }
 
-  const startImageGeneration = ({ prompt, width, height, revision }: {
+  // nbFrames == 1 -> image
+  // nbFrames >= 2 -> video
+  // for AnimateLCM (the current supported engine)
+  // the value is between 12 and 20, default is 16
+  // This is not the ideal wait to configure this,
+  // but the AI Comic Factory is a just a prototype, so it will do
+  
+  const nbFrames = preset.id.startsWith("video")
+    ? 16
+    : 1
+
+  const startImageGeneration = ({ prompt, width, height, nbFrames, revision }: {
     prompt: string
     width: number
     height: number
+    nbFrames: number
     revision: number
   }) => {
     if (!prompt?.length) { return }
@@ -134,6 +146,7 @@ export function Panel({
             prompt: cacheInvalidationHack + " " + prompt,
             width,
             height,
+            nbFrames,
 
             // TODO: here we never reset the revision, so only the first user
             // comic will be cached (we should fix that later)
@@ -151,6 +164,7 @@ export function Panel({
               prompt: cacheInvalidationHack + "   " + prompt,
               width,
               height,
+              nbFrames,
               withCache,
               settings: getSettings(),
             })
@@ -230,6 +244,7 @@ export function Panel({
               prompt,
               width,
               height,
+              nbFrames,
               withCache: false,
               settings: getSettings(),
             })
@@ -257,7 +272,7 @@ export function Panel({
   useEffect(() => {
     if (!prompt.length) { return }
 
-    startImageGeneration({ prompt, width, height, revision })
+    startImageGeneration({ prompt, width, height, nbFrames, revision })
 
     clearTimeout(timeoutRef.current)
     
@@ -267,7 +282,7 @@ export function Panel({
     return () => {
       clearTimeout(timeoutRef.current)
     }
-  }, [prompt, width, height, revision])
+  }, [prompt, width, height, nbFrames, revision])
 
   /*
   doing the captionning from the browser is expensive

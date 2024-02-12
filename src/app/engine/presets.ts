@@ -48,6 +48,20 @@ export const presets: Record<string, Preset> = {
     ],
     negativePrompt: () => [ ],
   },
+  /*
+  video_3d_style: {
+    id: "video_3d_style",
+    label: "[video] 3D style",
+    family: "european",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "new movie",
+    imagePrompt: (prompt: string) => [
+      prompt,
+    ],
+    negativePrompt: () => [ ],
+  },
+  */
   japanese_manga: {
     id: "japanese_manga",
     label: "Japanese",
