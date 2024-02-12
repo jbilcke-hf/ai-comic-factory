@@ -2,7 +2,7 @@ import { RenderingModelVendor, Settings } from "@/types"
 
 export const defaultSettings: Settings = {
   renderingModelVendor: "SERVER" as RenderingModelVendor,
-  renderingUseTurbo: true,
+  renderingUseTurbo: false,
   huggingfaceApiKey: "",
   huggingfaceInferenceApiModel: "stabilityai/stable-diffusion-xl-base-1.0",
   huggingfaceInferenceApiModelTrigger: "",
