@@ -123,7 +123,7 @@ export function SettingsDialog() {
                 />
                 <span
                   onClick={() => setRenderingUseTurbo(!renderingUseTurbo)}
-                  className={cn("cursor-pointer", { "text-zinc-800": renderingUseTurbo })}>Use a fast low-quality model (default) &nbsp; ⬅️ disable this for improved quality!</span>
+                  className={cn("cursor-pointer", { "text-zinc-800": renderingUseTurbo })}>Use a faster, but lower quality model (you are warned!)</span>
               </div>
             </Field>
           </>}
