@@ -93,14 +93,14 @@ export function BottomBar() {
       `scale-[0.9]`
     )}>
       <SettingsDialog />
-      <Button
+      {/*<Button
         onClick={handleUpscale}
         disabled={!prompt?.length || remainingImages > 0 || isUpscaling || !Object.values(upscaleQueue).length}
       >
         {isUpscaling
             ? `${allStatus.length - Object.values(upscaleQueue).length}/${allStatus.length} ⌛`
             : "Upscale"}
-      </Button>
+        </Button>*/}
 
         {/*
         <div>
