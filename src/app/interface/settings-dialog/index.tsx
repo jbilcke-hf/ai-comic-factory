@@ -77,14 +77,14 @@ export function SettingsDialog() {
       <DialogTrigger asChild>
         <Button className="space-x-1 md:space-x-2">
           <div>
-            <span className="hidden md:inline">Improve quality</span>
+            <span className="hidden md:inline">Custom models</span>
           </div>
         </Button> 
       </DialogTrigger>
       <DialogContent className="w-full sm:max-w-[500px] md:max-w-[700px] overflow-y-auto h-max-[100vh] md:h-max-[80vh]">
         <DialogHeader>
           <DialogDescription className="w-full text-center text-lg font-bold text-stone-800">
-            Custom Settings
+            Custom Models
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-1 space-y-1 text-stone-800">
@@ -92,10 +92,10 @@ export function SettingsDialog() {
             Note: most vendors have a warm-up delay when using a custom or rarely used model. Do not hesitate to try again after 5 minutes if that happens.
           </p>
           <p className="text-sm text-zinc-700">
-            Security note: we do not save those settings on our side, instead they are stored inside your web browser, using the local storage.
+            Security note: we do not save your API credentials on our server but inside your web browser, using the local storage.
           </p>
           <Field>
-            <Label>Image vendor:</Label>
+            <Label>Image rendering provider:</Label>
             <Select
               onValueChange={(value: string) => {
                 setRenderingModelVendor(value as RenderingModelVendor)
@@ -112,18 +112,30 @@ export function SettingsDialog() {
               </SelectContent>
             </Select>
           </Field>
-
-          {renderingModelVendor === "SERVER" && <>
+            
+          
+          {
+          renderingModelVendor === "SERVER" && <>
             <Field>
-              <Label>Quality over performance ratio:</Label>
+              <Label>Quality over performance ratio (beta, deprecated):</Label>
               <div className="flex flex-row space-x-2 text-zinc-500">
                 <Switch
-                  checked={renderingUseTurbo}
-                  onCheckedChange={setRenderingUseTurbo}
+                  // checked={renderingUseTurbo}
+                  // onCheckedChange={setRenderingUseTurbo}
+                  checked={false}
+                  disabled
+                  className="opacity-30 pointer-events-none"
                 />
+                {/*
                 <span
                   onClick={() => setRenderingUseTurbo(!renderingUseTurbo)}
-                  className={cn("cursor-pointer", { "text-zinc-800": renderingUseTurbo })}>Use a faster, but lower quality model (you are warned!)</span>
+                  className={cn("cursor-pointer", { "text-zinc-800": renderingUseTurbo })}>
+                    Use a faster, but lower quality model (you are warned!)
+                  </span>
+              */}
+              <span className="text-zinc-500 italic">
+                Following feedbacks from users (low rendering quality on comics) the fast renderer has been disabled.
+              </span>
               </div>
             </Field>
           </>}

@@ -359,31 +359,7 @@ export async function newRender({
         segments: []
       } as RenderedScene
     } else {
-      /*
-      console.log("sending:", {
-        prompt,
-        // negativePrompt, unused for now
-        nbFrames: 1,
-        nbSteps: nbInferenceSteps, // 20 = fast, 30 = better, 50 = best
-        actionnables: [], // ["text block"],
-        segmentation: "disabled", // "firstframe", // one day we will remove this param, to make it automatic
-        width,
-        height,
-
-        // no need to upscale right now as we generate tiny panels
-        // maybe later we can provide an "export" button to PDF
-        // unfortunately there are too many requests for upscaling,
-        // the server is always down
-        upscalingFactor: 1, // 2,
-
-        turbo: settings.renderingUseTurbo,
-
-        // analyzing doesn't work yet, it seems..
-        analyze: false, // analyze: true,
-
-        cache: "ignore"
-      })
-      */
+  
       const res = await fetch(`${videochainApiUrl}${videochainApiUrl.endsWith("/") ? "" : "/"}render`, {
         method: "POST",
         headers: {
@@ -409,7 +385,9 @@ export async function newRender({
           // the server is always down
           upscalingFactor: 1, // 2,
 
-          turbo: settings.renderingUseTurbo,
+          // let's completely disable turbo mode, it doesn't work well for drawings and comics,
+          // basically all the people I talked to said it sucked
+          turbo: false, // settings.renderingUseTurbo,
 
           // analyzing doesn't work yet, it seems..
           analyze: false, // analyze: true,
