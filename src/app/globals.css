@@ -26,13 +26,12 @@ body {
     rgb(var(--background-start-rgb));
 }
 
-
 /* this is the trick to bypass the style={{}} attribute when printing */
 @media print {
-  .comic-page[style] { width: 100vw !important; }
-
+  .comic-page, .comic-page[style] { width: 100vw !important; }
   @page { size: landscape }
 }
+
 
 .render-to-image .comic-panel {
   height: auto !important;

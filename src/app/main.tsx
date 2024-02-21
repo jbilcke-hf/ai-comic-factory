@@ -154,7 +154,8 @@ export default function Main() {
           <div
             className={cn(
               `comic-page`,
-              `flex flex-col md:flex-row md:space-x-8 lg:space-x-12 xl:space-x-16 md:items-center md:justify-start print:space-x-4`,
+              `flex flex-col md:flex-row md:space-x-8 lg:space-x-12 xl:space-x-16 md:items-center md:justify-start`,
+              `print:space-x-4 print:flex-row`,
             )}
             style={{
               width: `${zoomLevel}%`
