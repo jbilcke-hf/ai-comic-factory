@@ -162,7 +162,13 @@ export default function Main() {
             }}>
             <Page page={0} />
 
-            <Page page={1} />
+            {/* there are too many people using the AI comic factory right now
+            so I'm going to disable the second page
+            */}
+            {/*
+              disabled as the comic factory cannot scale right now
+              <Page page={1} />
+            */}
           </div>
         </div>
       </div>
