@@ -7,6 +7,7 @@ sdk: docker
 pinned: true
 app_port: 3000
 disable_embedding: true
+short_description: Create your own AI comic with a single prompt
 ---
 
 # AI Comic Factory
