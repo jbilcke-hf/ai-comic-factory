@@ -31,7 +31,7 @@ export function About() {
          👉 The language model used to generate the story is <a className="text-stone-600 underline" href="https://huggingface.co/HuggingFaceH4/zephyr-7b-beta" target="_blank">Zephyr-7b-beta</a>.
          </p>
          <p>
-         👉 The diffusion model used by default is <a className="text-stone-600 underline" href="https://huggingface.co/latent-consistency/lcm-sdxl" target="_blank">LCM SDXL</a>, which is fast but doesn&pos;t have the highest quality. You can decide to use a slower model in the settings.
+         👉 The diffusion model used by default is <a className="text-stone-600 underline" href="https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0" target="_blank">SDXL</a>.
         </p>
         <p>
            The code is public and can be deployed at home with some changes in the code. See the <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/blob/main/README.md" target="_blank">README</a> for details about the architecture.
