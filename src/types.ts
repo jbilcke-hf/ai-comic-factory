@@ -157,6 +157,7 @@ export type LayoutProps = {
 export type Settings = {
   renderingModelVendor: RenderingModelVendor
   renderingUseTurbo: boolean
+  huggingFaceOAuth: string
   huggingfaceApiKey: string
   huggingfaceInferenceApiModel: string
   huggingfaceInferenceApiModelTrigger: string

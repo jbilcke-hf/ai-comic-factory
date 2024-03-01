@@ -10,6 +10,7 @@ export function getSettings(): Settings {
     return {
       renderingModelVendor: getValidString(localStorage?.getItem?.(localStorageKeys.renderingModelVendor), defaultSettings.renderingModelVendor) as RenderingModelVendor,
       renderingUseTurbo: getValidBoolean(localStorage?.getItem?.(localStorageKeys.renderingUseTurbo), defaultSettings.renderingUseTurbo),
+      huggingFaceOAuth: getValidString(localStorage?.getItem?.(localStorageKeys.huggingFaceOAuth), defaultSettings.huggingFaceOAuth),
       huggingfaceApiKey: getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceApiKey), defaultSettings.huggingfaceApiKey),
       huggingfaceInferenceApiModel: getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceInferenceApiModel), defaultSettings.huggingfaceInferenceApiModel),
       huggingfaceInferenceApiModelTrigger: getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceInferenceApiModelTrigger), defaultSettings.huggingfaceInferenceApiModelTrigger),

@@ -8,6 +8,7 @@ import { sleep } from "@/lib/sleep"
 import { AIClipFactory } from "../ai-clip-factory"
 import { Share } from "../share"
 import { SettingsDialog } from "../settings-dialog"
+import { Login } from "../login"
 
 export function BottomBar() {
   const download = useStore(state => state.download)
@@ -79,6 +80,7 @@ export function BottomBar() {
         `scale-[0.9]`
       )}>
         <About />
+        <Login />
        {/* 
        Thank you clip factory for your service 🫡
        <AIClipFactory />
