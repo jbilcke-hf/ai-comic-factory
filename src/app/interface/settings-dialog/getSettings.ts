@@ -24,6 +24,7 @@ export function getSettings(): Settings {
       openaiApiLanguageModel: getValidString(localStorage?.getItem?.(localStorageKeys.openaiApiLanguageModel), defaultSettings.openaiApiLanguageModel),
       groqApiKey: getValidString(localStorage?.getItem?.(localStorageKeys.groqApiKey), defaultSettings.groqApiKey),
       groqApiLanguageModel: getValidString(localStorage?.getItem?.(localStorageKeys.groqApiLanguageModel), defaultSettings.groqApiLanguageModel),
+      hasGeneratedAtLeastOnce: getValidBoolean(localStorage?.getItem?.(localStorageKeys.hasGeneratedAtLeastOnce), defaultSettings.hasGeneratedAtLeastOnce), 
     }
   } catch (err) {
     return {

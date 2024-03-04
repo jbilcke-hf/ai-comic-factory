@@ -31,7 +31,6 @@ export function useOAuth({
   const scopes = "openid profile inference-api"
 
   const isOAuthEnabled = useOAuthEnabled()
-  const isBetaEnabled = useBetaEnabled()
 
   const searchParams = useSearchParams()
   const code = searchParams.get("code")
@@ -39,7 +38,7 @@ export function useOAuth({
 
   const hasReceivedFreshOAuth = Boolean(code && state)
 
-  const canLogin: boolean = Boolean(clientId && isOAuthEnabled && isBetaEnabled)
+  const canLogin: boolean = Boolean(clientId && isOAuthEnabled)
   const isLoggedIn = Boolean(oauthResult)
 
   if (debug) {
@@ -49,7 +48,6 @@ export function useOAuth({
       redirectUrl,
       scopes,
       isOAuthEnabled,
-      isBetaEnabled,
       code,
       state,
       hasReceivedFreshOAuth,
@@ -64,7 +62,6 @@ export function useOAuth({
       redirectUrl: 'http://localhost:3000',
       scopes: 'openid profile inference-api',
       isOAuthEnabled: true,
-      isBetaEnabled: false,
       code: '...........',
       state: '{"nonce":".........","redirectUri":"http://localhost:3000"}',
       hasReceivedFreshOAuth: true,
@@ -77,6 +74,7 @@ export function useOAuth({
   useEffect(() => {
     // no need to perfor the rest if the operation is there is nothing in the url
     if (hasReceivedFreshOAuth) {
+
       (async () => {
         const maybeValidOAuth = await oauthHandleRedirectIfPresent()
 
@@ -91,6 +89,9 @@ export function useOAuth({
             console.log("useOAuth::useEffect 1: correctly received the new oauth result, saving it to local storage:", newOAuth)
           }
           setOAuthResult(newOAuth)
+
+          // once set we can (brutally) reload the page
+          window.location.href = `//${window.location.host}${window.location.pathname}`
         }
       })()
     }

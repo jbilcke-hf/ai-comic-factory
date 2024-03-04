@@ -667,7 +667,7 @@ export const presets: Record<string, Preset> = {
 
 export type PresetName = keyof typeof presets
 
-export const defaultPreset: PresetName = "american_comic_90"
+export const defaultPreset: PresetName = "american_comic_50"
 
 export const nonRandomPresets = Object.keys(presets).filter(p => p !== "random")
 

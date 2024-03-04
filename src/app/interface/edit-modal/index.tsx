@@ -1,12 +1,9 @@
 import { ReactNode, useState } from "react"
-import { RxReload, RxPencil2 } from "react-icons/rx"
 
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
-import { Textarea } from "@/components/ui/textarea"
 
+import { Textarea } from "@/components/ui/textarea"
 
 export function EditModal({
     existingPrompt,

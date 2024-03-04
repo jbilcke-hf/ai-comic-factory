@@ -17,4 +17,5 @@ export const localStorageKeys: Record<keyof Settings, string> = {
   openaiApiLanguageModel: "CONF_AUTH_OPENAI_API_LANGUAGE_MODEL",
   groqApiKey: "CONF_AUTH_GROQ_API_KEY",
   groqApiLanguageModel: "CONF_AUTH_GROQ_API_LANGUAGE_MODEL",
+  hasGeneratedAtLeastOnce: "CONF_HAS_GENERATED_AT_LEAST_ONCE",
 }

@@ -26,6 +26,11 @@ import layoutPreview2 from "../../../../public/layouts/layout2.jpg"
 import layoutPreview3 from "../../../../public/layouts/layout3.jpg"
 import { StaticImageData } from "next/image"
 import { Switch } from "@/components/ui/switch"
+import { useLocalStorage } from "usehooks-ts"
+import { useOAuth } from "@/lib/useOAuth"
+import { localStorageKeys } from "../settings-dialog/localStorageKeys"
+import { defaultSettings } from "../settings-dialog/defaultSettings"
+import { AuthWall } from "../auth-wall"
 
 const layoutIcons: Partial<Record<LayoutName, StaticImageData>> = {
   Layout0: layoutPreview0,
@@ -65,9 +70,25 @@ export function TopMenu() {
 
   const [draftPreset, setDraftPreset] = useState<PresetName>(requestedPreset)
   const [draftLayout, setDraftLayout] = useState<LayoutName>(requestedLayout)
+  
+
+  const { canLogin, login, isLoggedIn, oauthResult } = useOAuth({ debug: false })
+  
+  const [hasGeneratedAtLeastOnce, setHasGeneratedAtLeastOnce] = useLocalStorage<boolean>(
+    localStorageKeys.hasGeneratedAtLeastOnce,
+    defaultSettings.hasGeneratedAtLeastOnce
+  )
+
+  const [showAuthWall, setShowAuthWall] = useState(false)
 
   const handleSubmit = () => {
+    const enableAuthWall = `${process.env.NEXT_PUBLIC_ENABLE_HUGGING_FACE_OAUTH_WALL || "false"}` === "true"
 
+    if (enableAuthWall && hasGeneratedAtLeastOnce && !isLoggedIn) {
+      setShowAuthWall(true)
+      return
+    }
+    
     const promptChanged = draftPrompt.trim() !== prompt.trim()
     const presetChanged = draftPreset !== preset.id
     const layoutChanged = draftLayout !== layout
@@ -202,7 +223,7 @@ export function TopMenu() {
         <div className="flex flex-row flex-grow w-full">
           <div className="flex flex-row flex-grow w-full">
             <Input
-              placeholder="1. Story prompt"
+              placeholder="1. Story (eg. detective dog)"
               className="w-1/2 bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 rounded-r-none border-r-stone-100"
               // disabled={atLeastOnePanelIsBusy}
               onChange={(e) => {
@@ -216,7 +237,7 @@ export function TopMenu() {
               value={draftPromptB}
             />
             <Input
-              placeholder="2. Style/character prompt"
+              placeholder="2. Style (eg 'rain, shiba inu')"
               className="w-1/2 bg-neutral-300 text-neutral-800 dark:bg-neutral-300 dark:text-neutral-800 border-l-stone-100 rounded-l-none rounded-r-none"
               // disabled={atLeastOnePanelIsBusy}
               onChange={(e) => {
@@ -230,19 +251,21 @@ export function TopMenu() {
               value={draftPromptA}
             />
           </div>
-          <Button
-          className={cn(
-            `rounded-l-none cursor-pointer`,
-            `transition-all duration-200 ease-in-out`,
-            `bg-[rgb(59,134,247)] hover:bg-[rgb(69,144,255)] disabled:bg-[rgb(59,134,247)]`
-            )}
-          onClick={() => {
-            handleSubmit()
-          }}
-          disabled={!draftPrompt?.trim().length || isBusy}
-        >
-          Go
-        </Button>
+            <Button
+            className={cn(
+              `rounded-l-none cursor-pointer`,
+              `transition-all duration-200 ease-in-out`,
+              `bg-[rgb(59,134,247)] hover:bg-[rgb(69,144,255)] disabled:bg-[rgb(59,134,247)]`
+              )}
+            onClick={() => {
+              handleSubmit()
+            }}
+            disabled={!draftPrompt?.trim().length || isBusy}
+          >
+            Go
+          </Button>
+
+          <AuthWall show={showAuthWall} />
         </div>
       </div>
       {/*

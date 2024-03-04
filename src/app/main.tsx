@@ -3,16 +3,17 @@
 import { useEffect, useState, useTransition } from "react"
 
 import { cn } from "@/lib/utils"
-import { TopMenu } from "./interface/top-menu"
 import { fonts } from "@/lib/fonts"
+import { GeneratedPanel } from "@/types"
+import { joinWords } from "@/lib/joinWords"
+import { MAX_NB_PAGES } from "@/config"
+
+import { TopMenu } from "./interface/top-menu"
 import { useStore } from "./store"
 import { Zoom } from "./interface/zoom"
 import { BottomBar } from "./interface/bottom-bar"
 import { Page } from "./interface/page"
-import { GeneratedPanel } from "@/types"
-import { joinWords } from "@/lib/joinWords"
 import { getStoryContinuation } from "./queries/getStoryContinuation"
-import { MAX_NB_PAGES, NB_TOTAL_PANELS_TO_GENERATE } from "@/config"
 
 export default function Main() {
   const [_isPending, startTransition] = useTransition()

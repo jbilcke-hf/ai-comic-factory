@@ -17,4 +17,5 @@ export const defaultSettings: Settings = {
   openaiApiLanguageModel: "gpt-4",
   groqApiKey: "",
   groqApiLanguageModel: "mixtral-8x7b-32768",
+  hasGeneratedAtLeastOnce: false,
 }

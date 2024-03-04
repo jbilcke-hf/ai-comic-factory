@@ -11,7 +11,7 @@ import { sleep } from "@/lib/sleep"
 export const predictNextPanels = async ({
   preset,
   prompt = "",
-  nbPanelsToGenerate = 1,
+  nbPanelsToGenerate = 2,
   nbTotalPanels = 4,
   existingPanels = [],
 }: {

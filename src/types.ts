@@ -173,4 +173,5 @@ export type Settings = {
   openaiApiLanguageModel: string
   groqApiKey: string
   groqApiLanguageModel: string
+  hasGeneratedAtLeastOnce: boolean
 }
