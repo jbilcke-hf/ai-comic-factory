@@ -6,12 +6,13 @@ import { cleanJson } from "@/lib/cleanJson"
 import { createZephyrPrompt } from "@/lib/createZephyrPrompt"
 import { dirtyGeneratedPanelCleaner } from "@/lib/dirtyGeneratedPanelCleaner"
 import { dirtyGeneratedPanelsParser } from "@/lib/dirtyGeneratedPanelsParser"
+import { sleep } from "@/lib/sleep"
 
 export const predictNextPanels = async ({
   preset,
   prompt = "",
-  nbPanelsToGenerate = 2,
-  nbTotalPanels = 8,
+  nbPanelsToGenerate = 1,
+  nbTotalPanels = 4,
   existingPanels = [],
 }: {
   preset: Preset;
@@ -58,17 +59,26 @@ export const predictNextPanels = async ({
 
   let result = ""
 
+  // we don't require a lot of token for our task
+  // but to be safe, let's count ~130 tokens per panel
+  const nbTokensPerPanel = 130
+
+  const nbMaxNewTokens = nbPanelsToGenerate * nbTokensPerPanel
+
   try {
     // console.log(`calling predict(${query}, ${nbTotalPanels})`)
-    result = `${await predict(query, nbPanelsToGenerate) || ""}`.trim()
+    result = `${await predict(query, nbMaxNewTokens)}`.trim()
     console.log("LLM result (1st trial):", result)
     if (!result.length) {
       throw new Error("empty result on 1st trial!")
     }
   } catch (err) {
     // console.log(`prediction of the story failed, trying again..`)
+    // this should help throttle things on a bit on the LLM API side
+    await sleep(2000)
+
     try {
-      result = `${await predict(query + " \n ", nbPanelsToGenerate) || ""}`.trim()
+      result = `${await predict(query + " \n ", nbMaxNewTokens)}`.trim()
       console.log("LLM result (2nd trial):", result)
       if (!result.length) {
         throw new Error("empty result on 2nd trial!")

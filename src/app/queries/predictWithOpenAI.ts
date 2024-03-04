@@ -3,7 +3,7 @@
 import type { ChatCompletionMessage } from "openai/resources/chat"
 import OpenAI from "openai"
 
-export async function predict(inputs: string, nbPanels: number): Promise<string> {
+export async function predict(inputs: string, nbMaxNewTokens: number): Promise<string> {
   const openaiApiKey = `${process.env.AUTH_OPENAI_API_KEY || ""}`
   const openaiApiBaseUrl = `${process.env.LLM_OPENAI_API_BASE_URL || "https://api.openai.com/v1"}`
   const openaiApiModel = `${process.env.LLM_OPENAI_API_MODEL || "gpt-3.5-turbo"}`
@@ -23,6 +23,8 @@ export async function predict(inputs: string, nbPanels: number): Promise<string>
       stream: false,
       model: openaiApiModel,
       temperature: 0.8,
+      max_tokens: nbMaxNewTokens,
+
       // TODO: use the nbPanels to define a max token limit
     })
 

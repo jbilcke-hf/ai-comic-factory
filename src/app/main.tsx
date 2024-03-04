@@ -68,7 +68,7 @@ export default function Main() {
       const newPanelsPrompts: string[] = []
       const newCaptions: string[] = []
 
-      const nbPanelsToGenerate = 2
+      const nbPanelsToGenerate = 1
 
       for (
         let currentPanel = 0;

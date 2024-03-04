@@ -3,7 +3,7 @@
 import { HfInference, HfInferenceEndpoint } from "@huggingface/inference"
 import { LLMEngine } from "@/types"
 
-export async function predict(inputs: string, nbPanels: number): Promise<string> {
+export async function predict(inputs: string, nbMaxNewTokens: number): Promise<string> {
   const hf = new HfInference(process.env.AUTH_HF_API_TOKEN)
 
   const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
@@ -11,10 +11,6 @@ export async function predict(inputs: string, nbPanels: number): Promise<string>
   const inferenceModel = `${process.env.LLM_HF_INFERENCE_API_MODEL || ""}`
 
   let hfie: HfInferenceEndpoint = hf
-
-  // we don't require a lot of token for our task
-  // but to be safe, let's count ~110 tokens per panel
-  const nbMaxNewTokens = nbPanels * 130 // 110 isn't enough anymore for long dialogues
 
   switch (llmEngine) {
     case "INFERENCE_ENDPOINT":
