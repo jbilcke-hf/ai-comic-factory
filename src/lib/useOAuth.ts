@@ -27,7 +27,7 @@ export function useOAuth({
   const [oauthResult, setOAuthResult] = usePersistedOAuth()
 
   const clientId = useOAuthClientId()
-  const redirectUrl = "http://localhost:3000"
+  const redirectUrl = "https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory"
   const scopes = "openid profile inference-api"
 
   const isOAuthEnabled = useOAuthEnabled()
