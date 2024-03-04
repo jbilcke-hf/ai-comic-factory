@@ -12,6 +12,7 @@ import { Page } from "./interface/page"
 import { GeneratedPanel } from "@/types"
 import { joinWords } from "@/lib/joinWords"
 import { getStoryContinuation } from "./queries/getStoryContinuation"
+import { MAX_NB_PAGES, NB_TOTAL_PANELS_TO_GENERATE } from "@/config"
 
 export default function Main() {
   const [_isPending, startTransition] = useTransition()
@@ -68,7 +69,8 @@ export default function Main() {
       const newPanelsPrompts: string[] = []
       const newCaptions: string[] = []
 
-      const nbPanelsToGenerate = 1
+      // we always generate panels 2 by 2
+      const nbPanelsToGenerate = 2
 
       for (
         let currentPanel = 0;
@@ -160,15 +162,7 @@ export default function Main() {
             style={{
               width: `${zoomLevel}%`
             }}>
-            <Page page={0} />
-
-            {/* there are too many people using the AI comic factory right now
-            so I'm going to disable the second page
-            */}
-            {/*
-              disabled as the comic factory cannot scale right now
-              <Page page={1} />
-            */}
+            {Array(MAX_NB_PAGES).fill(0).map((_, i) => <Page key={i} page={i} />)}
           </div>
         </div>
       </div>

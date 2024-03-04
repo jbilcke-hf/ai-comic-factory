@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useOAuth } from "@/lib/useOAuth"
 
 export function Login() {
-  const { canLogin, login, isLoggedIn, oauthResult } = useOAuth({ debug: true })
+  const { canLogin, login, isLoggedIn, oauthResult } = useOAuth({ debug: false })
   
   useEffect(() => {
     if (!oauthResult) {
