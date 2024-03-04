@@ -14,4 +14,7 @@ export const defaultSettings: Settings = {
   replicateApiModelTrigger: "",
   openaiApiKey: "",
   openaiApiModel: "dall-e-3",
+  openaiApiLanguageModel: "gpt-4",
+  groqApiKey: "",
+  groqApiLanguageModel: "mixtral-8x7b-32768",
 }

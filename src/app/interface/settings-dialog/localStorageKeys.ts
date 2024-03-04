@@ -14,4 +14,7 @@ export const localStorageKeys: Record<keyof Settings, string> = {
   replicateApiModelTrigger: "CONF_RENDERING_REPLICATE_API_MODEL_TRIGGER",
   openaiApiKey: "CONF_AUTH_OPENAI_API_KEY",
   openaiApiModel: "CONF_AUTH_OPENAI_API_MODEL",
+  openaiApiLanguageModel: "CONF_AUTH_OPENAI_API_LANGUAGE_MODEL",
+  groqApiKey: "CONF_AUTH_GROQ_API_KEY",
+  groqApiLanguageModel: "CONF_AUTH_GROQ_API_LANGUAGE_MODEL",
 }

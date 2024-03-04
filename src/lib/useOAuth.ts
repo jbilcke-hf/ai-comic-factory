@@ -56,6 +56,22 @@ export function useOAuth({
       canLogin,
       isLoggedIn,
     })
+
+    /*
+    useOAuth debug: {
+      oauthResult: '',
+      clientId: '........',
+      redirectUrl: 'http://localhost:3000',
+      scopes: 'openid profile inference-api',
+      isOAuthEnabled: true,
+      isBetaEnabled: false,
+      code: '...........',
+      state: '{"nonce":".........","redirectUri":"http://localhost:3000"}',
+      hasReceivedFreshOAuth: true,
+      canLogin: false,
+      isLoggedIn: false
+    }
+    */
   }
 
   useEffect(() => {

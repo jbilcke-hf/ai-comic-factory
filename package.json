@@ -41,6 +41,7 @@
     "encoding": "^0.1.13",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.10",
+    "groq-sdk": "^0.3.1",
     "html2canvas": "^1.4.1",
     "konva": "^9.2.2",
     "lucide-react": "^0.260.0",

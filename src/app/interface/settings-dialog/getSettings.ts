@@ -21,6 +21,9 @@ export function getSettings(): Settings {
       replicateApiModelTrigger: getValidString(localStorage?.getItem?.(localStorageKeys.replicateApiModelTrigger), defaultSettings.replicateApiModelTrigger),
       openaiApiKey: getValidString(localStorage?.getItem?.(localStorageKeys.openaiApiKey), defaultSettings.openaiApiKey),
       openaiApiModel: getValidString(localStorage?.getItem?.(localStorageKeys.openaiApiModel), defaultSettings.openaiApiModel),
+      openaiApiLanguageModel: getValidString(localStorage?.getItem?.(localStorageKeys.openaiApiLanguageModel), defaultSettings.openaiApiLanguageModel),
+      groqApiKey: getValidString(localStorage?.getItem?.(localStorageKeys.groqApiKey), defaultSettings.groqApiKey),
+      groqApiLanguageModel: getValidString(localStorage?.getItem?.(localStorageKeys.groqApiLanguageModel), defaultSettings.groqApiLanguageModel),
     }
   } catch (err) {
     return {
