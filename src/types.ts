@@ -175,3 +175,14 @@ export type Settings = {
   groqApiLanguageModel: string
   hasGeneratedAtLeastOnce: boolean
 }
+
+export type DynamicConfig = {
+  maxNbPages: number
+  nbPanelsPerPage: number
+  nbTotalPanelsToGenerate: number
+  oauthClientId: string
+  oauthRedirectUrl: string
+  oauthScopes: string
+  enableHuggingFaceOAuth: boolean
+  enableHuggingFaceOAuthWall: boolean
+}

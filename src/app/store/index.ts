@@ -7,12 +7,12 @@ import { FontName } from "@/lib/fonts"
 import { Preset, PresetName, defaultPreset, getPreset, getRandomPreset } from "@/app/engine/presets"
 import { RenderedScene } from "@/types"
 import { LayoutName, defaultLayout, getRandomLayoutName } from "../layouts"
-import { MAX_NB_PAGES, NB_PANELS_PER_PAGE } from "@/config"
 
 export const useStore = create<{
   prompt: string
   font: FontName
   preset: Preset
+  nbPanelsPerPage: number
   nbPages: number
   nbTotalPanels: number
   panels: string[]
@@ -28,6 +28,9 @@ export const useStore = create<{
   panelGenerationStatus: Record<number, boolean>
   isGeneratingText: boolean
   atLeastOnePanelIsBusy: boolean
+  setNbPanelsPerPage: (nbPanelsPerPage: number) => void
+  setNbPages: (nbPages: number) => void
+  setTotalPanels: (nbTotalPanels: number) => void
   setRendered: (panelId: string, renderedScene: RenderedScene) => void
   addToUpscaleQueue: (panelId: string, renderedScene: RenderedScene) => void
   removeFromUpscaleQueue: (panelId: string) => void
@@ -53,11 +56,9 @@ export const useStore = create<{
   prompt: "",
   font: "actionman",
   preset: getPreset(defaultPreset),
-  nbPages: MAX_NB_PAGES,
-
-  // TODO: make this dynamic!
-  nbTotalPanels: NB_PANELS_PER_PAGE * MAX_NB_PAGES,
-
+  nbPanelsPerPage: 4,
+  nbPages: 1,
+  nbTotalPanels: 4,
   panels: [],
   captions: [],
   upscaleQueue: {} as Record<string, RenderedScene>,
@@ -71,6 +72,25 @@ export const useStore = create<{
   panelGenerationStatus: {},
   isGeneratingText: false,
   atLeastOnePanelIsBusy: false,
+  setNbPanelsPerPage: (nbPanelsPerPage: number) => {
+    const { nbPages } = get()
+    set({
+      nbPanelsPerPage,
+      nbTotalPanels: nbPanelsPerPage * nbPages,
+    })
+  },
+  setNbPages: (nbPages: number) => {
+    const { nbPanelsPerPage } = get()
+    set({
+      nbPages,
+      nbTotalPanels: nbPanelsPerPage * nbPages,
+    })
+  },
+  setTotalPanels: (nbTotalPanels: number) => {
+    set({
+      nbTotalPanels,
+    })
+  },
   setRendered: (panelId: string, renderedScene: RenderedScene) => {
     const { renderedScenes } = get()
     set({

@@ -4,7 +4,6 @@ import { Panel } from "@/app/interface/panel"
 import { pick } from "@/lib/pick"
 import { Grid } from "@/app/interface/grid"
 import { LayoutProps } from "@/types"
-import { NB_PANELS_PER_PAGE } from "@/config"
 
 export function Layout0({ page, nbPanels }: LayoutProps) {
   return (
@@ -424,15 +423,6 @@ export const allLayoutAspectRatios = {
   Layout2: "aspect-[250/297]",
   Layout3: "aspect-[250/297]",
   // Layout4: "aspect-[1/3]",
-}
-
-export const allLayoutsNbPanels = {
-  // TODO: this is gonna be tricky to implement, but this should be unique / dynamic
-  Layout0: NB_PANELS_PER_PAGE,
-  Layout1: NB_PANELS_PER_PAGE,
-  Layout2: NB_PANELS_PER_PAGE,
-  Layout3: NB_PANELS_PER_PAGE,
-  // Layout4: NB_PANELS_PER_PAGE
 }
 
 export type LayoutName = keyof typeof allLayouts 

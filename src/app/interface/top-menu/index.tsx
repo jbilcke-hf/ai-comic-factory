@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Image from "next/image"
+import { StaticImageData } from "next/image"
+import { useLocalStorage } from "usehooks-ts"
 
 import {
   Select,
@@ -19,15 +21,13 @@ import { PresetName, defaultPreset, nonRandomPresets, presets } from "@/app/engi
 import { useStore } from "@/app/store"
 import { Button } from "@/components/ui/button"
 import { LayoutName, allLayoutLabels, defaultLayout, nonRandomLayouts } from "@/app/layouts"
+import { Switch } from "@/components/ui/switch"
+import { useOAuth } from "@/lib/useOAuth"
 
 import layoutPreview0 from "../../../../public/layouts/layout0.jpg"
 import layoutPreview1 from "../../../../public/layouts/layout1.jpg"
 import layoutPreview2 from "../../../../public/layouts/layout2.jpg"
 import layoutPreview3 from "../../../../public/layouts/layout3.jpg"
-import { StaticImageData } from "next/image"
-import { Switch } from "@/components/ui/switch"
-import { useLocalStorage } from "usehooks-ts"
-import { useOAuth } from "@/lib/useOAuth"
 import { localStorageKeys } from "../settings-dialog/localStorageKeys"
 import { defaultSettings } from "../settings-dialog/defaultSettings"
 import { AuthWall } from "../auth-wall"
@@ -71,8 +71,7 @@ export function TopMenu() {
   const [draftPreset, setDraftPreset] = useState<PresetName>(requestedPreset)
   const [draftLayout, setDraftLayout] = useState<LayoutName>(requestedLayout)
   
-
-  const { canLogin, login, isLoggedIn, oauthResult } = useOAuth({ debug: false })
+  const { isLoggedIn, enableOAuthWall } = useOAuth({ debug: false })
   
   const [hasGeneratedAtLeastOnce, setHasGeneratedAtLeastOnce] = useLocalStorage<boolean>(
     localStorageKeys.hasGeneratedAtLeastOnce,
@@ -82,9 +81,7 @@ export function TopMenu() {
   const [showAuthWall, setShowAuthWall] = useState(false)
 
   const handleSubmit = () => {
-    const enableAuthWall = `${process.env.NEXT_PUBLIC_ENABLE_HUGGING_FACE_OAUTH_WALL || "false"}` === "true"
-
-    if (enableAuthWall && hasGeneratedAtLeastOnce && !isLoggedIn) {
+    if (enableOAuthWall && hasGeneratedAtLeastOnce && !isLoggedIn) {
       setShowAuthWall(true)
       return
     }

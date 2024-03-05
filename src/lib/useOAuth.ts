@@ -1,13 +1,12 @@
 "use client"
 
-import { OAuthResult, oauthHandleRedirectIfPresent, oauthLoginUrl } from "@huggingface/hub"
+import { useEffect } from "react"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useOAuthClientId } from "./useOAuthClientId"
-import { useOAuthEnabled } from "./useOAuthEnabled"
-import { useBetaEnabled } from "./useBetaEnabled"
+import { OAuthResult, oauthHandleRedirectIfPresent, oauthLoginUrl } from "@huggingface/hub"
+
 import { usePersistedOAuth } from "./usePersistedOAuth"
 import { getValidOAuth } from "./getValidOAuth"
+import { useDynamicConfig } from "./useDynamicConfig"
 
 export function useOAuth({
   debug = false
@@ -22,23 +21,27 @@ export function useOAuth({
   canLogin: boolean
   login: () => Promise<void>
   isLoggedIn: boolean
+  enableOAuth: boolean
+  enableOAuthWall: boolean
   oauthResult?: OAuthResult
  } {
+  const { config, isConfigReady } = useDynamicConfig()
+
   const [oauthResult, setOAuthResult] = usePersistedOAuth()
 
-  const clientId = useOAuthClientId()
-  const redirectUrl = "https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory"
-  const scopes = "openid profile inference-api"
-
-  const isOAuthEnabled = useOAuthEnabled()
+  const clientId = config.oauthClientId
+  const redirectUrl = config.oauthRedirectUrl
+  const scopes = config.oauthScopes
+  const enableOAuth = config.enableHuggingFaceOAuth
+  const enableOAuthWall = config.enableHuggingFaceOAuthWall
 
   const searchParams = useSearchParams()
-  const code = searchParams.get("code")
-  const state = searchParams.get("state")
+  const code = searchParams?.get("code") || ""
+  const state = searchParams?.get("state") || ""
 
   const hasReceivedFreshOAuth = Boolean(code && state)
 
-  const canLogin: boolean = Boolean(clientId && isOAuthEnabled)
+  const canLogin: boolean = Boolean(isConfigReady && clientId && enableOAuth)
   const isLoggedIn = Boolean(oauthResult)
 
   if (debug) {
@@ -47,7 +50,8 @@ export function useOAuth({
       clientId,
       redirectUrl,
       scopes,
-      isOAuthEnabled,
+      enableOAuth,
+      enableOAuthWall,
       code,
       state,
       hasReceivedFreshOAuth,
@@ -128,6 +132,8 @@ export function useOAuth({
     canLogin,
     login,
     isLoggedIn,
+    enableOAuth,
+    enableOAuthWall,
     oauthResult
   }
 }
