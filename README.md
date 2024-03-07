@@ -8,6 +8,12 @@ pinned: true
 app_port: 3000
 disable_embedding: true
 short_description: Create your own AI comic with a single prompt
+hf_oauth: true
+hf_oauth_expiration_minutes: 43200
+hf_oauth_scopes:
+ - openid
+ - profile
+ - inference-api
 ---
 
 # AI Comic Factory
