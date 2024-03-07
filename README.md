@@ -10,10 +10,7 @@ disable_embedding: true
 short_description: Create your own AI comic with a single prompt
 hf_oauth: true
 hf_oauth_expiration_minutes: 43200
-hf_oauth_scopes:
- - openid
- - profile
- - inference-api
+hf_oauth_scopes: [inference-api]
 ---
 
 # AI Comic Factory
