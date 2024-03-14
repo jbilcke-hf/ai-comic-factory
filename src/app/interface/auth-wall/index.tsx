@@ -17,6 +17,7 @@ export function AuthWall({ show }: { show: boolean }) {
          <p>
           <Login />
          </p>
+         <p>(temporary issue alert: if this doesn&apos;t work for you, please use the button in the About panel)</p>
         </div>
       </DialogContent>
     </Dialog>
