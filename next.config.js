@@ -3,9 +3,10 @@ const nextConfig = {
   output: 'standalone',
   
   experimental: {
-    serverActions: true,
-    serverActionsBodySizeLimit: '8mb',
-  },
+    serverActions: {
+      bodySizeLimit: '8mb',
+    },
+  }
 }
 
 module.exports = nextConfig

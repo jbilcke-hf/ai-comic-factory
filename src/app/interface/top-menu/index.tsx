@@ -56,7 +56,18 @@ export function TopMenu() {
   const isGeneratingStory = useStore(state => state.isGeneratingStory)
   const atLeastOnePanelIsBusy = useStore(state => state.atLeastOnePanelIsBusy)
   const isBusy = isGeneratingStory || atLeastOnePanelIsBusy
-  
+
+
+  const [lastDraftPromptA, setLastDraftPromptA] = useLocalStorage<string>(
+    "AI_COMIC_FACTORY_LAST_DRAFT_PROMPT_A",
+    ""
+  )
+
+  const [lastDraftPromptB, setLastDraftPromptB] = useLocalStorage<string>(
+    "AI_COMIC_FACTORY_LAST_DRAFT_PROMPT_B",
+    ""
+  )
+
   const searchParams = useSearchParams()
 
   const requestedPreset = (searchParams?.get('preset') as PresetName) || defaultPreset
@@ -64,8 +75,8 @@ export function TopMenu() {
   const requestedPrompt = (searchParams?.get('prompt') as string) || ""
   const requestedLayout = (searchParams?.get('layout') as LayoutName) || defaultLayout
 
-  const [draftPromptA, setDraftPromptA] = useState(requestedPrompt)
-  const [draftPromptB, setDraftPromptB] = useState(requestedPrompt)
+  const [draftPromptA, setDraftPromptA] = useState(lastDraftPromptA)
+  const [draftPromptB, setDraftPromptB] = useState(lastDraftPromptB)
   const draftPrompt = `${draftPromptA}||${draftPromptB}`
 
   const [draftPreset, setDraftPreset] = useState<PresetName>(requestedPreset)
@@ -79,6 +90,12 @@ export function TopMenu() {
   )
 
   const [showAuthWall, setShowAuthWall] = useState(false)
+
+  // we synchronize the draft prompt with the local storage
+  useEffect(() => { if (lastDraftPromptA !== draftPromptA) { setLastDraftPromptA(draftPromptA) } }, [draftPromptA])
+  useEffect(() => { if (lastDraftPromptA !== draftPromptA) { setDraftPromptA(lastDraftPromptA) } }, [lastDraftPromptA])
+  useEffect(() => { if (lastDraftPromptB !== draftPromptB) { setLastDraftPromptB(draftPromptB) } }, [draftPromptB])
+  useEffect(() => { if (lastDraftPromptB !== draftPromptB) { setDraftPromptB(lastDraftPromptB) } }, [lastDraftPromptB])
 
   const handleSubmit = () => {
     if (enableOAuthWall && hasGeneratedAtLeastOnce && !isLoggedIn) {

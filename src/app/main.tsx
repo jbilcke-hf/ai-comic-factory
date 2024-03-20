@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useTransition } from "react"
+import { Suspense, useEffect, useState, useTransition } from "react"
 
 import { cn } from "@/lib/utils"
 import { fonts } from "@/lib/fonts"
@@ -150,7 +150,7 @@ export default function Main() {
   }, [prompt, preset?.label, nbPages, nbPanelsPerPage, nbTotalPanels]) // important: we need to react to preset changes too
 
   return (
-    <div>
+    <Suspense>
       <TopMenu />
       <div className={cn(
         `flex items-start w-screen h-screen pt-24 md:pt-[72px] overflow-y-scroll`,
@@ -198,6 +198,6 @@ export default function Main() {
           {waitABitMore ? `Please hold tight..` : ''}
         </div>
       </div>
-    </div>
+    </Suspense>
   )
 }
