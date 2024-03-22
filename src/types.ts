@@ -174,6 +174,7 @@ export type Settings = {
   groqApiKey: string
   groqApiLanguageModel: string
   hasGeneratedAtLeastOnce: boolean
+  userDefinedMaxNumberOfPages: number
 }
 
 export type DynamicConfig = {

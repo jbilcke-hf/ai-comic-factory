@@ -8,14 +8,14 @@ export const getStoryContinuation = async ({
   stylePrompt = "",
   userStoryPrompt = "",
   nbPanelsToGenerate = 2,
-  nbTotalPanels = 4,
+  maxNbPanels = 4,
   existingPanels = [],
 }: {
   preset: Preset;
   stylePrompt?: string;
   userStoryPrompt?: string;
   nbPanelsToGenerate?: number;
-  nbTotalPanels?: number;
+  maxNbPanels?: number;
   existingPanels?: GeneratedPanel[];
 }): Promise<GeneratedPanel[]> => {
 
@@ -31,7 +31,7 @@ export const getStoryContinuation = async ({
       preset,
       prompt,
       nbPanelsToGenerate,
-      nbTotalPanels,
+      maxNbPanels,
       existingPanels,
     })
 

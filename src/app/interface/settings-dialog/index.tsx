@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react"
 import { useLocalStorage } from 'usehooks-ts'
 
@@ -18,8 +20,10 @@ import { Label } from "./label"
 import { Field } from "./field"
 import { localStorageKeys } from "./localStorageKeys"
 import { defaultSettings } from "./defaultSettings"
-import { Switch } from "@/components/ui/switch"
-import { cn } from "@/lib/utils"
+
+import { useDynamicConfig } from "@/lib/useDynamicConfig"
+import { Slider } from "@/components/ui/slider"
+import { fonts } from "@/lib/fonts"
 
 export function SettingsDialog() {
   const [isOpen, setOpen] = useState(false)
@@ -71,6 +75,12 @@ export function SettingsDialog() {
     localStorageKeys.openaiApiModel,
     defaultSettings.openaiApiModel
   )
+  const [userDefinedMaxNumberOfPages, setUserDefinedMaxNumberOfPages] = useLocalStorage<number>(
+    localStorageKeys.userDefinedMaxNumberOfPages,
+    defaultSettings.userDefinedMaxNumberOfPages
+  )
+
+  const { config: { maxNbPages }, isConfigReady } = useDynamicConfig()
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
@@ -87,15 +97,32 @@ export function SettingsDialog() {
             Custom Models
           </DialogDescription>
         </DialogHeader>
+        {
+        // isConfigReady && <Field>
+        // <Label>Maximum number of pages: {userDefinedMaxNumberOfPages}</Label>
+        // <Slider
+        //   min={1}
+        //   max={maxNbPages}
+        //   step={1}
+        //   onValueChange={(value: any) => {
+        //     let numericValue = Number(value[0])
+        //     numericValue = !isNaN(value[0]) && isFinite(value[0]) ? numericValue : 0
+        //     numericValue = Math.min(maxNbPages, Math.max(1, numericValue))
+        //     setUserDefinedMaxNumberOfPages(numericValue)
+        //   }}
+        //   defaultValue={[userDefinedMaxNumberOfPages]}
+        //   value={[userDefinedMaxNumberOfPages]}
+        // />
+        // </Field>
+        }
         <div className="grid gap-4 py-1 space-y-1 text-stone-800">
-          <p className="text-sm text-zinc-700">
-            Note: most vendors have a warm-up delay when using a custom or rarely used model. Do not hesitate to try again after 5 minutes if that happens.
-          </p>
-          <p className="text-sm text-zinc-700">
-            Security note: we do not save your API credentials on our server but inside your web browser, using the local storage.
-          </p>
           <Field>
             <Label>Image rendering provider:</Label>
+            <p className="pt-2 pb-3 text-base italic text-zinc-600">
+            ℹ️ Some API vendors have a delay for rarely used models.<br/>
+            👉 In case of trouble, try again after 5-10 minutes.
+            </p>
+
             <Select
               onValueChange={(value: string) => {
                 setRenderingModelVendor(value as RenderingModelVendor)
@@ -115,36 +142,37 @@ export function SettingsDialog() {
             
           
           {
-          renderingModelVendor === "SERVER" && <>
-            <Field>
-              <Label>Quality over performance ratio (beta, deprecated):</Label>
-              <div className="flex flex-row space-x-2 text-zinc-500">
-                <Switch
-                  // checked={renderingUseTurbo}
-                  // onCheckedChange={setRenderingUseTurbo}
-                  checked={false}
-                  disabled
-                  className="opacity-30 pointer-events-none"
-                />
-                {/*
-                <span
-                  onClick={() => setRenderingUseTurbo(!renderingUseTurbo)}
-                  className={cn("cursor-pointer", { "text-zinc-800": renderingUseTurbo })}>
-                    Use a faster, but lower quality model (you are warned!)
-                  </span>
-              */}
-              <span className="text-zinc-500 italic">
-                Following feedbacks from users (low rendering quality on comics) the fast renderer has been disabled.
-              </span>
-              </div>
-            </Field>
-          </>}
+          // renderingModelVendor === "SERVER" && <>
+          //   <Field>
+          //     <Label>Quality over performance ratio (beta, deprecated):</Label>
+          //     <div className="flex flex-row space-x-2 text-zinc-500">
+          //       <Switch
+          //         // checked={renderingUseTurbo}
+          //         // onCheckedChange={setRenderingUseTurbo}
+          //         checked={false}
+          //         disabled
+          //         className="opacity-30 pointer-events-none"
+          //       />
+          //       {/*
+          //       <span
+          //         onClick={() => setRenderingUseTurbo(!renderingUseTurbo)}
+          //         className={cn("cursor-pointer", { "text-zinc-800": renderingUseTurbo })}>
+          //           Use a faster, but lower quality model (you are warned!)
+          //         </span>
+          //     */}
+          //     <span className="text-zinc-500 italic">
+          //       Following feedbacks from users (low rendering quality on comics) the fast renderer has been disabled.
+          //     </span>
+          //     </div>
+          //   </Field>
+          // </>
+          }
 
           {renderingModelVendor === "HUGGINGFACE" && <>
             <Field>
               <Label>Hugging Face API Token (<a className="text-stone-600 underline" href="https://huggingface.co/subscribe/pro" target="_blank">PRO account</a> recommended for higher rate limit):</Label>
               <Input
-                className="font-mono"
+                className={fonts.actionman.className}
                 type="password"
                 placeholder="Enter your private api token"
                 onChange={(x) => {
@@ -156,7 +184,7 @@ export function SettingsDialog() {
             <Field>
               <Label>Inference API model (custom SDXL or SDXL LoRA):</Label>
               <Input
-                className="font-mono"
+                className={fonts.actionman.className}
                 placeholder="Name of the Inference API model"
                 onChange={(x) => {
                   setHuggingfaceInferenceApiModel(x.target.value)
@@ -167,7 +195,7 @@ export function SettingsDialog() {
             <Field>
               <Label>The file type supported by the model (jpg, webp..):</Label>
               <Input
-                className="font-mono"
+                className={fonts.actionman.className}
                 placeholder="Inference API file type"
                 onChange={(x) => {
                   setHuggingfaceInferenceApiFileType(x.target.value)
@@ -181,7 +209,7 @@ export function SettingsDialog() {
             <Field>
               <Label>LoRA model trigger (optional):</Label>
               <Input
-                className="font-mono"
+                className={fonts.actionman.className}
                 placeholder="Trigger keyword (if you use a LoRA)"
                 onChange={(x) => {
                   setHuggingfaceInferenceApiModelTrigger(x.target.value)
@@ -195,7 +223,7 @@ export function SettingsDialog() {
             <Field>
               <Label>OpenAI API Token (you will be billed based on OpenAI pricing):</Label>
               <Input
-                className="font-mono"
+                className={fonts.actionman.className}
                 type="password"
                 placeholder="Enter your private api token"
                 onChange={(x) => {
@@ -207,7 +235,7 @@ export function SettingsDialog() {
             <Field>
               <Label>OpenAI image model:</Label>
               <Input
-                className="font-mono"
+                className={fonts.actionman.className}
                 placeholder="OpenAI image model"
                 onChange={(x) => {
                   setOpenaiApiModel(x.target.value)
@@ -221,7 +249,7 @@ export function SettingsDialog() {
               <Field>
                 <Label>Replicate API Token (you will be billed based on Replicate pricing):</Label>
                 <Input
-                  className="font-mono"
+                  className={fonts.actionman.className}
                   type="password"
                   placeholder="Enter your private api token"
                   onChange={(x) => {
@@ -233,7 +261,7 @@ export function SettingsDialog() {
               <Field>
                 <Label>Replicate model name:</Label>
                 <Input
-                  className="font-mono"
+                  className={fonts.actionman.className}
                   placeholder="Name of the Replicate model"
                   onChange={(x) => {
                     setReplicateApiModel(x.target.value)
@@ -244,7 +272,7 @@ export function SettingsDialog() {
               <Field>
                 <Label>Model version:</Label>
                 <Input
-                  className="font-mono"
+                  className={fonts.actionman.className}
                   placeholder="Version of the Replicate model"
                   onChange={(x) => {
                     setReplicateApiModelVersion(x.target.value)
@@ -258,7 +286,7 @@ export function SettingsDialog() {
               <Field>
                 <Label>LoRA model trigger (optional):</Label>
                 <Input
-                  className="font-mono"
+                  className={fonts.actionman.className}
                   placeholder={'Eg. "In the style of TOK" etc'}
                   onChange={(x) => {
                     setReplicateApiModelTrigger(x.target.value)
@@ -267,7 +295,12 @@ export function SettingsDialog() {
                 />
               </Field>
             </>}
+
+            <p className="text-sm text-zinc-700 italic">
+            🔒 Settings such as API keys are stored inside your browser and aren&apos;t kept on our servers.
+            </p>
         </div>
+
         <DialogFooter>
           <Button type="submit" onClick={() => setOpen(false)}>Close</Button>
         </DialogFooter>

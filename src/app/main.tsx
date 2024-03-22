@@ -14,6 +14,11 @@ import { BottomBar } from "./interface/bottom-bar"
 import { Page } from "./interface/page"
 import { getStoryContinuation } from "./queries/getStoryContinuation"
 import { useDynamicConfig } from "@/lib/useDynamicConfig"
+import { useLocalStorage } from "usehooks-ts"
+import { localStorageKeys } from "./interface/settings-dialog/localStorageKeys"
+import { defaultSettings } from "./interface/settings-dialog/defaultSettings"
+import { Button } from "@/components/ui/button"
+import { SignUpCTA } from "./interface/sign-up-cta"
 
 export default function Main() {
   const [_isPending, startTransition] = useTransition()
@@ -26,11 +31,19 @@ export default function Main() {
   const preset = useStore(s => s.preset)
   const prompt = useStore(s => s.prompt)
 
-  const nbPages = useStore(s => s.nbPages)
-  const nbPanelsPerPage = useStore(s => s.nbPanelsPerPage)
-  const nbTotalPanels = useStore(s => s.nbTotalPanels)
-  const setNbPages = useStore(s => s.setNbPages)
-  const setNbPanelsPerPage = useStore(s => s.setNbPanelsPerPage)
+  const currentNbPanelsPerPage = useStore(s => s.currentNbPanelsPerPage)
+  const maxNbPanelsPerPage = useStore(s => s.maxNbPanelsPerPage)
+  const currentNbPages = useStore(s => s.currentNbPages)
+  const maxNbPages = useStore(s => s.maxNbPages)
+  const currentNbPanels = useStore(s => s.currentNbPanels)
+  const maxNbPanels = useStore(s => s.maxNbPanels)
+
+  const setCurrentNbPanelsPerPage = useStore(s => s.setCurrentNbPanelsPerPage)
+  const setMaxNbPanelsPerPage = useStore(s => s.setMaxNbPanelsPerPage)
+  const setCurrentNbPages = useStore(s => s.setCurrentNbPages)
+  const setMaxNbPages = useStore(s => s.setMaxNbPages)
+  const setCurrentNbPanels = useStore(s => s.setCurrentNbPanels)
+  const setMaxNbPanels = useStore(s => s.setMaxNbPanels)
 
   const setPanels = useStore(s => s.setPanels)
   const setCaptions = useStore(s => s.setCaptions)
@@ -39,12 +52,28 @@ export default function Main() {
 
   const [waitABitMore, setWaitABitMore] = useState(false)
 
+  const [userDefinedMaxNumberOfPages, setUserDefinedMaxNumberOfPages] = useLocalStorage<number>(
+    localStorageKeys.userDefinedMaxNumberOfPages,
+    defaultSettings.userDefinedMaxNumberOfPages
+  )
+  
+  useEffect(() => {
+    if (maxNbPages !== userDefinedMaxNumberOfPages) {
+      setMaxNbPages(userDefinedMaxNumberOfPages)
+    }
+  }, [maxNbPages, userDefinedMaxNumberOfPages])
+
+
   useEffect(() => {
     if (isConfigReady) {
-      setNbPages(config.maxNbPages)
-      setNbPanelsPerPage(config.nbPanelsPerPage)
+
+      // note: this has very low impact at the moment as we are always using the value 4
+      // however I would like to progressively evolve the code to make it dynamic
+      setCurrentNbPanelsPerPage(config.nbPanelsPerPage)
+      setMaxNbPanelsPerPage(config.nbPanelsPerPage)
     }
   }, [JSON.stringify(config), isConfigReady])
+
   // react to prompt changes
   useEffect(() => {
     if (!prompt) { return }
@@ -85,7 +114,7 @@ export default function Main() {
 
       for (
         let currentPanel = 0;
-        currentPanel < nbTotalPanels;
+        currentPanel < currentNbPanels;
         currentPanel += nbPanelsToGenerate
       ) {
         try {
@@ -94,7 +123,7 @@ export default function Main() {
             stylePrompt,
             userStoryPrompt,
             nbPanelsToGenerate,
-            nbTotalPanels,
+            maxNbPanels,
             existingPanels,
           })
           console.log("LLM generated some new panels:", candidatePanels)
@@ -133,7 +162,7 @@ export default function Main() {
           setGeneratingStory(false)
           break
         }
-        if (currentPanel > (nbTotalPanels / 2)) {
+        if (currentPanel > (currentNbPanels / 2)) {
           console.log("good, we are half way there, hold tight!")
           // setWaitABitMore(true)
         }
@@ -147,7 +176,7 @@ export default function Main() {
       */
  
     })
-  }, [prompt, preset?.label, nbPages, nbPanelsPerPage, nbTotalPanels]) // important: we need to react to preset changes too
+  }, [prompt, preset?.label, currentNbPanels, maxNbPanels]) // important: we need to react to preset changes too
 
   return (
     <Suspense>
@@ -173,10 +202,18 @@ export default function Main() {
             style={{
               width: `${zoomLevel}%`
             }}>
-            {Array(nbPages).fill(0).map((_, i) => <Page key={i} page={i} />)}
+            {Array(currentNbPages).fill(0).map((_, i) => <Page key={i} page={i} />)}
           </div>
+          {
+          // currentNbPages < maxNbPages &&
+          //   <div className="flex flex-col space-y-2 pt-2 pb-6 text-gray-600 dark:text-gray-600">
+          //     <div>Happy with your story?</div>
+          //     <div>You can <Button>Add page {currentNbPages + 1} 👀</Button></div>
+          //   </div>
+          }
         </div>
       </div>
+      <SignUpCTA />
       <Zoom />
       <BottomBar />
       <div className={cn(

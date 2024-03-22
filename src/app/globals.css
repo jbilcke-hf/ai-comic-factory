@@ -28,12 +28,11 @@ body {
 
 /* this is the trick to bypass the style={{}} attribute when printing */
 @media print {
-  .comic-page, .comic-page[style] { width: 100vw !important; }
-
-  /*if you have 2 panels, you will need replace this with landscape */
-  @page { size: portrait }
+  .comic-page, .comic-page[style] {
+    width: 100vw !important;
+    page-break-before: always;
+  }
 }
-
 
 .render-to-image .comic-panel {
   height: auto !important;

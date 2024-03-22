@@ -15,19 +15,20 @@ export function Page({ page }: { page: number}) {
   const LayoutElement = (allLayouts as any)[layout]
   const aspectRatio = ((allLayoutAspectRatios as any)[layout] as string) || "aspect-[250/297]"
 
-  const nbPages = useStore(s => s.nbPages)
-  const nbPanelsPerPage = useStore(s => s.nbPanelsPerPage)
+  const currentNbPages = useStore(s => s.currentNbPages)
+  const maxNbPages = useStore(s => s.maxNbPages)
+  const currentNbPanelsPerPage = useStore(s => s.currentNbPanelsPerPage)
 
   // in the future, different layouts might have different numbers of panels
   const allLayoutsNbPanels = {
-    Layout0: nbPanelsPerPage,
-    Layout1: nbPanelsPerPage,
-    Layout2: nbPanelsPerPage,
-    Layout3: nbPanelsPerPage,
-    // Layout4: nbPanelsPerPage
+    Layout0: currentNbPanelsPerPage,
+    Layout1: currentNbPanelsPerPage,
+    Layout2: currentNbPanelsPerPage,
+    Layout3: currentNbPanelsPerPage,
+    // Layout4: currentNbPanelsPerPage
   }
 
-  const nbPanels = ((allLayoutsNbPanels as any)[layout] as number) || nbPanelsPerPage
+  const currentNbPanels = ((allLayoutsNbPanels as any)[layout] as number) || currentNbPanelsPerPage
 
   /*
   const [canLoad, setCanLoad] = useState(false)
@@ -50,6 +51,14 @@ export function Page({ page }: { page: number}) {
     setPage(element)
   }, [pageRef.current])
   
+  /*
+  console.log("PAGE DEBUG:", {
+    currentNbPages,
+    maxNbPages,
+    "currentNbPages < maxNbPages": currentNbPages < maxNbPages,
+  })
+  */
+ 
   return (
     <div
       ref={pageRef}
@@ -77,9 +86,9 @@ export function Page({ page }: { page: number}) {
         // marginLeft: `${zoomLevel > 100 ? `100`}`
       }}
       >
-       <LayoutElement page={page} nbPanels={nbPanels} />
+       <LayoutElement page={page} nbPanels={currentNbPanels} />
       </div>
-      {nbPages > 1 &&
+      {currentNbPages > 1 &&
         <p className="w-full text-center pt-4 font-sans text-2xs font-semibold text-stone-600">
           Page {page + 1}
           {/*

@@ -70,13 +70,13 @@ To customise a variable locally, you should create a `.env.local`
 
 ## The LLM API (Large Language Model)
 
-Currently the AI Comic Factory uses [Llama-2 70b](https://huggingface.co/blog/llama2) through an [Inference Endpoint](https://huggingface.co/docs/inference-endpoints/index).
+Currently the AI Comic Factory uses [zephyr-7b-beta](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta) through an [Inference Endpoint](https://huggingface.co/docs/inference-endpoints/index).
 
 You have three options:
 
 ### Option 1: Use an Inference API model
 
-This is a new option added recently, where you can use one of the models from the Hugging Face Hub. By default we suggest to use CodeLlama 34b as it will provide better results than the 7b model.
+This is a new option added recently, where you can use one of the models from the Hugging Face Hub. By default we suggest to use [zephyr-7b-beta](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta) as it will provide better results than the 7b model.
 
 To activate it, create a `.env.local` configuration file:
 
@@ -85,10 +85,10 @@ LLM_ENGINE="INFERENCE_API"
 
 HF_API_TOKEN="Your Hugging Face token"
 
-# codellama/CodeLlama-7b-hf" is used by default, but you can change this
+# "HuggingFaceH4/zephyr-7b-beta" is used by default, but you can change this
 # note: You should use a model able to generate JSON responses,
 # so it is storngly suggested to use at least the 34b model
-HF_INFERENCE_API_MODEL="codellama/CodeLlama-7b-hf"
+HF_INFERENCE_API_MODEL="HuggingFaceH4/zephyr-7b-beta"
 ```
 
 ### Option 2: Use an Inference Endpoint URL

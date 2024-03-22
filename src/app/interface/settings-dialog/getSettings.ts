@@ -4,6 +4,7 @@ import { getValidString } from "@/lib/getValidString"
 import { localStorageKeys } from "./localStorageKeys"
 import { defaultSettings } from "./defaultSettings"
 import { getValidBoolean } from "@/lib/getValidBoolean"
+import { getValidNumber } from "@/lib/getValidNumber"
 
 export function getSettings(): Settings {
   try {
@@ -24,7 +25,8 @@ export function getSettings(): Settings {
       openaiApiLanguageModel: getValidString(localStorage?.getItem?.(localStorageKeys.openaiApiLanguageModel), defaultSettings.openaiApiLanguageModel),
       groqApiKey: getValidString(localStorage?.getItem?.(localStorageKeys.groqApiKey), defaultSettings.groqApiKey),
       groqApiLanguageModel: getValidString(localStorage?.getItem?.(localStorageKeys.groqApiLanguageModel), defaultSettings.groqApiLanguageModel),
-      hasGeneratedAtLeastOnce: getValidBoolean(localStorage?.getItem?.(localStorageKeys.hasGeneratedAtLeastOnce), defaultSettings.hasGeneratedAtLeastOnce), 
+      hasGeneratedAtLeastOnce: getValidBoolean(localStorage?.getItem?.(localStorageKeys.hasGeneratedAtLeastOnce), defaultSettings.hasGeneratedAtLeastOnce),
+      userDefinedMaxNumberOfPages: getValidNumber(localStorage?.getItem?.(localStorageKeys.userDefinedMaxNumberOfPages), 1, Number.MAX_SAFE_INTEGER, defaultSettings.userDefinedMaxNumberOfPages),
     }
   } catch (err) {
     return {

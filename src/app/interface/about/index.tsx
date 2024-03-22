@@ -10,35 +10,35 @@ export function About() {
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <span className="hidden md:inline">About this project</span>
-          <span className="inline md:hidden">About</span>
+          <span className="hidden md:inline">AI-Comic-Factory 1.0</span>
+          <span className="inline md:hidden">Version 1.0</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] md:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>The AI Comic Factory</DialogTitle>
-          <DialogDescription className="w-full text-center text-lg font-bold text-stone-800">
-            What is the AI Comic Factory?
+          <DialogTitle>AI Comic Factory 1.0</DialogTitle>
+          <DialogDescription className="w-full text-center text-2xl font-bold text-stone-700">
+            AI Comic Factory 1.0 (March 2024 Update)
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4 text-stone-800 text-sm">
-        <p className="">
-           The AI Comic Factory is an app to generate stories using AI in a few clicks.
-        </p>
+        <div className="grid gap-4 py-4 text-stone-700 text-sm md:text-base xl:text-lg">
+          <p className="">
+            The AI Comic Factory generates stories using AI in a few clicks.
+          </p>
           <p>
-            It is free for all Hugging Face users: <Login />
+            App is free for Hugging Face users 👉 <Login />
+         </p>
+         <p className="pt-2 pb-2">
+           Are you an artist? Learn <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/discussions/402#654ab848fa25dfb780aa19fb" target="_blank">how to use your own art style</a>
          </p>
          <p>
-           As an artist, you can use your <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/discussions/402#654ab848fa25dfb780aa19fb" target="_blank">own art to generate comic panels.</a>
+         👉 Default AI model used for stories is <a className="text-stone-600 underline" href="https://huggingface.co/HuggingFaceH4/zephyr-7b-beta" target="_blank">Zephyr-7b-beta</a>
          </p>
          <p>
-         👉 The language model used to generate the story is <a className="text-stone-600 underline" href="https://huggingface.co/HuggingFaceH4/zephyr-7b-beta" target="_blank">Zephyr-7b-beta</a>.
-         </p>
-         <p>
-         👉 The diffusion model used by default is <a className="text-stone-600 underline" href="https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0" target="_blank">SDXL</a>.
+         👉 Default AI model used for drawing is <a className="text-stone-600 underline" href="https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0" target="_blank">SDXL</a> by Stability AI
         </p>
-        <p>
-           The code is public and can be deployed at home with some changes in the code. See the <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/blob/main/README.md" target="_blank">README</a> for details about the architecture.
+        <p className="pt-2 pb-2">
+           This is an open-source project, see the <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/blob/main/README.md" target="_blank">README</a> for more info.
          </p>
         </div>
         <DialogFooter>

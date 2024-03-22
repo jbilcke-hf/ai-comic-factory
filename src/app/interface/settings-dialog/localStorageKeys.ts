@@ -18,4 +18,5 @@ export const localStorageKeys: Record<keyof Settings, string> = {
   groqApiKey: "CONF_AUTH_GROQ_API_KEY",
   groqApiLanguageModel: "CONF_AUTH_GROQ_API_LANGUAGE_MODEL",
   hasGeneratedAtLeastOnce: "CONF_HAS_GENERATED_AT_LEAST_ONCE",
+  userDefinedMaxNumberOfPages: "CONF_USER_DEFINED_MAX_NUMBER_OF_PAGES"
 }

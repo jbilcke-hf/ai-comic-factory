@@ -12,9 +12,12 @@ export const useStore = create<{
   prompt: string
   font: FontName
   preset: Preset
-  nbPanelsPerPage: number
-  nbPages: number
-  nbTotalPanels: number
+  currentNbPanelsPerPage: number
+  maxNbPanelsPerPage: number
+  currentNbPages: number
+  maxNbPages: number
+  currentNbPanels: number
+  maxNbPanels: number
   panels: string[]
   captions: string[]
   upscaleQueue: Record<string, RenderedScene>
@@ -28,9 +31,14 @@ export const useStore = create<{
   panelGenerationStatus: Record<number, boolean>
   isGeneratingText: boolean
   atLeastOnePanelIsBusy: boolean
-  setNbPanelsPerPage: (nbPanelsPerPage: number) => void
-  setNbPages: (nbPages: number) => void
-  setTotalPanels: (nbTotalPanels: number) => void
+
+  setCurrentNbPanelsPerPage: (currentNbPanelsPerPage: number) => void
+  setMaxNbPanelsPerPage: (maxNbPanelsPerPage: number) => void
+  setCurrentNbPages: (currentNbPages: number) => void
+  setMaxNbPages: (maxNbPages: number) => void
+  setCurrentNbPanels: (currentNbPanels: number) => void
+  setMaxNbPanels: (maxNbPanels: number) => void
+  
   setRendered: (panelId: string, renderedScene: RenderedScene) => void
   addToUpscaleQueue: (panelId: string, renderedScene: RenderedScene) => void
   removeFromUpscaleQueue: (panelId: string) => void
@@ -56,9 +64,14 @@ export const useStore = create<{
   prompt: "",
   font: "actionman",
   preset: getPreset(defaultPreset),
-  nbPanelsPerPage: 4,
-  nbPages: 1,
-  nbTotalPanels: 4,
+
+  currentNbPanelsPerPage: 4,
+  maxNbPanelsPerPage: 4,
+  currentNbPages: 1,
+  maxNbPages: 1,
+  currentNbPanels: 4,
+  maxNbPanels: 4,
+
   panels: [],
   captions: [],
   upscaleQueue: {} as Record<string, RenderedScene>,
@@ -72,25 +85,47 @@ export const useStore = create<{
   panelGenerationStatus: {},
   isGeneratingText: false,
   atLeastOnePanelIsBusy: false,
-  setNbPanelsPerPage: (nbPanelsPerPage: number) => {
-    const { nbPages } = get()
+
+
+  setCurrentNbPanelsPerPage: (currentNbPanelsPerPage: number) => {
+    const { currentNbPages } = get()
     set({
-      nbPanelsPerPage,
-      nbTotalPanels: nbPanelsPerPage * nbPages,
+      currentNbPanelsPerPage,
+      currentNbPanels: currentNbPanelsPerPage * currentNbPages
     })
   },
-  setNbPages: (nbPages: number) => {
-    const { nbPanelsPerPage } = get()
+  setMaxNbPanelsPerPage: (maxNbPanelsPerPage: number) => {
+    const { maxNbPages } = get()
     set({
-      nbPages,
-      nbTotalPanels: nbPanelsPerPage * nbPages,
+      maxNbPanelsPerPage,
+      maxNbPanels: maxNbPanelsPerPage * maxNbPages,
     })
   },
-  setTotalPanels: (nbTotalPanels: number) => {
+  setCurrentNbPages: (currentNbPages: number) => {
+    const { currentNbPanelsPerPage } = get()
     set({
-      nbTotalPanels,
+      currentNbPages,
+      currentNbPanels: currentNbPanelsPerPage * currentNbPages
     })
   },
+  setMaxNbPages: (maxNbPages: number) => {
+    const { maxNbPanelsPerPage } = get()
+    set({
+      maxNbPages,
+      maxNbPanels: maxNbPanelsPerPage * maxNbPages,
+    })
+  },
+  setCurrentNbPanels: (currentNbPanels: number) => {
+    set({
+      currentNbPanels,
+    })
+  },
+  setMaxNbPanels: (maxNbPanels: number) => {
+    set({
+      maxNbPanels
+    })
+  },
+  
   setRendered: (panelId: string, renderedScene: RenderedScene) => {
     const { renderedScenes } = get()
     set({
@@ -166,14 +201,14 @@ export const useStore = create<{
   },
   setLayout: (layoutName: LayoutName) => {
 
-    const { nbPages } = get()
+    const { currentNbPages } = get()
 
     const layout = layoutName === "random"
     ? getRandomLayoutName()
     : layoutName
 
     const layouts: LayoutName[] = []
-    for (let i = 0; i < nbPages; i++) {
+    for (let i = 0; i < currentNbPages; i++) {
       layouts.push(
         layoutName === "random"
           ? getRandomLayoutName()
@@ -215,9 +250,9 @@ export const useStore = create<{
     
     
     const canvas = await html2canvas(page)
-    console.log("canvas:", canvas)
+    // console.log("canvas:", canvas)
 
-    const data = canvas.toDataURL('image/jpeg', 0.5)
+    const data = canvas.toDataURL('image/jpeg', 0.97)
     return data
   },
   download: async () => {
@@ -238,14 +273,14 @@ export const useStore = create<{
   },
   generate: (prompt: string, presetName: PresetName, layoutName: LayoutName) => {
 
-    const { nbPages } = get()
+    const { currentNbPages } = get()
     
     const layout = layoutName === "random"
     ? getRandomLayoutName()
     : layoutName
 
     const layouts: LayoutName[] = []
-    for (let i = 0; i < nbPages; i++) {
+    for (let i = 0; i < currentNbPages; i++) {
       layouts.push(
         layoutName === "random"
           ? getRandomLayoutName()

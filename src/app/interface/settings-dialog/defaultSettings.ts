@@ -18,4 +18,5 @@ export const defaultSettings: Settings = {
   groqApiKey: "",
   groqApiLanguageModel: "mixtral-8x7b-32768",
   hasGeneratedAtLeastOnce: false,
+  userDefinedMaxNumberOfPages: 1,
 }
