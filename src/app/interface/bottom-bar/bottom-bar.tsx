@@ -14,13 +14,16 @@ import { localStorageKeys } from "../settings-dialog/localStorageKeys"
 import { defaultSettings } from "../settings-dialog/defaultSettings"
 
 function BottomBar() {
-  const download = useStore(state => state.download)
+  // deprecated, as HTML-to-bitmap didn't work that well for us
+  // const page = useStore(state => state.page)
+  // const download = useStore(state => state.download)
+  // const pageToImage = useStore(state => state.pageToImage)
+
   const isGeneratingStory = useStore(state => state.isGeneratingStory)
   const prompt = useStore(state => state.prompt)
   const panelGenerationStatus = useStore(state => state.panelGenerationStatus)
-  const page = useStore(state => state.page)
+
   const preset = useStore(state => state.preset)
-  const pageToImage = useStore(state => state.pageToImage)
 
   const allStatus = Object.values(panelGenerationStatus)
   const remainingImages = allStatus.reduce((acc, s) => (acc + (s ? 1 : 0)), 0)

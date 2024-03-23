@@ -44,11 +44,12 @@ export function Panel({
   // index of the panel in the whole app
   const panelIndex = page * nbPanels + panel
 
-  // console.log("debug:", { page, nbPanels, panel })
+
   // the panel Id must be unique across all pages
   const panelId = `${panelIndex}`
 
-  // console.log("panelId: " + panelId)
+  // console.log(`panel/index.tsx: <Panel panelId=${panelId}> rendered again!`)
+
 
   const [mouseOver, setMouseOver] = useState(false)
   const ref = useRef<HTMLImageElement>(null)
@@ -94,6 +95,18 @@ export function Panel({
   
   let delay = enableRateLimiter ? (1000 + (500 * panelIndex)) : 1000
 
+  /*
+  console.log("panel/index.tsx: DEBUG: " + JSON.stringify({
+    page,
+    nbPanels,
+    panel,
+    panelIndex,
+    panelId,
+    revision,
+    renderedScenes: Object.keys(renderedScenes),
+  }, null, 2))
+  */
+
   // Let's be gentle with Replicate or else they will believe they are under attack
   if (renderingModelVendor === "REPLICATE") {
     delay += 8000
@@ -117,6 +130,7 @@ export function Panel({
     nbFrames: number
     revision: number
   }) => {
+    console.log(`panel/index.tsx: startImageGeneration(${JSON.stringify({ prompt, width, height, nbFrames, revision }, null, 2)})`)
     if (!prompt?.length) { return }
 
     // important: update the status, and clear the scene
@@ -133,7 +147,7 @@ export function Panel({
         // atrocious and very, very, very, very, very, very, very ugly hack for the Inference API
         // as apparently "use_cache: false" doesn't work, or doesn't do what we want it to do
         let cacheInvalidationHack = ""
-        const nbMaxRevisions = 10
+        const nbMaxRevisions = 20
         for (let i = 0; i < revision && revision < nbMaxRevisions; i++) {
           const j =  Math.random() 
           cacheInvalidationHack += j < 0.3 ? "_" : j < 0.6 ? "," : "-"

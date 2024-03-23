@@ -87,35 +87,35 @@ export function SettingsDialog() {
       <DialogTrigger asChild>
         <Button className="space-x-1 md:space-x-2">
           <div>
-            <span className="hidden md:inline">Custom models</span>
+            <span className="hidden md:inline">Settings</span>
           </div>
         </Button> 
       </DialogTrigger>
-      <DialogContent className="w-full sm:max-w-[500px] md:max-w-[700px] overflow-y-auto h-max-[100vh] md:h-max-[80vh]">
+      <DialogContent className="w-full sm:max-w-[500px] md:max-w-[700px]">
         <DialogHeader>
           <DialogDescription className="w-full text-center text-lg font-bold text-stone-800">
-            Custom Models
+            Settings
           </DialogDescription>
         </DialogHeader>
-        {
-        // isConfigReady && <Field>
-        // <Label>Maximum number of pages: {userDefinedMaxNumberOfPages}</Label>
-        // <Slider
-        //   min={1}
-        //   max={maxNbPages}
-        //   step={1}
-        //   onValueChange={(value: any) => {
-        //     let numericValue = Number(value[0])
-        //     numericValue = !isNaN(value[0]) && isFinite(value[0]) ? numericValue : 0
-        //     numericValue = Math.min(maxNbPages, Math.max(1, numericValue))
-        //     setUserDefinedMaxNumberOfPages(numericValue)
-        //   }}
-        //   defaultValue={[userDefinedMaxNumberOfPages]}
-        //   value={[userDefinedMaxNumberOfPages]}
-        // />
-        // </Field>
+        <div className="overflow-y-scroll h-[75vh] md:h-[70vh]">
+        {isConfigReady && <Field>
+          <Label>(new!) Control the number of pages: {userDefinedMaxNumberOfPages}</Label>
+          <Slider
+            min={1}
+            max={maxNbPages}
+            step={1}
+            onValueChange={(value: any) => {
+              let numericValue = Number(value[0])
+              numericValue = !isNaN(value[0]) && isFinite(value[0]) ? numericValue : 0
+              numericValue = Math.min(maxNbPages, Math.max(1, numericValue))
+              setUserDefinedMaxNumberOfPages(numericValue)
+            }}
+            defaultValue={[userDefinedMaxNumberOfPages]}
+            value={[userDefinedMaxNumberOfPages]}
+          />
+        </Field>
         }
-        <div className="grid gap-4 py-1 space-y-1 text-stone-800">
+        <div className="grid gap-4 pt-8 pb-1 space-y-1 text-stone-800">
           <Field>
             <Label>Image rendering provider:</Label>
             <p className="pt-2 pb-3 text-base italic text-zinc-600">
@@ -299,6 +299,8 @@ export function SettingsDialog() {
             <p className="text-sm text-zinc-700 italic">
             🔒 Settings such as API keys are stored inside your browser and aren&apos;t kept on our servers.
             </p>
+        </div>
+
         </div>
 
         <DialogFooter>

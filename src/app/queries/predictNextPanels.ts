@@ -11,14 +11,14 @@ import { sleep } from "@/lib/sleep"
 export const predictNextPanels = async ({
   preset,
   prompt = "",
-  nbPanelsToGenerate = 2,
-  maxNbPanels = 4,
+  nbPanelsToGenerate,
+  maxNbPanels,
   existingPanels = [],
 }: {
   preset: Preset;
   prompt: string;
-  nbPanelsToGenerate?: number;
-  maxNbPanels?: number;
+  nbPanelsToGenerate: number;
+  maxNbPanels: number;
   existingPanels: GeneratedPanel[];
 }): Promise<GeneratedPanel[]> => {
   // console.log("predictNextPanels: ", { prompt, nbPanelsToGenerate })

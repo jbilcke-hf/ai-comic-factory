@@ -2,20 +2,21 @@ import { Preset } from "../engine/presets"
 import { GeneratedPanel } from "@/types"
 import { predictNextPanels } from "./predictNextPanels"
 import { joinWords } from "@/lib/joinWords"
+import { sleep } from "@/lib/sleep"
 
 export const getStoryContinuation = async ({
   preset,
   stylePrompt = "",
   userStoryPrompt = "",
-  nbPanelsToGenerate = 2,
-  maxNbPanels = 4,
+  nbPanelsToGenerate,
+  maxNbPanels,
   existingPanels = [],
 }: {
   preset: Preset;
   stylePrompt?: string;
   userStoryPrompt?: string;
-  nbPanelsToGenerate?: number;
-  maxNbPanels?: number;
+  nbPanelsToGenerate: number;
+  maxNbPanels: number;
   existingPanels?: GeneratedPanel[];
 }): Promise<GeneratedPanel[]> => {
 
@@ -63,6 +64,7 @@ export const getStoryContinuation = async ({
         caption: "(Sorry, LLM generation failed: using degraded mode)"
       })
     }
+    await sleep(2000)
     // console.error(err)
   } finally {
     return panels

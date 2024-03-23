@@ -51,6 +51,9 @@ export function TopMenu() {
   const setShowCaptions = useStore(state => state.setShowCaptions)
   const showCaptions = useStore(state => state.showCaptions)
 
+  const currentNbPages = useStore(state => state.currentNbPages)
+  const setCurrentNbPages = useStore(state => state.setCurrentNbPages)
+
   const generate = useStore(state => state.generate)
 
   const isGeneratingStory = useStore(state => state.isGeneratingStory)
@@ -102,7 +105,7 @@ export function TopMenu() {
       setShowAuthWall(true)
       return
     }
-    
+
     const promptChanged = draftPrompt.trim() !== prompt.trim()
     const presetChanged = draftPreset !== preset.id
     const layoutChanged = draftLayout !== layout

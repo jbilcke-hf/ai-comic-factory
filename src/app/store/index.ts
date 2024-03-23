@@ -16,6 +16,7 @@ export const useStore = create<{
   maxNbPanelsPerPage: number
   currentNbPages: number
   maxNbPages: number
+  previousNbPanels: number
   currentNbPanels: number
   maxNbPanels: number
   panels: string[]
@@ -36,6 +37,7 @@ export const useStore = create<{
   setMaxNbPanelsPerPage: (maxNbPanelsPerPage: number) => void
   setCurrentNbPages: (currentNbPages: number) => void
   setMaxNbPages: (maxNbPages: number) => void
+  setPreviousNbPanels: (previousNbPanels: number) => void
   setCurrentNbPanels: (currentNbPanels: number) => void
   setMaxNbPanels: (maxNbPanels: number) => void
   
@@ -53,12 +55,19 @@ export const useStore = create<{
   setCaptions: (captions: string[]) => void
   setPanelCaption: (newCaption: string, index: number) => void
   setZoomLevel: (zoomLevel: number) => void
-  setPage: (page: HTMLDivElement) => void
+
   setGeneratingStory: (isGeneratingStory: boolean) => void
   setGeneratingImages: (panelId: string, value: boolean) => void
   setGeneratingText: (isGeneratingText: boolean) => void
-  pageToImage: () => Promise<string>
-  download: () => Promise<void>
+  
+  // I think we should deprecate those three functions
+  // this was used to keep track of the page HTML element,
+  // for use with a HTML-to-bitmap library
+  // but the CSS layout wasn't followed properly and it depended on the zoom level
+  // pageToImage: () => Promise<string>
+  // download: () => Promise<void>
+  // setPage: (page: HTMLDivElement) => void
+
   generate: (prompt: string, presetName: PresetName, layoutName: LayoutName) => void
 }>((set, get) => ({
   prompt: "",
@@ -69,6 +78,7 @@ export const useStore = create<{
   maxNbPanelsPerPage: 4,
   currentNbPages: 1,
   maxNbPages: 1,
+  previousNbPanels: 0,
   currentNbPanels: 4,
   maxNbPanels: 4,
 
@@ -77,15 +87,21 @@ export const useStore = create<{
   upscaleQueue: {} as Record<string, RenderedScene>,
   renderedScenes: {} as Record<string, RenderedScene>,
   showCaptions: false,
+
+  // deprecated?
   layout: defaultLayout,
-  layouts: [defaultLayout, defaultLayout],
+
+  layouts: [defaultLayout, defaultLayout, defaultLayout, defaultLayout],
+
   zoomLevel: 60,
+
+  // deprecated?
   page: undefined as unknown as HTMLDivElement,
+
   isGeneratingStory: false,
   panelGenerationStatus: {},
   isGeneratingText: false,
   atLeastOnePanelIsBusy: false,
-
 
   setCurrentNbPanelsPerPage: (currentNbPanelsPerPage: number) => {
     const { currentNbPages } = get()
@@ -102,10 +118,41 @@ export const useStore = create<{
     })
   },
   setCurrentNbPages: (currentNbPages: number) => {
-    const { currentNbPanelsPerPage } = get()
-    set({
+    const state = get()
+
+    const newCurrentNumberOfPages = Math.min(state.maxNbPages, currentNbPages)
+    
+    const newCurrentNbPanels = state.currentNbPanelsPerPage * newCurrentNumberOfPages
+
+    /*
+    console.log(`setCurrentNbPages(${currentNbPages}): ${JSON.stringify({
+      "state.maxNbPages": state.maxNbPages,
       currentNbPages,
-      currentNbPanels: currentNbPanelsPerPage * currentNbPages
+      newCurrentNumberOfPages,
+      "state.currentNbPanelsPerPage": state.currentNbPanelsPerPage,
+      newCurrentNbPanels,
+      "state.currentNbPanels": state.currentNbPanels,
+      "state.previousNbPanels": state.previousNbPanels,
+      previousNbPanels:
+      newCurrentNbPanels > state.currentNbPanels ? state.currentNbPanels :
+      newCurrentNbPanels < state.currentNbPanels ? 0 :
+      state.previousNbPanels,
+
+    }, null, 2)}`)
+    */
+
+    set({
+      // we keep the previous number of panels for convenience
+      // so if we are adding a new panel,
+      // state.currentNbPanels gets copied to state.previousNbPanels
+      previousNbPanels:
+        newCurrentNbPanels > state.currentNbPanels ? state.currentNbPanels :
+        newCurrentNbPanels < state.currentNbPanels ? 0 :
+        state.previousNbPanels,
+
+      currentNbPanels: newCurrentNbPanels,
+      currentNbPages: newCurrentNumberOfPages,
+  
     })
   },
   setMaxNbPages: (maxNbPages: number) => {
@@ -115,8 +162,40 @@ export const useStore = create<{
       maxNbPanels: maxNbPanelsPerPage * maxNbPages,
     })
   },
-  setCurrentNbPanels: (currentNbPanels: number) => {
+  setPreviousNbPanels: (previousNbPanels: number) => {
     set({
+      previousNbPanels
+    })
+  },
+  setCurrentNbPanels: (currentNbPanels: number) => {
+    const state = get()
+
+
+    /*
+    console.log(`setCurrentNbPanels(${currentNbPanels}): ${JSON.stringify({
+      "state.maxNbPages": state.maxNbPages,
+      "state.currentNbPages": state.currentNbPages,
+      currentNbPanels,
+      "state.currentNbPanelsPerPage": state.currentNbPanelsPerPage,
+      "state.currentNbPanels": state.currentNbPanels,
+      "state.previousNbPanels": state.previousNbPanels,
+      previousNbPanels:
+      currentNbPanels > state.currentNbPanels ? state.currentNbPanels :
+        currentNbPanels < state.currentNbPanels ? 0 :
+        state.previousNbPanels,
+
+    }, null, 2)}`)
+    */
+
+    set({
+      // we keep the previous number of panels for convenience
+      // so if we are adding a new panel,
+      // state.currentNbPanels gets copied to state.previousNbPanels
+      previousNbPanels:
+        currentNbPanels > state.currentNbPanels ? state.currentNbPanels :
+        currentNbPanels < state.currentNbPanels ? 0 :
+        state.previousNbPanels,
+      
       currentNbPanels,
     })
   },
@@ -200,35 +279,37 @@ export const useStore = create<{
     })
   },
   setLayout: (layoutName: LayoutName) => {
-
-    const { currentNbPages } = get()
-
-    const layout = layoutName === "random"
-    ? getRandomLayoutName()
-    : layoutName
+    const { maxNbPages, currentNbPanelsPerPage } = get()
 
     const layouts: LayoutName[] = []
-    for (let i = 0; i < currentNbPages; i++) {
+    for (let i = 0; i < maxNbPages; i++) {
       layouts.push(
         layoutName === "random"
           ? getRandomLayoutName()
-          : layoutName
-      )
-
-      // TODO: update the number of total panels here!
+          : layoutName)
     }
 
     set({
-      layout,
+      // changing the layout isn't a free pass to generate tons of panels at once,
+      // so we reset pretty much everything
+      previousNbPanels: 0,
+      currentNbPages: 1,
+      currentNbPanels: currentNbPanelsPerPage,
+      panels: [],
+      captions: [],
+      upscaleQueue: {},
+      renderedScenes: {},
+      isGeneratingStory: false,
+      panelGenerationStatus: {},
+      isGeneratingText: false,
+      atLeastOnePanelIsBusy: false,
+
       layouts,
+      layout: layouts[0],
     })
   },
   setLayouts: (layouts: LayoutName[]) => set({ layouts }),
   setZoomLevel: (zoomLevel: number) =>  set({ zoomLevel }),
-  setPage: (page: HTMLDivElement) => {
-    if (!page) { return }
-    set({ page })
-  },
   setGeneratingStory: (isGeneratingStory: boolean) => set({ isGeneratingStory }),
   setGeneratingImages: (panelId: string, value: boolean) => {
     const panelGenerationStatus: Record<string, boolean> = {
@@ -244,6 +325,16 @@ export const useStore = create<{
     })
   },
   setGeneratingText: (isGeneratingText: boolean) => set({ isGeneratingText }),
+
+  // I think we should deprecate those three functions
+  // this was used to keep track of the page HTML element,
+  // for use with a HTML-to-bitmap library
+  // but the CSS layout wasn't followed properly and it depended on the zoom level
+  /*
+  setPage: (page: HTMLDivElement) => {
+    if (!page) { return }
+    set({ page })
+  },
   pageToImage: async () => {
     const { page } = get()
     if (!page) { return "" }
@@ -271,33 +362,37 @@ export const useStore = create<{
       window.open(data)
     }
   },
+  */
   generate: (prompt: string, presetName: PresetName, layoutName: LayoutName) => {
-
-    const { currentNbPages } = get()
-    
-    const layout = layoutName === "random"
-    ? getRandomLayoutName()
-    : layoutName
+    const { maxNbPages, currentNbPanelsPerPage } = get()
 
     const layouts: LayoutName[] = []
-    for (let i = 0; i < currentNbPages; i++) {
+    for (let i = 0; i < maxNbPages; i++) {
       layouts.push(
         layoutName === "random"
           ? getRandomLayoutName()
-          : layoutName
-      )
-
-      // TODO: update the number of total panels here!
+          : layoutName)
     }
 
     set({
-      prompt,
+      // we reset pretty much everything
+      previousNbPanels: 0,
+      currentNbPages: 1,
+      currentNbPanels: currentNbPanelsPerPage,
       panels: [],
       captions: [],
+      upscaleQueue: {},
+      renderedScenes: {},
+      isGeneratingStory: false,
+      panelGenerationStatus: {},
+      isGeneratingText: false,
+      atLeastOnePanelIsBusy: false,
+
+      prompt,
       preset: presetName === "random"
         ? getRandomPreset()
         : getPreset(presetName),
-      layout,
+      layout: layouts[0],
       layouts,
     })
   }

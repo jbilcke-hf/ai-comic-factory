@@ -7,7 +7,7 @@ function SignUpCTA() {
   return (
     <div className={cn(
       `print:hidden`,
-      `fixed flex flex-col items-center bottom-8 top-28 right-2 md:top-17 md:right-6 z-10`,
+      `fixed flex flex-col items-center bottom-24 top-28 right-2 md:top-17 md:right-6 z-10`,
     )}>
       <div className="font-bold text-sm pb-2 text-stone-600 bg-stone-50  dark:text-stone-600 dark:bg-stone-50 p-1 rounded-sm">
         anonymous users can generate 1 comic.<br/> <span
