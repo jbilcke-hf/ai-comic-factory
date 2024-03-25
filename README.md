@@ -15,7 +15,11 @@ hf_oauth_scopes: [inference-api]
 
 # AI Comic Factory
 
-*(note: the website "aicomicfactory.com" is not affiliated with the AI Comic Factory project, nor it is created or maintained by the AI Comic Factory team. If you see their website has an issue, please contact them directly)*
+Last release: AI Comic Factory 1.2
+
+The AI Comic Factory will soon have an official website: [aicomicfactory.app](https://aicomicfactory.app)
+
+For more information about my other projects please check [linktr.ee/FLNGR](https://linktr.ee/FLNGR).
 
 ## Running the project at home
 

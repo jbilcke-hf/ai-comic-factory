@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { ReactNode, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -6,8 +6,19 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Login } from "../login"
 
 const APP_NAME = `AI Comic Factory`
-const APP_VERSION = `1.1`
+const APP_DOMAIN = `aicomicfactory.app`
+const APP_URL = `https://aicomicfactory.app`
+const APP_VERSION = `1.2`
 const APP_RELEASE_DATE = `March 2024`
+
+const ExternalLink = ({ url, children }: { url: string; children: ReactNode }) => {
+  return (
+  <a
+    className="text-stone-600 underline"
+    href={url}
+    target="_blank">{children}</a>
+  )
+}
 
 export function About() {
   const [isOpen, setOpen] = useState(false)
@@ -22,17 +33,20 @@ export function About() {
       </DialogTrigger>
       <DialogContent className="w-full sm:max-w-[500px] md:max-w-[600px] overflow-y-scroll h-[100vh] sm:h-[550px]">
         <DialogHeader>
-          <DialogTitle>{APP_NAME} {APP_VERSION}</DialogTitle>
+          <DialogTitle><ExternalLink url={APP_URL}>{APP_DOMAIN}</ExternalLink> {APP_VERSION}</DialogTitle>
           <DialogDescription className="w-full text-center text-2xl font-bold text-stone-700">
-          {APP_NAME} {APP_VERSION} ({APP_RELEASE_DATE})
+          <ExternalLink url={APP_URL}>{APP_DOMAIN}</ExternalLink> {APP_VERSION} ({APP_RELEASE_DATE})
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4 text-stone-700 text-sm md:text-base xl:text-lg">
           <p className="">
-            The {APP_NAME} generates stories using AI in a few clicks.
+            {APP_DOMAIN} generates stories using AI in a few clicks.
           </p>
           <p>
-            The app is free for Hugging Face users 👉 <Login />
+           App is free for Hugging Face users 👉 <Login />
+          </p>
+          <p>
+            Join us on Discord 👉 <ExternalLink url="https://discord.com/invite/AEruz9B92B">The Latent Space</ExternalLink>
           </p>
           <p className="pt-2 pb-2">
             Are you an artist? Learn <a className="text-stone-600 underline" href="https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/discussions/402#654ab848fa25dfb780aa19fb" target="_blank">how to use your own art style</a>

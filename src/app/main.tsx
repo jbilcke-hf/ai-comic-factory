@@ -259,7 +259,10 @@ export default function Main() {
         `flex items-start w-screen h-screen pt-24 md:pt-[72px] overflow-y-scroll`,
         `transition-all duration-200 ease-in-out`,
         zoomLevel > 105 ? `px-0` : `pl-1 pr-8 md:pl-16 md:pr-16`,
-        `print:pt-0 print:px-0 print:pl-0 print:pr-0`,
+
+        // important: in "print" mode we need to allow going out of the screen
+        `print:pt-0 print:px-0 print:pl-0 print:pr-0 print:h-auto print:w-auto print:overflow-visible`,
+
         fonts.actionman.className
       )}>
         <div
@@ -270,8 +273,15 @@ export default function Main() {
           <div
             className={cn(
               `comic-page`,
-              `flex flex-col md:flex-row md:space-x-8 lg:space-x-12 xl:space-x-16 md:items-center md:justify-start`,
-              `print:space-x-4 print:flex-row`,
+
+              `grid grid-cols-1`,
+              currentNbPages > 1 ? `md:grid-cols-2` : ``,
+
+              // spaces between pages
+              `gap-x-3 gap-y-4 md:gap-x-8 lg:gap-x-12 xl:gap-x-16`,
+
+              // when printed
+              `print:gap-x-3 print:gap-y-4 print:grid-cols-1`,
             )}
             style={{
               width: `${zoomLevel}%`
@@ -280,7 +290,10 @@ export default function Main() {
           </div>
           {
           showNextPageButton &&
-            <div className="flex flex-col space-y-2 pt-2 pb-6 text-gray-600 dark:text-gray-600">
+            <div className={cn(
+              `flex flex-col space-y-2 pt-2 pb-6 text-gray-600 dark:text-gray-600`,
+              `print:hidden`
+            )}>
               <div>Happy with your story?</div>
               <div>You can <Button onClick={() => {
                 setCurrentNbPages(currentNbPages + 1)
