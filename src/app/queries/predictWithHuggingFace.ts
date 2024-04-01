@@ -2,8 +2,17 @@
 
 import { HfInference, HfInferenceEndpoint } from "@huggingface/inference"
 import { LLMEngine } from "@/types"
+import { createZephyrPrompt } from "@/lib/createZephyrPrompt"
 
-export async function predict(inputs: string, nbMaxNewTokens: number): Promise<string> {
+export async function predict({
+  systemPrompt,
+  userPrompt,
+  nbMaxNewTokens,
+}: {
+  systemPrompt: string
+  userPrompt: string
+  nbMaxNewTokens: number
+}): Promise<string> {
   const hf = new HfInference(process.env.AUTH_HF_API_TOKEN)
 
   const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
@@ -46,7 +55,12 @@ export async function predict(inputs: string, nbMaxNewTokens: number): Promise<s
   try {
     for await (const output of api.textGenerationStream({
       model: llmEngine === "INFERENCE_ENDPOINT" ? undefined : (inferenceModel || undefined),
-      inputs,
+      
+      inputs: createZephyrPrompt([
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ]) + "\n[{", // <-- important: we force its hand
+
       parameters: {
         do_sample: true,
         max_new_tokens: nbMaxNewTokens,

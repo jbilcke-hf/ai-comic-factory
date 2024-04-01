@@ -2,7 +2,15 @@
 
 import Groq from "groq-sdk"
 
-export async function predict(inputs: string, nbMaxNewTokens: number): Promise<string> {
+export async function predict({
+  systemPrompt,
+  userPrompt,
+  nbMaxNewTokens,
+}: {
+  systemPrompt: string
+  userPrompt: string
+  nbMaxNewTokens: number
+}): Promise<string> {
   const groqApiKey = `${process.env.AUTH_GROQ_API_KEY || ""}`
   const groqApiModel = `${process.env.LLM_GROQ_API_MODEL || "mixtral-8x7b-32768"}`
   
@@ -11,7 +19,8 @@ export async function predict(inputs: string, nbMaxNewTokens: number): Promise<s
   })
 
   const messages: Groq.Chat.Completions.CompletionCreateParams.Message[] = [
-    { role: "assistant", content: inputs },
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt },
   ]
 
   try {
