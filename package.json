@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.19.1",
     "@huggingface/hub": "^0.14.2",
     "@huggingface/inference": "^2.6.1",
     "@radix-ui/react-accordion": "^1.1.2",

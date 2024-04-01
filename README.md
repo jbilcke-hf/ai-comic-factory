@@ -31,13 +31,14 @@ it requires various components to run for the frontend, backend, LLM, SDXL etc.
 If you try to duplicate the project, open the `.env` you will see it requires some variables.
 
 Provider config:
-- `LLM_ENGINE`: can be one of: "INFERENCE_API", "INFERENCE_ENDPOINT", "OPENAI", or "GROQ"
+- `LLM_ENGINE`: can be one of `INFERENCE_API`, `INFERENCE_ENDPOINT`, `OPENAI`, `GROQ`, `ANTHROPIC`
 - `RENDERING_ENGINE`: can be one of: "INFERENCE_API", "INFERENCE_ENDPOINT", "REPLICATE", "VIDEOCHAIN", "OPENAI" for now, unless you code your custom solution
 
 Auth config:
 - `AUTH_HF_API_TOKEN`:  if you decide to use Hugging Face for the LLM engine (inference api model or a custom inference endpoint)
 - `AUTH_OPENAI_API_KEY`: to use OpenAI for the LLM engine
 - `AUTH_GROQ_API_KEY`: to use Groq for the LLM engine
+- `AUTH_ANTHROPIC_API_KEY`: to use Anthropic (Claude) for the LLM engine
 - `AUTH_VIDEOCHAIN_API_TOKEN`: secret token to access the VideoChain API server
 - `AUTH_REPLICATE_API_TOKEN`: in case you want to use Replicate.com
 
@@ -56,6 +57,7 @@ Language model config (depending on the LLM engine you decide to use):
 - `LLM_OPENAI_API_BASE_URL`: "https://api.openai.com/v1"
 - `LLM_OPENAI_API_MODEL`: "gpt-4"
 - `LLM_GROQ_API_MODEL`: "mixtral-8x7b-32768"
+- `LLM_ANTHROPIC_API_MODEL`: "claude-3-opus-20240229"
 
 In addition, there are some community sharing variables that you can just ignore.
 Those variables are not required to run the AI Comic Factory on your own website or computer
@@ -76,7 +78,7 @@ To customise a variable locally, you should create a `.env.local`
 
 Currently the AI Comic Factory uses [zephyr-7b-beta](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta) through an [Inference Endpoint](https://huggingface.co/docs/inference-endpoints/index).
 
-You have three options:
+You have multiple options:
 
 ### Option 1: Use an Inference API model
 
@@ -134,8 +136,17 @@ LLM_GROQ_API_MODEL="mixtral-8x7b-32768"
 
 AUTH_GROQ_API_KEY="Your own GROQ API Key"
 ```
+### Option 5: (new, experimental) use Anthropic (Claude)
 
-### Option 5: Fork and modify the code to use a different LLM system
+```bash
+LLM_ENGINE="ANTHROPIC"
+
+LLM_ANTHROPIC_API_MODEL="claude-3-opus-20240229"
+
+AUTH_ANTHROPIC_API_KEY="Your own ANTHROPIC API Key"
+```
+
+### Option 6: Fork and modify the code to use a different LLM system
 
 Another option could be to disable the LLM completely and replace it with another LLM protocol and/or provider (eg. Claude, Replicate), or a human-generated story instead (by returning mock or static data).
 

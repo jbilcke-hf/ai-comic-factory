@@ -101,6 +101,7 @@ export type LLMEngine =
   | "OPENAI"
   | "REPLICATE"
   | "GROQ"
+  | "ANTHROPIC"
 
   export type RenderingEngine =
   | "VIDEOCHAIN"

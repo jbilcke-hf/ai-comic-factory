@@ -1,12 +1,11 @@
-
-import { predict } from "./predict"
-import { Preset } from "../engine/presets"
 import { GeneratedPanel } from "@/types"
 import { cleanJson } from "@/lib/cleanJson"
-import { createZephyrPrompt } from "@/lib/createZephyrPrompt"
 import { dirtyGeneratedPanelCleaner } from "@/lib/dirtyGeneratedPanelCleaner"
 import { dirtyGeneratedPanelsParser } from "@/lib/dirtyGeneratedPanelsParser"
 import { sleep } from "@/lib/sleep"
+
+import { Preset } from "../engine/presets"
+import { predict } from "./predict"
 import { getSystemPrompt } from "./getSystemPrompt"
 import { getUserPrompt } from "./getUserPrompt"
 
