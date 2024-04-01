@@ -51,11 +51,6 @@ export const predictNextPanels = async ({
     prompt,
     existingPanelsTemplate,
   })
-  
-  const zephyPrompt = createZephyrPrompt([
-    { role: "system", content: systemPrompt },
-    { role: "user", content: userPrompt }
-  ]) + "\n[{"
 
   let result = ""
 
