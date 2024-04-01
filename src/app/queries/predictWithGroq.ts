@@ -11,7 +11,7 @@ export async function predict(inputs: string, nbMaxNewTokens: number): Promise<s
   })
 
   const messages: Groq.Chat.Completions.CompletionCreateParams.Message[] = [
-    { role: "assistant", content: "" },
+    { role: "assistant", content: inputs },
   ]
 
   try {
