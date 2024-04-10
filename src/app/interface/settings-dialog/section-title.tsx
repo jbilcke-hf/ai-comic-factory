@@ -9,7 +9,7 @@ export function SectionTitle({ className, children }: {
   return (
     <div className={cn(
       `flex flex-col items-center justify-center`,
-      `mt-6 pt-3 pb w-full`,
+      `mt-6 pt-4 pb-1 w-full`,
       `border-t border-t-stone-400`,
       `text-xl font-semibold text-zinc-900`,
       className

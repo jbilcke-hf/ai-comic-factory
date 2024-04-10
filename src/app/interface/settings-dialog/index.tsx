@@ -331,12 +331,13 @@ export function SettingsDialog() {
               </Field>
             </>}
 
-            <SectionTitle>👇 Story generation options (🚧 experimental alpbetaha 🚧)</SectionTitle>
+            <SectionTitle>👇 Story generation options (🚧 experimental feature 🚧)</SectionTitle>
 
-            <p>⚠️ I haven&apos;t tested all vendors yet, so please report issues to Discord!<br/>
-            ⚠️ Billing and privacy depend on your preferred vendor so please exercice caution.</p>
+            <p>⚠️ Some vendors might be buggy or require tunning, please report issues to Discord.<br/>
+            ⚠️ Billing and privacy depend on your preferred vendor, so please exercice caution.</p>
             <Field>
             <Label className={cn(
+              "mt-2"
             )}>Story generation - please choose a LLM provider:</Label>
             <Select
               onValueChange={(value: string) => {
