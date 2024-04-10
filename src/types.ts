@@ -95,6 +95,8 @@ export type GeneratedPanel = {
 
 export type GeneratedPanels = GeneratedPanel[]
 
+// LLMVendor = what the user configure in the UI (eg. a dropdown item called default server)
+// LLMEngine = the actual engine to use (eg. hugging face)
 export type LLMEngine =
   | "INFERENCE_API"
   | "INFERENCE_ENDPOINT"
@@ -103,18 +105,39 @@ export type LLMEngine =
   | "GROQ"
   | "ANTHROPIC"
 
-  export type RenderingEngine =
+export type RenderingEngine =
   | "VIDEOCHAIN"
   | "OPENAI"
   | "REPLICATE"
   | "INFERENCE_API"
   | "INFERENCE_ENDPOINT"
 
-  export type RenderingModelVendor =
+export type RenderingModelVendor =
   | "SERVER"
   | "OPENAI"
   | "REPLICATE"
   | "HUGGINGFACE"
+
+// LLMVendor = what the user configure in the UI (eg. a dropdown item called default server)
+// LLMEngine = the actual engine to use (eg. hugging face)
+export type LLMVendor =
+  | "SERVER"
+  | "OPENAI"
+  | "GROQ"
+  | "ANTHROPIC"
+
+export type LLMVendorConfig = {
+  vendor: LLMVendor
+  apiKey: string
+  modelId: string
+}
+
+export type LLMPredictionFunctionParams = {
+  systemPrompt: string
+  userPrompt: string
+  nbMaxNewTokens: number
+  llmVendorConfig: LLMVendorConfig
+}
 
 export type PostVisibility =
   | "featured" // featured by admins
@@ -160,6 +183,7 @@ export type LayoutProps = {
 export type Settings = {
   renderingModelVendor: RenderingModelVendor
   renderingUseTurbo: boolean
+  llmVendor: LLMVendor
   huggingFaceOAuth: string
   huggingfaceApiKey: string
   huggingfaceInferenceApiModel: string
@@ -174,6 +198,8 @@ export type Settings = {
   openaiApiLanguageModel: string
   groqApiKey: string
   groqApiLanguageModel: string
+  anthropicApiKey: string
+  anthropicApiLanguageModel: string
   hasGeneratedAtLeastOnce: boolean
   userDefinedMaxNumberOfPages: number
 }

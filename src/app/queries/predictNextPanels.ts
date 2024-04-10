@@ -1,4 +1,4 @@
-import { GeneratedPanel } from "@/types"
+import { GeneratedPanel, LLMVendorConfig } from "@/types"
 import { cleanJson } from "@/lib/cleanJson"
 import { dirtyGeneratedPanelCleaner } from "@/lib/dirtyGeneratedPanelCleaner"
 import { dirtyGeneratedPanelsParser } from "@/lib/dirtyGeneratedPanelsParser"
@@ -15,12 +15,14 @@ export const predictNextPanels = async ({
   nbPanelsToGenerate,
   maxNbPanels,
   existingPanels = [],
+  llmVendorConfig,
 }: {
-  preset: Preset;
-  prompt: string;
-  nbPanelsToGenerate: number;
-  maxNbPanels: number;
-  existingPanels: GeneratedPanel[];
+  preset: Preset
+  prompt: string
+  nbPanelsToGenerate: number
+  maxNbPanels: number
+  existingPanels: GeneratedPanel[]
+  llmVendorConfig: LLMVendorConfig
 }): Promise<GeneratedPanel[]> => {
   // console.log("predictNextPanels: ", { prompt, nbPanelsToGenerate })
   // throw new Error("Planned maintenance")
@@ -61,7 +63,12 @@ export const predictNextPanels = async ({
 
   try {
     // console.log(`calling predict:`, { systemPrompt, userPrompt, nbMaxNewTokens })
-    result = `${await predict({ systemPrompt, userPrompt, nbMaxNewTokens })}`.trim()
+    result = `${await predict({
+      systemPrompt,
+      userPrompt,
+      nbMaxNewTokens,
+      llmVendorConfig
+    })}`.trim()
     console.log("LLM result (1st trial):", result)
     if (!result.length) {
       throw new Error("empty result on 1st trial!")
@@ -72,7 +79,12 @@ export const predictNextPanels = async ({
     await sleep(2000)
 
     try {
-      result = `${await predict({ systemPrompt: systemPrompt + " \n ", userPrompt, nbMaxNewTokens })}`.trim()
+      result = `${await predict({
+        systemPrompt: systemPrompt + " \n ",
+        userPrompt,
+        nbMaxNewTokens,
+        llmVendorConfig
+      })}`.trim()
       console.log("LLM result (2nd trial):", result)
       if (!result.length) {
         throw new Error("empty result on 2nd trial!")

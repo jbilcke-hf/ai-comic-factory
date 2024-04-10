@@ -7,6 +7,8 @@ import { OAuthResult, oauthHandleRedirectIfPresent, oauthLoginUrl } from "@huggi
 import { usePersistedOAuth } from "./usePersistedOAuth"
 import { getValidOAuth } from "./getValidOAuth"
 import { useDynamicConfig } from "./useDynamicConfig"
+import { useLocalStorage } from "usehooks-ts"
+import { useShouldDisplayLoginWall } from "./useShouldDisplayLoginWall"
 
 export function useOAuth({
   debug = false
@@ -33,7 +35,6 @@ export function useOAuth({
   const redirectUrl = config.oauthRedirectUrl
   const scopes = config.oauthScopes
   const enableOAuth = config.enableHuggingFaceOAuth
-  const enableOAuthWall = config.enableHuggingFaceOAuthWall
 
   const searchParams = useSearchParams()
   const code = searchParams?.get("code") || ""
@@ -41,8 +42,12 @@ export function useOAuth({
 
   const hasReceivedFreshOAuth = Boolean(code && state)
 
+  // note: being able to log into hugging face using the popup
+  // is different from seeing the "login wall"
   const canLogin: boolean = Boolean(isConfigReady && clientId && enableOAuth)
   const isLoggedIn = Boolean(oauthResult)
+
+  const enableOAuthWall = useShouldDisplayLoginWall() 
 
   if (debug) {
     console.log("useOAuth debug:", {

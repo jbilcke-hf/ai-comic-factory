@@ -8,8 +8,8 @@ import { Login } from "../login"
 const APP_NAME = `AI Comic Factory`
 const APP_DOMAIN = `aicomicfactory.app`
 const APP_URL = `https://aicomicfactory.app`
-const APP_VERSION = `1.2`
-const APP_RELEASE_DATE = `March 2024`
+const APP_VERSION = `1.3`
+const APP_RELEASE_DATE = `April 2024`
 
 const ExternalLink = ({ url, children }: { url: string; children: ReactNode }) => {
   return (
@@ -33,7 +33,6 @@ export function About() {
       </DialogTrigger>
       <DialogContent className="w-full sm:max-w-[500px] md:max-w-[600px] overflow-y-scroll h-[100vh] sm:h-[550px]">
         <DialogHeader>
-          <DialogTitle><ExternalLink url={APP_URL}>{APP_DOMAIN}</ExternalLink> {APP_VERSION}</DialogTitle>
           <DialogDescription className="w-full text-center text-2xl font-bold text-stone-700">
           <ExternalLink url={APP_URL}>{APP_DOMAIN}</ExternalLink> {APP_VERSION} ({APP_RELEASE_DATE})
           </DialogDescription>

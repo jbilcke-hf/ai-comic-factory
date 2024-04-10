@@ -1,5 +1,5 @@
 import { Preset } from "../engine/presets"
-import { GeneratedPanel } from "@/types"
+import { GeneratedPanel, LLMVendorConfig } from "@/types"
 import { predictNextPanels } from "./predictNextPanels"
 import { joinWords } from "@/lib/joinWords"
 import { sleep } from "@/lib/sleep"
@@ -11,6 +11,7 @@ export const getStoryContinuation = async ({
   nbPanelsToGenerate,
   maxNbPanels,
   existingPanels = [],
+  llmVendorConfig
 }: {
   preset: Preset;
   stylePrompt?: string;
@@ -18,6 +19,7 @@ export const getStoryContinuation = async ({
   nbPanelsToGenerate: number;
   maxNbPanels: number;
   existingPanels?: GeneratedPanel[];
+  llmVendorConfig: LLMVendorConfig
 }): Promise<GeneratedPanel[]> => {
 
   let panels: GeneratedPanel[] = []
@@ -34,6 +36,7 @@ export const getStoryContinuation = async ({
       nbPanelsToGenerate,
       maxNbPanels,
       existingPanels,
+      llmVendorConfig,
     })
 
     // console.log("LLM responded with panelCandidates:", panelCandidates)

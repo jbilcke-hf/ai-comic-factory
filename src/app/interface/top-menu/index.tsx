@@ -41,6 +41,14 @@ const layoutIcons: Partial<Record<LayoutName, StaticImageData>> = {
 }
 
 export function TopMenu() {
+  const searchParams = useSearchParams()
+
+  const requestedPreset = (searchParams?.get('preset') as PresetName) || defaultPreset
+  const requestedFont = (searchParams?.get('font') as FontName) || defaultFont
+  const requestedStylePrompt = (searchParams?.get('stylePrompt') as string) || ""
+  const requestedStoryPrompt = (searchParams?.get('storyPrompt') as string) || ""
+  const requestedLayout = (searchParams?.get('layout') as LayoutName) || defaultLayout
+
    // const font = useStore(state => state.font)
   // const setFont = useStore(state => state.setFont)
   const preset = useStore(state => state.preset)
@@ -63,20 +71,13 @@ export function TopMenu() {
 
   const [lastDraftPromptA, setLastDraftPromptA] = useLocalStorage<string>(
     "AI_COMIC_FACTORY_LAST_DRAFT_PROMPT_A",
-    ""
+    requestedStylePrompt
   )
 
   const [lastDraftPromptB, setLastDraftPromptB] = useLocalStorage<string>(
     "AI_COMIC_FACTORY_LAST_DRAFT_PROMPT_B",
-    ""
+    requestedStoryPrompt
   )
-
-  const searchParams = useSearchParams()
-
-  const requestedPreset = (searchParams?.get('preset') as PresetName) || defaultPreset
-  const requestedFont = (searchParams?.get('font') as FontName) || defaultFont
-  const requestedPrompt = (searchParams?.get('prompt') as string) || ""
-  const requestedLayout = (searchParams?.get('layout') as LayoutName) || defaultLayout
 
   const [draftPromptA, setDraftPromptA] = useState(lastDraftPromptA)
   const [draftPromptB, setDraftPromptB] = useState(lastDraftPromptB)

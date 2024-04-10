@@ -7,6 +7,7 @@ import { FontName } from "@/lib/fonts"
 import { Preset, PresetName, defaultPreset, getPreset, getRandomPreset } from "@/app/engine/presets"
 import { RenderedScene } from "@/types"
 import { LayoutName, defaultLayout, getRandomLayoutName } from "../layouts"
+import { getParam } from "@/lib/getParam"
 
 export const useStore = create<{
   prompt: string
@@ -70,14 +71,17 @@ export const useStore = create<{
 
   generate: (prompt: string, presetName: PresetName, layoutName: LayoutName) => void
 }>((set, get) => ({
-  prompt: "",
+  prompt:
+    (getParam("stylePrompt", "") || getParam("storyPrompt", ""))
+     ? `${getParam("stylePrompt", "")}||${getParam("storyPrompt", "")}`
+     : "",
   font: "actionman",
-  preset: getPreset(defaultPreset),
+  preset: getPreset(getParam("preset", defaultPreset)),
 
   currentNbPanelsPerPage: 4,
   maxNbPanelsPerPage: 4,
   currentNbPages: 1,
-  maxNbPages: 1,
+  maxNbPages: getParam("maxNbPages", 1),
   previousNbPanels: 0,
   currentNbPanels: 4,
   maxNbPanels: 4,
@@ -86,14 +90,14 @@ export const useStore = create<{
   captions: [],
   upscaleQueue: {} as Record<string, RenderedScene>,
   renderedScenes: {} as Record<string, RenderedScene>,
-  showCaptions: false,
+  showCaptions: getParam("showCaptions", false),
 
   // deprecated?
   layout: defaultLayout,
 
   layouts: [defaultLayout, defaultLayout, defaultLayout, defaultLayout],
 
-  zoomLevel: 60,
+  zoomLevel: getParam("zoomLevel", 60),
 
   // deprecated?
   page: undefined as unknown as HTMLDivElement,

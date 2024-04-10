@@ -50,6 +50,7 @@
     "openai": "^4.29.2",
     "pick": "^0.0.1",
     "postcss": "8.4.37",
+    "query-string": "^9.0.0",
     "react": "18.2.0",
     "react-circular-progressbar": "^2.1.0",
     "react-contenteditable": "^3.3.7",

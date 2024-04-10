@@ -1,18 +1,16 @@
 "use server"
 
 import { HfInference, HfInferenceEndpoint } from "@huggingface/inference"
-import { LLMEngine } from "@/types"
+import { LLMEngine, LLMPredictionFunctionParams } from "@/types"
 import { createZephyrPrompt } from "@/lib/createZephyrPrompt"
 
 export async function predict({
   systemPrompt,
   userPrompt,
   nbMaxNewTokens,
-}: {
-  systemPrompt: string
-  userPrompt: string
-  nbMaxNewTokens: number
-}): Promise<string> {
+  // llmVendorConfig // <-- arbitrary/custom LLM models hosted on HF is not supported yet using the UI
+}: LLMPredictionFunctionParams): Promise<string> {
+
   const hf = new HfInference(process.env.AUTH_HF_API_TOKEN)
 
   const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine

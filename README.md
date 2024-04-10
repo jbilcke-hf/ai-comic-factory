@@ -123,7 +123,7 @@ LLM_ENGINE="OPENAI"
 # default openai api base url is: https://api.openai.com/v1
 LLM_OPENAI_API_BASE_URL="A custom OpenAI API Base URL if you have some special privileges"
 
-LLM_OPENAI_API_MODEL="gpt-3.5-turbo"
+LLM_OPENAI_API_MODEL="gpt-4-turbo-preview"
 
 AUTH_OPENAI_API_KEY="Yourown OpenAI API Key"
 ```

@@ -1,5 +1,6 @@
 "use server"
 
+import { LLMPredictionFunctionParams } from '@/types';
 import Anthropic from '@anthropic-ai/sdk';
 import { MessageParam } from '@anthropic-ai/sdk/resources';
 
@@ -7,13 +8,18 @@ export async function predict({
   systemPrompt,
   userPrompt,
   nbMaxNewTokens,
-}: {
-  systemPrompt: string
-  userPrompt: string
-  nbMaxNewTokens: number
-}): Promise<string> {
-  const anthropicApiKey = `${process.env.AUTH_ANTHROPIC_API_KEY || ""}`
-  const anthropicApiModel = `${process.env.LLM_ANTHROPIC_API_MODEL || "claude-3-opus-20240229"}`
+  llmVendorConfig
+}: LLMPredictionFunctionParams): Promise<string> {
+  const anthropicApiKey = `${
+    llmVendorConfig.apiKey ||
+    process.env.AUTH_ANTHROPIC_API_KEY ||
+    ""
+  }`
+  const anthropicApiModel = `${
+    llmVendorConfig.modelId ||
+    process.env.LLM_ANTHROPIC_API_MODEL ||
+    "claude-3-opus-20240229"
+  }`
   
   const anthropic = new Anthropic({
     apiKey: anthropicApiKey,

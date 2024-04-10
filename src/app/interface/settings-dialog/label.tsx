@@ -1,7 +1,15 @@
 import { ReactNode } from "react"
 
-export function Label({ children }: { children: ReactNode }) {
+import { cn } from "@/lib/utils"
+
+export function Label({ className, children }: {
+  className?: string
+  children: ReactNode
+}) {
   return (
-    <label className="text-xl font-semibold text-zinc-700">{children}</label>
+    <label className={cn(
+      `text-base font-semibold text-zinc-700`,
+      className
+    )}>{children}</label>
   )
 }

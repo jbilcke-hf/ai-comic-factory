@@ -2,20 +2,27 @@
 
 import type { ChatCompletionMessageParam } from "openai/resources/chat"
 import OpenAI from "openai"
+import { LLMPredictionFunctionParams } from "@/types"
 
 export async function predict({
   systemPrompt,
   userPrompt,
   nbMaxNewTokens,
-}: {
-  systemPrompt: string
-  userPrompt: string
-  nbMaxNewTokens: number
-}): Promise<string> {
-  const openaiApiKey = `${process.env.AUTH_OPENAI_API_KEY || ""}`
+  llmVendorConfig
+}: LLMPredictionFunctionParams): Promise<string> {
+  const openaiApiKey = `${
+    llmVendorConfig.apiKey ||
+    process.env.AUTH_OPENAI_API_KEY ||
+    ""
+  }`
+  const openaiApiModel = `${
+    llmVendorConfig.modelId ||
+    process.env.LLM_OPENAI_API_MODEL ||
+    "gpt-4-turbo-preview"
+  }`
+
   const openaiApiBaseUrl = `${process.env.LLM_OPENAI_API_BASE_URL || "https://api.openai.com/v1"}`
-  const openaiApiModel = `${process.env.LLM_OPENAI_API_MODEL || "gpt-3.5-turbo"}`
-  
+
   const openai = new OpenAI({
     apiKey: openaiApiKey,
     baseURL: openaiApiBaseUrl,

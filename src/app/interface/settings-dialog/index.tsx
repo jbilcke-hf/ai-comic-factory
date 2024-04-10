@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { RenderingModelVendor } from "@/types"
+import { LLMVendor, RenderingModelVendor } from "@/types"
 import { Input } from "@/components/ui/input"
 
 import { Label } from "./label"
@@ -24,6 +24,8 @@ import { defaultSettings } from "./defaultSettings"
 import { useDynamicConfig } from "@/lib/useDynamicConfig"
 import { Slider } from "@/components/ui/slider"
 import { fonts } from "@/lib/fonts"
+import { cn } from "@/lib/utils"
+import { SectionTitle } from "./section-title"
 
 export function SettingsDialog() {
   const [isOpen, setOpen] = useState(false)
@@ -34,6 +36,10 @@ export function SettingsDialog() {
   const [renderingUseTurbo, setRenderingUseTurbo] = useLocalStorage<boolean>(
     localStorageKeys.renderingUseTurbo,
     defaultSettings.renderingUseTurbo
+  )
+  const [llmVendor, setLlmModelVendor] = useLocalStorage<LLMVendor>(
+    localStorageKeys.llmVendor,
+    defaultSettings.llmVendor
   )
   const [huggingfaceApiKey, setHuggingfaceApiKey] = useLocalStorage<string>(
     localStorageKeys.huggingfaceApiKey,
@@ -75,6 +81,26 @@ export function SettingsDialog() {
     localStorageKeys.openaiApiModel,
     defaultSettings.openaiApiModel
   )
+  const [openaiApiLanguageModel, setOpenaiApiLanguageModel] = useLocalStorage<string>(
+    localStorageKeys.openaiApiLanguageModel,
+    defaultSettings.openaiApiLanguageModel
+  )
+  const [groqApiKey, setGroqApiKey] = useLocalStorage<string>(
+    localStorageKeys.groqApiKey,
+    defaultSettings.groqApiKey
+  )
+  const [groqApiLanguageModel, setGroqApiLanguageModel] = useLocalStorage<string>(
+    localStorageKeys.groqApiLanguageModel,
+    defaultSettings.groqApiLanguageModel
+  )
+  const [anthropicApiKey, setAnthropicApiKey] = useLocalStorage<string>(
+    localStorageKeys.anthropicApiKey,
+    defaultSettings.anthropicApiKey
+  )
+  const [anthropicApiLanguageModel, setAnthropicApiLanguageModel] = useLocalStorage<string>(
+    localStorageKeys.anthropicApiLanguageModel,
+    defaultSettings.anthropicApiLanguageModel
+  )
   const [userDefinedMaxNumberOfPages, setUserDefinedMaxNumberOfPages] = useLocalStorage<number>(
     localStorageKeys.userDefinedMaxNumberOfPages,
     defaultSettings.userDefinedMaxNumberOfPages
@@ -87,19 +113,25 @@ export function SettingsDialog() {
       <DialogTrigger asChild>
         <Button className="space-x-1 md:space-x-2">
           <div>
-            <span className="hidden md:inline">Settings</span>
+            <span className="">Settings</span>
           </div>
         </Button> 
       </DialogTrigger>
-      <DialogContent className="w-full sm:max-w-[500px] md:max-w-[700px]">
+      <DialogContent className="w-full sm:max-w-[500px] md:max-w-[700px] bg-gray-100">
         <DialogHeader>
-          <DialogDescription className="w-full text-center text-lg font-bold text-stone-800">
-            Settings
+          <DialogDescription className="w-full text-center text-2xl font-bold text-stone-800">
+            AI Comic Factory Settings
           </DialogDescription>
         </DialogHeader>
         <div className="overflow-y-scroll h-[75vh] md:h-[70vh]">
+        <p className="text-base italic text-zinc-600 w-full text-center">
+            ℹ️ Some models can take time to cold-start, or be under heavy traffic.<br/>
+            👉 In case of trouble, try again after 5-10 minutes.<br/>
+          🔒 Your settings are stored inside your browser, not on our servers.
+        </p>
+        <SectionTitle>👇 General options</SectionTitle>
         {isConfigReady && <Field>
-          <Label>(new!) Control the number of pages: {userDefinedMaxNumberOfPages}</Label>
+          <Label className="pt-2">Move the slider to set the total expected number of pages: {userDefinedMaxNumberOfPages}</Label>
           <Slider
             min={1}
             max={maxNbPages}
@@ -115,31 +147,11 @@ export function SettingsDialog() {
           />
         </Field>
         }
-        <div className="grid gap-4 pt-8 pb-1 space-y-1 text-stone-800">
-          <Field>
-            <Label>Image rendering provider:</Label>
-            <p className="pt-2 pb-3 text-base italic text-zinc-600">
-            ℹ️ Some API vendors have a delay for rarely used models.<br/>
-            👉 In case of trouble, try again after 5-10 minutes.
-            </p>
-
-            <Select
-              onValueChange={(value: string) => {
-                setRenderingModelVendor(value as RenderingModelVendor)
-              }}
-              defaultValue={renderingModelVendor}>
-              <SelectTrigger className="">
-                <SelectValue placeholder="Theme" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="SERVER">Use server settings (default)</SelectItem>
-                <SelectItem value="HUGGINGFACE">Custom Hugging Face model (recommended)</SelectItem>
-                <SelectItem value="REPLICATE">Custom Replicate model (will use your own account)</SelectItem>
-                <SelectItem value="OPENAI">DALL·E 3 by OpenAI (partial support, will use your own account)</SelectItem>
-              </SelectContent>
-            </Select>
-          </Field>
-            
+        <div className={cn(
+          `grid gap-2 pt-3 pb-1`,
+          `text-stone-800`
+        )}>
+        
           
           {
           // renderingModelVendor === "SERVER" && <>
@@ -167,6 +179,29 @@ export function SettingsDialog() {
           //   </Field>
           // </>
           }
+
+          <SectionTitle>👇 Panel rendering options</SectionTitle>
+
+          <Field>
+            <Label className={cn(
+            )}>Image generation - please choose a stable diffusion provider:</Label>
+            <Select
+              onValueChange={(value: string) => {
+                setRenderingModelVendor(value as RenderingModelVendor)
+              }}
+              defaultValue={renderingModelVendor}
+              value={renderingModelVendor}>
+              <SelectTrigger className="bg-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="SERVER">Default Hugging Face server (free but limited capacity, not always online)</SelectItem>
+                <SelectItem value="HUGGINGFACE">Custom Inference API model (pro hugging face account recommended)</SelectItem>
+                <SelectItem value="REPLICATE">Custom Replicate model (will bill your own account)</SelectItem>
+                <SelectItem value="OPENAI">DALL·E 3 by OpenAI (partial support, will bill your own account)</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
 
           {renderingModelVendor === "HUGGINGFACE" && <>
             <Field>
@@ -247,7 +282,7 @@ export function SettingsDialog() {
 
           {renderingModelVendor === "REPLICATE" && <>
               <Field>
-                <Label>Replicate API Token (you will be billed based on Replicate pricing):</Label>
+                <Label>Replicate API Token:</Label>
                 <Input
                   className={fonts.actionman.className}
                   type="password"
@@ -296,10 +331,112 @@ export function SettingsDialog() {
               </Field>
             </>}
 
-            <p className="text-sm text-zinc-700 italic">
-            🔒 Settings such as API keys are stored inside your browser and aren&apos;t kept on our servers.
-            </p>
-        </div>
+            <SectionTitle>👇 Story generation options (🚧 experimental alpbetaha 🚧)</SectionTitle>
+
+            <p>⚠️ I haven&apos;t tested all vendors yet, so please report issues to Discord!<br/>
+            ⚠️ Billing and privacy depend on your preferred vendor so please exercice caution.</p>
+            <Field>
+            <Label className={cn(
+            )}>Story generation - please choose a LLM provider:</Label>
+            <Select
+              onValueChange={(value: string) => {
+                setLlmModelVendor(value as LLMVendor)
+              }}
+              defaultValue={llmVendor}
+              value={llmVendor}>
+              <SelectTrigger className="bg-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="SERVER">Default Hugging Face server (free but limited capacity, not always online)</SelectItem>
+                <SelectItem value="GROQ">Open-source models on Groq (will bill your own account)</SelectItem>
+                <SelectItem value="ANTHROPIC">Claude by Anthropic (will bill your own account)</SelectItem>
+                <SelectItem value="OPENAI">ChatGPT by OpenAI (will bill your own account)</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+
+          {llmVendor === "GROQ" && <>
+            <Field>
+              <Label>Groq API Token:</Label>
+              <Input
+                className={fonts.actionman.className}
+                type="password"
+                placeholder="Enter your private api token"
+                onChange={(x) => {
+                  setGroqApiKey(x.target.value)
+                }}
+                value={groqApiKey}
+              />
+            </Field>
+            <Field>
+              <Label>Open-source Model ID:</Label>
+              <Input
+                className={fonts.actionman.className}
+                placeholder="Name of the LLM"
+                onChange={(x) => {
+                  setGroqApiLanguageModel(x.target.value)
+                }}
+                value={groqApiLanguageModel}
+              />
+            </Field>
+          </>}
+
+
+          {llmVendor === "ANTHROPIC" && <>
+            <Field>
+              <Label>Anthropic API Token:</Label>
+              <Input
+                className={fonts.actionman.className}
+                type="password"
+                placeholder="Enter your private api token"
+                onChange={(x) => {
+                  setAnthropicApiKey(x.target.value)
+                }}
+                value={anthropicApiKey}
+              />
+            </Field>
+            <Field>
+              <Label>Proprietary Model ID:</Label>
+              <Input
+                className={fonts.actionman.className}
+                placeholder="Name of the LLM"
+                onChange={(x) => {
+                  setAnthropicApiLanguageModel(x.target.value)
+                }}
+                value={anthropicApiLanguageModel}
+              />
+            </Field>
+          </>}
+
+
+          {llmVendor === "OPENAI" && <>
+            <Field>
+              <Label>OpenAI API Token:</Label>
+              <Input
+                className={fonts.actionman.className}
+                type="password"
+                placeholder="Enter your private api token"
+                onChange={(x) => {
+                  setOpenaiApiKey(x.target.value)
+                }}
+                value={openaiApiKey}
+              />
+            </Field>
+            <Field>
+              <Label>Proprietary Model ID:</Label>
+              <Input
+                className={fonts.actionman.className}
+                placeholder="Name of the LLM"
+                onChange={(x) => {
+                  setOpenaiApiLanguageModel(x.target.value)
+                }}
+                value={openaiApiLanguageModel}
+              />
+            </Field>
+          </>}
+
+          </div>
 
         </div>
 

@@ -1,8 +1,9 @@
-import { RenderingModelVendor, Settings } from "@/types"
+import { LLMVendor, RenderingModelVendor, Settings } from "@/types"
 
 export const defaultSettings: Settings = {
   renderingModelVendor: "SERVER" as RenderingModelVendor,
   renderingUseTurbo: false,
+  llmVendor: "SERVER" as LLMVendor,
   huggingFaceOAuth: "",
   huggingfaceApiKey: "",
   huggingfaceInferenceApiModel: "stabilityai/stable-diffusion-xl-base-1.0",
@@ -14,9 +15,11 @@ export const defaultSettings: Settings = {
   replicateApiModelTrigger: "",
   openaiApiKey: "",
   openaiApiModel: "dall-e-3",
-  openaiApiLanguageModel: "gpt-4",
+  openaiApiLanguageModel: "gpt-4-turbo-preview",
   groqApiKey: "",
   groqApiLanguageModel: "mixtral-8x7b-32768",
+  anthropicApiKey: "",
+  anthropicApiLanguageModel: "claude-3-opus-20240229",
   hasGeneratedAtLeastOnce: false,
   userDefinedMaxNumberOfPages: 1,
 }

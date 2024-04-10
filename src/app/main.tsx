@@ -19,11 +19,12 @@ import { getStoryContinuation } from "./queries/getStoryContinuation"
 import { localStorageKeys } from "./interface/settings-dialog/localStorageKeys"
 import { defaultSettings } from "./interface/settings-dialog/defaultSettings"
 import { SignUpCTA } from "./interface/sign-up-cta"
-import { sleep } from "@/lib/sleep"
+import { useLLMVendorConfig } from "@/lib/useLLMVendorConfig"
 
 export default function Main() {
   const [_isPending, startTransition] = useTransition()
 
+  const llmVendorConfig = useLLMVendorConfig()
   const { config, isConfigReady } = useDynamicConfig()
   const isGeneratingStory = useStore(s => s.isGeneratingStory)
   const setGeneratingStory = useStore(s => s.setGeneratingStory)
@@ -89,7 +90,7 @@ export default function Main() {
     showNextPageButton
   }, null, 2))
   */
-  
+
   useEffect(() => {
     if (maxNbPages !== userDefinedMaxNumberOfPages) {
       setMaxNbPages(userDefinedMaxNumberOfPages)
@@ -189,6 +190,8 @@ export default function Main() {
             // existing panels are critical here: this is how we can
             // continue over an existing story
             existingPanels: ref.current.existingPanels,
+
+            llmVendorConfig,
           })
           // console.log("LLM generated some new panels:", candidatePanels)
 

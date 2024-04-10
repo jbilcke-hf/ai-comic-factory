@@ -1,15 +1,23 @@
 "use server"
 
-import { LLMEngine } from "@/types"
-import { predict as predictWithHuggingFace } from "./predictWithHuggingFace"
-import { predict as predictWithOpenAI } from "./predictWithOpenAI"
-import { predict as predictWithGroq } from "./predictWithGroq"
-import { predict as predictWithAnthropic } from "./predictWithAnthropic"
+import { LLMEngine, LLMPredictionFunctionParams } from "@/types"
+import { defaultLLMEngineName, getLLMEngineFunction } from "./getLLMEngineFunction"
 
-const llmEngine = `${process.env.LLM_ENGINE || ""}` as LLMEngine
+export async function predict(params: LLMPredictionFunctionParams): Promise<string> {
+  const { llmVendorConfig: { vendor } } = params
+  // LLMVendor = what the user configure in the UI (eg. a dropdown item called default server)
+  // LLMEngine = the actual engine to use (eg. hugging face)
+  const llmEngineName: LLMEngine =
+    vendor === "ANTHROPIC" ? "ANTHROPIC" :
+    vendor === "GROQ" ? "GROQ" :
+    vendor === "OPENAI" ? "OPENAI" :
+    defaultLLMEngineName
 
-export const predict =
-  llmEngine === "GROQ" ? predictWithGroq :
-  llmEngine === "ANTHROPIC" ? predictWithAnthropic :
-  llmEngine === "OPENAI" ? predictWithOpenAI :
-  predictWithHuggingFace
+  const llmEngineFunction = getLLMEngineFunction(llmEngineName)
+
+  // console.log("predict: using " + llmEngineName)
+  const results = await llmEngineFunction(params)
+
+  // console.log("predict: result: " + results)
+  return results
+}

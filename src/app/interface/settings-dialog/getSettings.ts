@@ -1,4 +1,4 @@
-import { RenderingModelVendor, Settings } from "@/types"
+import { LLMVendor, RenderingModelVendor, Settings } from "@/types"
 
 import { getValidString } from "@/lib/getValidString"
 import { localStorageKeys } from "./localStorageKeys"
@@ -11,6 +11,7 @@ export function getSettings(): Settings {
     return {
       renderingModelVendor: getValidString(localStorage?.getItem?.(localStorageKeys.renderingModelVendor), defaultSettings.renderingModelVendor) as RenderingModelVendor,
       renderingUseTurbo: getValidBoolean(localStorage?.getItem?.(localStorageKeys.renderingUseTurbo), defaultSettings.renderingUseTurbo),
+      llmVendor: getValidString(localStorage?.getItem?.(localStorageKeys.llmVendor), defaultSettings.llmVendor) as LLMVendor,
       huggingFaceOAuth: getValidString(localStorage?.getItem?.(localStorageKeys.huggingFaceOAuth), defaultSettings.huggingFaceOAuth),
       huggingfaceApiKey: getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceApiKey), defaultSettings.huggingfaceApiKey),
       huggingfaceInferenceApiModel: getValidString(localStorage?.getItem?.(localStorageKeys.huggingfaceInferenceApiModel), defaultSettings.huggingfaceInferenceApiModel),
@@ -25,6 +26,8 @@ export function getSettings(): Settings {
       openaiApiLanguageModel: getValidString(localStorage?.getItem?.(localStorageKeys.openaiApiLanguageModel), defaultSettings.openaiApiLanguageModel),
       groqApiKey: getValidString(localStorage?.getItem?.(localStorageKeys.groqApiKey), defaultSettings.groqApiKey),
       groqApiLanguageModel: getValidString(localStorage?.getItem?.(localStorageKeys.groqApiLanguageModel), defaultSettings.groqApiLanguageModel),
+      anthropicApiKey: getValidString(localStorage?.getItem?.(localStorageKeys.anthropicApiKey), defaultSettings.anthropicApiKey),
+      anthropicApiLanguageModel: getValidString(localStorage?.getItem?.(localStorageKeys.anthropicApiLanguageModel), defaultSettings.anthropicApiLanguageModel),
       hasGeneratedAtLeastOnce: getValidBoolean(localStorage?.getItem?.(localStorageKeys.hasGeneratedAtLeastOnce), defaultSettings.hasGeneratedAtLeastOnce),
       userDefinedMaxNumberOfPages: getValidNumber(localStorage?.getItem?.(localStorageKeys.userDefinedMaxNumberOfPages), 1, Number.MAX_SAFE_INTEGER, defaultSettings.userDefinedMaxNumberOfPages),
     }
