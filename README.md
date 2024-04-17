@@ -55,7 +55,7 @@ Language model config (depending on the LLM engine you decide to use):
 - `LLM_HF_INFERENCE_ENDPOINT_URL`: "<use your own>"
 - `LLM_HF_INFERENCE_API_MODEL`: "HuggingFaceH4/zephyr-7b-beta"
 - `LLM_OPENAI_API_BASE_URL`: "https://api.openai.com/v1"
-- `LLM_OPENAI_API_MODEL`: "gpt-4"
+- `LLM_OPENAI_API_MODEL`: "gpt-4-turbo"
 - `LLM_GROQ_API_MODEL`: "mixtral-8x7b-32768"
 - `LLM_ANTHROPIC_API_MODEL`: "claude-3-opus-20240229"
 
@@ -123,7 +123,7 @@ LLM_ENGINE="OPENAI"
 # default openai api base url is: https://api.openai.com/v1
 LLM_OPENAI_API_BASE_URL="A custom OpenAI API Base URL if you have some special privileges"
 
-LLM_OPENAI_API_MODEL="gpt-4-turbo-preview"
+LLM_OPENAI_API_MODEL="gpt-4-turbo"
 
 AUTH_OPENAI_API_KEY="Yourown OpenAI API Key"
 ```

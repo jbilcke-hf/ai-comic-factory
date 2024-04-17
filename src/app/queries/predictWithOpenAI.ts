@@ -18,7 +18,7 @@ export async function predict({
   const openaiApiModel = `${
     llmVendorConfig.modelId ||
     process.env.LLM_OPENAI_API_MODEL ||
-    "gpt-4-turbo-preview"
+    "gpt-4-turbo"
   }`
 
   const openaiApiBaseUrl = `${process.env.LLM_OPENAI_API_BASE_URL || "https://api.openai.com/v1"}`
