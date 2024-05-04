@@ -154,14 +154,9 @@ function BottomBar() {
           */}
           {canSeeBetaFeatures ? <Button
             onClick={downloadClap}
-            disabled={!prompt?.length}
+            disabled={!prompt?.length || remainingImages > 0}
           >
-            <span className="hidden md:inline">{
-            remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} panels ⌛` : `Save .clap`
-            }</span>
-            <span className="inline md:hidden">{
-              remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save .clap`
-            }</span>
+          {remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save .clap`}
         </Button> : null}
           <Button
             onClick={handlePrint}

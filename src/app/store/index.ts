@@ -72,7 +72,7 @@ export const useStore = create<{
 
   generate: (prompt: string, presetName: PresetName, layoutName: LayoutName) => void
 
-  computeClap: () => Promise<ClapProject>
+  convertComicToClap: () => Promise<ClapProject>
 
   downloadClap: () => Promise<void>
 }>((set, get) => ({
@@ -406,7 +406,7 @@ export const useStore = create<{
       layouts,
     })
   },
-  computeClap: async (): Promise<ClapProject> => {
+  convertComicToClap: async (): Promise<ClapProject> => {
     const {
       currentNbPanels,
       prompt,
@@ -440,7 +440,9 @@ export const useStore = create<{
     for (let i = 0; i < panels.length; i++) {
 
       const panel = panels[i]
-      const caption = panels[i]
+
+      const caption = captions[i]
+
       const renderedScene = renderedScenes[`${i}`]
 
       clap.segments.push(newSegment({
@@ -449,7 +451,9 @@ export const useStore = create<{
         assetDurationInMs: defaultSegmentDurationInMs,
         category: "storyboard",
         prompt: panel,
-        outputType: "image"
+        outputType: "image",
+        assetUrl: renderedScene?.assetUrl || "",
+        status: "completed"
       }))
   
       clap.segments.push(newSegment({
@@ -460,7 +464,8 @@ export const useStore = create<{
         prompt: caption,
         // assetUrl: `data:text/plain;base64,${btoa(title)}`,
         assetUrl: caption,
-        outputType: "text"
+        outputType: "text",
+        status: "completed"
       }))
   
       clap.segments.push(newSegment({
@@ -469,7 +474,8 @@ export const useStore = create<{
         assetDurationInMs: defaultSegmentDurationInMs,
         category: "dialogue",
         prompt: caption,
-        outputType: "audio"
+        outputType: "audio",
+        status: "to_generate"
       }))
   
       // the presence of a camera is mandatory
@@ -478,8 +484,9 @@ export const useStore = create<{
         startTimeInMs: currentElapsedTimeInMs,
         assetDurationInMs: defaultSegmentDurationInMs,
         category: "camera",
-        prompt: "video",
-        outputType: "text"
+        prompt: "movie still",
+        outputType: "text",
+        status: "completed"
       }))
   
       currentElapsedTimeInMs += defaultSegmentDurationInMs
@@ -491,9 +498,9 @@ export const useStore = create<{
   },
 
   downloadClap: async () => {
-    const { computeClap } = get()
+    const { convertComicToClap } = get()
 
-    const currentClap = await computeClap()
+    const currentClap = await convertComicToClap()
 
     if (!currentClap) { throw new Error(`cannot save a clap.. if there is no clap`) }
 
