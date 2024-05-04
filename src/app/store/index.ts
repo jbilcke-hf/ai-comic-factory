@@ -1,7 +1,7 @@
 "use client"
 
 import { create } from "zustand"
-import html2canvas from "html2canvas"
+import { ClapProject, newClap, newSegment, serializeClap } from "@aitube/clap"
 
 import { FontName } from "@/lib/fonts"
 import { Preset, PresetName, defaultPreset, getPreset, getRandomPreset } from "@/app/engine/presets"
@@ -13,6 +13,7 @@ export const useStore = create<{
   prompt: string
   font: FontName
   preset: Preset
+  currentClap?: ClapProject
   currentNbPanelsPerPage: number
   maxNbPanelsPerPage: number
   currentNbPages: number
@@ -70,6 +71,10 @@ export const useStore = create<{
   // setPage: (page: HTMLDivElement) => void
 
   generate: (prompt: string, presetName: PresetName, layoutName: LayoutName) => void
+
+  computeClap: () => Promise<ClapProject>
+
+  downloadClap: () => Promise<void>
 }>((set, get) => ({
   prompt:
     (getParam("stylePrompt", "") || getParam("storyPrompt", ""))
@@ -78,6 +83,7 @@ export const useStore = create<{
   font: "actionman",
   preset: getPreset(getParam("preset", defaultPreset)),
 
+  currentClap: undefined,
   currentNbPanelsPerPage: 4,
   maxNbPanelsPerPage: 4,
   currentNbPages: 1,
@@ -399,5 +405,114 @@ export const useStore = create<{
       layout: layouts[0],
       layouts,
     })
+  },
+  computeClap: async (): Promise<ClapProject> => {
+    const {
+      currentNbPanels,
+      prompt,
+      panels,
+      renderedScenes,
+      captions
+    } = get()
+
+    const defaultSegmentDurationInMs = 7000
+
+    let currentElapsedTimeInMs = 0
+
+
+    const clap: ClapProject = newClap({
+      meta: {
+        title: "Untitled", // we don't need a title actually
+        description: prompt,
+        prompt: prompt,
+        synopsis: "",
+        licence: "",
+        orientation: "landscape",
+        width: 512,
+        height: 288,
+        isInteractive: false,
+        isLoop: false,
+        durationInMs: panels.length * defaultSegmentDurationInMs,
+        defaultVideoModel: "SDXL",
+      }
+    })
+
+    for (let i = 0; i < panels.length; i++) {
+
+      const panel = panels[i]
+      const caption = panels[i]
+      const renderedScene = renderedScenes[`${i}`]
+
+      clap.segments.push(newSegment({
+        track: 1,
+        startTimeInMs: currentElapsedTimeInMs,
+        assetDurationInMs: defaultSegmentDurationInMs,
+        category: "storyboard",
+        prompt: panel,
+        outputType: "image"
+      }))
+  
+      clap.segments.push(newSegment({
+        track: 2,
+        startTimeInMs: currentElapsedTimeInMs,
+        assetDurationInMs: defaultSegmentDurationInMs,
+        category: "interface",
+        prompt: caption,
+        // assetUrl: `data:text/plain;base64,${btoa(title)}`,
+        assetUrl: caption,
+        outputType: "text"
+      }))
+  
+      clap.segments.push(newSegment({
+        track: 3,
+        startTimeInMs: currentElapsedTimeInMs,
+        assetDurationInMs: defaultSegmentDurationInMs,
+        category: "dialogue",
+        prompt: caption,
+        outputType: "audio"
+      }))
+  
+      // the presence of a camera is mandatory
+      clap.segments.push(newSegment({
+        track: 4,
+        startTimeInMs: currentElapsedTimeInMs,
+        assetDurationInMs: defaultSegmentDurationInMs,
+        category: "camera",
+        prompt: "video",
+        outputType: "text"
+      }))
+  
+      currentElapsedTimeInMs += defaultSegmentDurationInMs
+    }
+
+    set({ currentClap: clap })
+
+    return clap
+  },
+
+  downloadClap: async () => {
+    const { computeClap } = get()
+
+    const currentClap = await computeClap()
+
+    if (!currentClap) { throw new Error(`cannot save a clap.. if there is no clap`) }
+
+    const currentClapBlob: Blob = await serializeClap(currentClap)
+
+    // Create an object URL for the compressed clap blob
+    const objectUrl = URL.createObjectURL(currentClapBlob)
+  
+    // Create an anchor element and force browser download
+    const anchor = document.createElement("a")
+    anchor.href = objectUrl
+
+    anchor.download = "my_ai_comic.clap"
+
+    document.body.appendChild(anchor) // Append to the body (could be removed once clicked)
+    anchor.click() // Trigger the download
+  
+    // Cleanup: revoke the object URL and remove the anchor element
+    URL.revokeObjectURL(objectUrl)
+    document.body.removeChild(anchor)
   }
 }))

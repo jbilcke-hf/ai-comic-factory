@@ -371,6 +371,9 @@ export async function newRender({
           prompt,
           // negativePrompt, unused for now
 
+          // for a future version of the comic factory
+          identityImage: "",
+
           nbFrames,
 
           nbSteps: nbInferenceSteps, // 20 = fast, 30 = better, 50 = best

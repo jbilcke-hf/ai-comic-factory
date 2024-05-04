@@ -15,12 +15,8 @@ export interface RenderRequest {
   // actionnables are names of things like "chest", "key", "tree", "chair" etc
   actionnables: string[]
 
-  // note: this is the number of frames for Zeroscope,
-  // which is currently configured to only output 3 seconds, so:
-  // nbFrames=8 -> 1 sec
-  // nbFrames=16 -> 2 sec
-  // nbFrames=24 -> 3 sec
-  nbFrames: number // min: 1, max: 24
+  nbFrames: number
+  nbFPS: number
 
   nbSteps: number // min: 1, max: 50
 
@@ -52,6 +48,8 @@ export interface RenderRequest {
   wait: boolean // wait until the job is completed
 
   analyze: boolean // analyze the image to generate a caption (optional)
+
+  identityImage: string // reference image for the main entity
 }
 
 export interface ImageSegment {

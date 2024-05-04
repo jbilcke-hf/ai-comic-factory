@@ -13,27 +13,32 @@ import { SettingsDialog } from "../settings-dialog"
 import { useLocalStorage } from "usehooks-ts"
 import { localStorageKeys } from "../settings-dialog/localStorageKeys"
 import { defaultSettings } from "../settings-dialog/defaultSettings"
+import { getParam } from "@/lib/getParam"
 
 function BottomBar() {
   // deprecated, as HTML-to-bitmap didn't work that well for us
-  // const page = useStore(state => state.page)
-  // const download = useStore(state => state.download)
-  // const pageToImage = useStore(state => state.pageToImage)
+  // const page = useStore(s => s.page)
+  // const download = useStore(s => s.download)
+  // const pageToImage = useStore(s => s.pageToImage)
 
-  const isGeneratingStory = useStore(state => state.isGeneratingStory)
-  const prompt = useStore(state => state.prompt)
-  const panelGenerationStatus = useStore(state => state.panelGenerationStatus)
+  const isGeneratingStory = useStore(s => s.isGeneratingStory)
+  const prompt = useStore(s => s.prompt)
+  const panelGenerationStatus = useStore(s => s.panelGenerationStatus)
 
-  const preset = useStore(state => state.preset)
+  const preset = useStore(s => s.preset)
+  
+  const canSeeBetaFeatures = getParam<boolean>("beta", false)
 
   const allStatus = Object.values(panelGenerationStatus)
   const remainingImages = allStatus.reduce((acc, s) => (acc + (s ? 1 : 0)), 0)
 
-  const upscaleQueue = useStore(state => state.upscaleQueue)
-  const renderedScenes = useStore(state => state.renderedScenes)
-  const removeFromUpscaleQueue = useStore(state => state.removeFromUpscaleQueue)
-  const setRendered = useStore(state => state.setRendered)
+  const upscaleQueue = useStore(s => s.upscaleQueue)
+  const renderedScenes = useStore(s => s.renderedScenes)
+  const removeFromUpscaleQueue = useStore(s => s.removeFromUpscaleQueue)
+  const setRendered = useStore(s => s.setRendered)
   const [isUpscaling, setUpscaling] = useState(false)
+
+  const downloadClap = useStore(s => s.downloadClap)
 
   const [hasGeneratedAtLeastOnce, setHasGeneratedAtLeastOnce] = useLocalStorage<boolean>(
     localStorageKeys.hasGeneratedAtLeastOnce,
@@ -147,6 +152,17 @@ function BottomBar() {
            </Button>
         </div>
           */}
+          {canSeeBetaFeatures ? <Button
+            onClick={downloadClap}
+            disabled={!prompt?.length}
+          >
+            <span className="hidden md:inline">{
+            remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} panels ⌛` : `Save .clap`
+            }</span>
+            <span className="inline md:hidden">{
+              remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save .clap`
+            }</span>
+        </Button> : null}
           <Button
             onClick={handlePrint}
             disabled={!prompt?.length}

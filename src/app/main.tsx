@@ -222,14 +222,17 @@ export default function Main() {
           // update the frontend
           // console.log("updating the frontend..")
           setCaptions(ref.current.newCaptions)
-          setPanels(ref.current.newPanelsPrompts)    
-
+          setPanels(ref.current.newPanelsPrompts)
           setGeneratingStory(false)
+
+          // TODO generate the clap here
+          
         } catch (err) {
           console.log("main.tsx: LLM generation failed:", err)
           setGeneratingStory(false)
           break
         }
+
         if (currentPanel > (currentNbPanels / 2)) {
           console.log("main.tsx: we are halfway there, hold tight!")
           // setWaitABitMore(true)
