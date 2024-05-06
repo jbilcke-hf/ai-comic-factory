@@ -61,6 +61,7 @@ export interface ImageSegment {
 }
 
 export type RenderedSceneStatus =
+  | "pregenerated"
   | "pending"
   | "completed"
   | "error"

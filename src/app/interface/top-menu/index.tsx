@@ -79,6 +79,7 @@ export function TopMenu() {
     requestedStoryPrompt
   )
 
+  // TODO should be in the store
   const [draftPromptA, setDraftPromptA] = useState(lastDraftPromptA)
   const [draftPromptB, setDraftPromptB] = useState(lastDraftPromptB)
   const draftPrompt = `${draftPromptA}||${draftPromptB}`
@@ -242,6 +243,7 @@ export function TopMenu() {
         <div className="flex flex-row flex-grow w-full">
           <div className="flex flex-row flex-grow w-full">
             <Input
+              id="top-menu-input-story-prompt"
               placeholder="1. Story (eg. detective dog)"
               className={cn(
                 `w-1/2 rounded-r-none`,
@@ -260,6 +262,7 @@ export function TopMenu() {
               value={draftPromptB}
             />
             <Input
+              id="top-menu-input-style-prompt"
               placeholder="2. Style (eg 'rain, shiba')"
               className={cn(
                 `w-1/2`,

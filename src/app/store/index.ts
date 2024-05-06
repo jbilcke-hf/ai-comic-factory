@@ -1,13 +1,15 @@
 "use client"
 
 import { create } from "zustand"
-import { ClapProject, newClap, newSegment, serializeClap } from "@aitube/clap"
+import { ClapProject, ClapSegment, ClapSegmentFilteringMode, filterSegments, newClap, newSegment, parseClap, serializeClap } from "@aitube/clap"
 
 import { FontName } from "@/lib/fonts"
 import { Preset, PresetName, defaultPreset, getPreset, getRandomPreset } from "@/app/engine/presets"
 import { RenderedScene } from "@/types"
-import { LayoutName, defaultLayout, getRandomLayoutName } from "../layouts"
 import { getParam } from "@/lib/getParam"
+
+import { LayoutName, defaultLayout, getRandomLayoutName } from "../layouts"
+import { putTextInInput } from "@/lib/putTextInInput"
 
 export const useStore = create<{
   prompt: string
@@ -71,9 +73,17 @@ export const useStore = create<{
   // setPage: (page: HTMLDivElement) => void
 
   generate: (prompt: string, presetName: PresetName, layoutName: LayoutName) => void
-
   convertComicToClap: () => Promise<ClapProject>
-
+  convertClapToComic: (clap: ClapProject) => Promise<{
+    currentNbPanels: number
+    prompt: string
+    storyPrompt: string
+    stylePrompt: string
+    panels: string[]
+    renderedScenes: Record<string, RenderedScene>
+    captions: string[]
+  }>
+  loadClap: (blob: Blob) => Promise<void>
   downloadClap: () => Promise<void>
 }>((set, get) => ({
   prompt:
@@ -406,6 +416,7 @@ export const useStore = create<{
       layouts,
     })
   },
+  
   convertComicToClap: async (): Promise<ClapProject> => {
     const {
       currentNbPanels,
@@ -497,8 +508,120 @@ export const useStore = create<{
     return clap
   },
 
+  convertClapToComic: async (clap: ClapProject): Promise<{
+    currentNbPanels: number
+    prompt: string
+    storyPrompt: string
+    stylePrompt: string
+    panels: string[]
+    renderedScenes: Record<string, RenderedScene>
+    captions: string[]
+  }> => {
+
+    const prompt = clap.meta.description
+    const [stylePrompt, storyPrompt] = prompt.split("||").map(x => x.trim())
+
+    const panels: string[] = []
+    const renderedScenes: Record<string, RenderedScene> = {}
+    const captions: string[] = []
+
+    const panelGenerationStatus: Record<number, boolean> = {}
+
+    const cameraShots = clap.segments.filter(s => s.category === "camera")
+
+    const shots = cameraShots.map(cameraShot => ({
+      camera: cameraShot,
+      storyboard: filterSegments(
+        ClapSegmentFilteringMode.START,
+        cameraShot,
+        clap.segments,
+        "storyboard"
+      ).at(0) as (ClapSegment | undefined),
+      ui: filterSegments(
+        ClapSegmentFilteringMode.START,
+        cameraShot,
+        clap.segments,
+        "interface"
+      ).at(0) as (ClapSegment | undefined)
+    })).filter(item => item.storyboard && item.ui) as {
+      camera: ClapSegment
+      storyboard: ClapSegment
+      ui: ClapSegment
+    }[]
+
+    shots.forEach(({ camera, storyboard, ui }, id) => {
+
+      panels.push(storyboard.prompt)
+
+      const renderedScene: RenderedScene = {
+        renderId: storyboard.id,
+        status: "pending",
+        assetUrl: "", 
+        alt: storyboard.prompt,
+        error: "",
+        maskUrl: "",
+        segments: []
+      }
+
+      if (storyboard.assetUrl) {
+        renderedScene.assetUrl = storyboard.assetUrl
+        renderedScene.status = "pregenerated" // <- special trick to indicate that it should not be re-generated
+      }
+
+      renderedScenes[id] = renderedScene
+
+      panelGenerationStatus[id] = false
+      
+      captions.push(ui.prompt)
+    })
+
+   return {
+      currentNbPanels: shots.length,
+      prompt,
+      storyPrompt,
+      stylePrompt,
+      panels,
+      renderedScenes,
+      captions,
+
+    }
+  },
+
+  loadClap: async (blob: Blob) => {
+    const { convertClapToComic, currentNbPanelsPerPage } = get()
+
+    const currentClap = await parseClap(blob)
+
+    const {
+      currentNbPanels,
+      prompt,
+      storyPrompt,
+      stylePrompt,
+      panels,
+      renderedScenes,
+      captions,
+    } = await convertClapToComic(currentClap)
+
+    // kids, don't do this in your projects: use state managers instead!
+    putTextInInput(document.getElementById("top-menu-input-style-prompt") as HTMLInputElement, stylePrompt)
+    putTextInInput(document.getElementById("top-menu-input-story-prompt") as HTMLInputElement, storyPrompt)
+
+    set({
+      currentClap,
+      currentNbPanels,
+      prompt,
+      panels,
+      renderedScenes,
+      captions,
+      currentNbPages: Math.round(currentNbPanels / currentNbPanelsPerPage),
+      upscaleQueue: {},
+      isGeneratingStory: false,
+      isGeneratingText: false,
+    })
+  },
+
   downloadClap: async () => {
-    const { convertComicToClap } = get()
+    const { convertComicToClap, prompt } = get()
 
     const currentClap = await convertComicToClap()
 
@@ -513,7 +636,13 @@ export const useStore = create<{
     const anchor = document.createElement("a")
     anchor.href = objectUrl
 
-    anchor.download = "my_ai_comic.clap"
+    const [stylePrompt, storyPrompt] = prompt.split("||").map(x => x.trim())
+
+    const cleanStylePrompt = stylePrompt.replace(/([a-z0-9_,]+)/gi, "_")
+    const cleanStoryPrompt = storyPrompt.replace(/([a-z0-9_,]+)/gi, "_")
+    const cleanName = `${cleanStoryPrompt.slice(0, 20)} (${cleanStylePrompt.slice(0, 20) || "default style"})`
+
+    anchor.download = `${cleanName}.clap`
 
     document.body.appendChild(anchor) // Append to the body (could be removed once clicked)
     anchor.click() // Trigger the download
@@ -521,5 +650,5 @@ export const useStore = create<{
     // Cleanup: revoke the object URL and remove the anchor element
     URL.revokeObjectURL(objectUrl)
     document.body.removeChild(anchor)
-  }
+  },
 }))

@@ -119,10 +119,10 @@ ${comicFileMd}`;
             disabled={!prompt?.length}
           >
             <span className="hidden md:inline">{
-            remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} panels ⌛` : `Save PDF`
+            remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} panels ⌛` : `Get PDF`
             }</span>
             <span className="inline md:hidden">{
-              remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save`
+              remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `PDF`
             }</span>
         </Button>
           </p>

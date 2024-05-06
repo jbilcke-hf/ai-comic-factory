@@ -1,4 +1,5 @@
 import { startTransition, useEffect, useState } from "react"
+import { useFilePicker } from 'use-file-picker'
 
 import { useStore } from "@/app/store"
 import { Button } from "@/components/ui/button"
@@ -14,6 +15,7 @@ import { useLocalStorage } from "usehooks-ts"
 import { localStorageKeys } from "../settings-dialog/localStorageKeys"
 import { defaultSettings } from "../settings-dialog/defaultSettings"
 import { getParam } from "@/lib/getParam"
+import { Input } from "@/components/ui/input"
 
 function BottomBar() {
   // deprecated, as HTML-to-bitmap didn't work that well for us
@@ -32,12 +34,15 @@ function BottomBar() {
   const allStatus = Object.values(panelGenerationStatus)
   const remainingImages = allStatus.reduce((acc, s) => (acc + (s ? 1 : 0)), 0)
 
+  const currentClap = useStore(s => s.currentClap)
+  
   const upscaleQueue = useStore(s => s.upscaleQueue)
   const renderedScenes = useStore(s => s.renderedScenes)
   const removeFromUpscaleQueue = useStore(s => s.removeFromUpscaleQueue)
   const setRendered = useStore(s => s.setRendered)
   const [isUpscaling, setUpscaling] = useState(false)
 
+  const loadClap = useStore(s => s.loadClap)
   const downloadClap = useStore(s => s.downloadClap)
 
   const [hasGeneratedAtLeastOnce, setHasGeneratedAtLeastOnce] = useLocalStorage<boolean>(
@@ -86,6 +91,27 @@ function BottomBar() {
       setHasGeneratedAtLeastOnce(true)
     }
   }, [hasFinishedGeneratingImages, hasGeneratedAtLeastOnce])
+
+  const { openFilePicker, filesContent } = useFilePicker({
+    accept: '.clap',
+    readAs: "ArrayBuffer"
+  })
+  const fileData = filesContent[0]
+
+  useEffect(() => {
+    const fn = async () => {
+      if (fileData?.name) {
+        try {
+          const blob = new Blob([fileData.content])
+          await loadClap(blob)
+        } catch (err) {
+          console.error("failed to load the Clap file:", err)
+        }
+      }
+    }
+    fn()
+  }, [fileData?.name])
+
 
   return (
     <div className={cn(
@@ -153,20 +179,24 @@ function BottomBar() {
         </div>
           */}
           {canSeeBetaFeatures ? <Button
+            onClick={openFilePicker}
+            disabled={remainingImages > 0}
+          >Load</Button> : null}
+          {canSeeBetaFeatures ? <Button
             onClick={downloadClap}
-            disabled={!prompt?.length || remainingImages > 0}
+            disabled={!prompt?.length || remainingImages > 0 || !currentClap}
           >
-          {remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save .clap`}
+          {remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save`}
         </Button> : null}
           <Button
             onClick={handlePrint}
             disabled={!prompt?.length}
           >
             <span className="hidden md:inline">{
-            remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} panels ⌛` : `Save PDF`
+            remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} panels ⌛` : `Get PDF`
             }</span>
             <span className="inline md:hidden">{
-              remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save`
+              remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `PDF`
             }</span>
         </Button>
         <Share />

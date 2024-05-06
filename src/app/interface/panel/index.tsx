@@ -286,6 +286,15 @@ export function Panel({
   useEffect(() => {
     if (!prompt.length) { return }
 
+    const renderedScene: RenderedScene | undefined = useStore.getState().renderedScenes[panelIndex]
+
+    // I'm trying to find a rule to handle the case were we load a .clap file
+    // I think we should trash all the Panel objects for this to work properly 
+    if (renderedScene && renderedScene.status === "pregenerated" && renderedScene.assetUrl) {
+      console.log(`loading a pre-generated panel..`)
+      return
+    }
+
     startImageGeneration({ prompt, width, height, nbFrames, revision })
 
     clearTimeout(timeoutRef.current)
@@ -456,7 +465,13 @@ export function Panel({
           height={height}
           alt={rendered.alt}
           className={cn(
-            `comic-panel w-full h-full object-cover max-w-max`,
+            `comic-panel w-full h-full`,
+            `object-cover`,
+
+            // I think we can remove this to improve compatibility,
+            // in case the generate image isn't exactly the same size
+            // `max-w-max`,
+
             // showCaptions ? `-mt-11` : ''
             )}
         />}
