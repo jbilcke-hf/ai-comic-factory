@@ -638,9 +638,12 @@ export const useStore = create<{
 
     const [stylePrompt, storyPrompt] = prompt.split("||").map(x => x.trim())
 
-    const cleanStylePrompt = stylePrompt.replace(/([a-z0-9_,]+)/gi, "_")
-    const cleanStoryPrompt = storyPrompt.replace(/([a-z0-9_,]+)/gi, "_")
-    const cleanName = `${cleanStoryPrompt.slice(0, 20)} (${cleanStylePrompt.slice(0, 20) || "default style"})`
+    const cleanStylePrompt = stylePrompt.replace(/([^a-z0-9, ]+)/gi, "_")
+
+    const firstPartOfStory = storyPrompt.split(",").shift() || ""
+    const cleanStoryPrompt = firstPartOfStory.replace(/([^a-z0-9, ]+)/gi, "_")
+
+    const cleanName = `${cleanStoryPrompt.slice(0, 22)} (${cleanStylePrompt.slice(0, 22) || "default style"})`
 
     anchor.download = `${cleanName}.clap`
 

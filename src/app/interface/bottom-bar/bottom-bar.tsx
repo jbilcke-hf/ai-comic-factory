@@ -184,7 +184,7 @@ function BottomBar() {
           >Load</Button> : null}
           {canSeeBetaFeatures ? <Button
             onClick={downloadClap}
-            disabled={!prompt?.length || remainingImages > 0 || !currentClap}
+            disabled={remainingImages > 0}
           >
           {remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save`}
         </Button> : null}
