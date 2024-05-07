@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
-import Image from "next/image"
 import { StaticImageData } from "next/image"
 import { useLocalStorage } from "usehooks-ts"
 
@@ -20,25 +19,15 @@ import { Input } from "@/components/ui/input"
 import { PresetName, defaultPreset, nonRandomPresets, presets } from "@/app/engine/presets"
 import { useStore } from "@/app/store"
 import { Button } from "@/components/ui/button"
-import { LayoutName, allLayoutLabels, defaultLayout, nonRandomLayouts } from "@/app/layouts"
+import { LayoutName, defaultLayout, nonRandomLayouts } from "@/app/layouts"
 import { Switch } from "@/components/ui/switch"
 import { useOAuth } from "@/lib/useOAuth"
+import { useIsBusy } from "@/lib/useIsBusy"
 
-import layoutPreview0 from "../../../../public/layouts/layout0.jpg"
-import layoutPreview1 from "../../../../public/layouts/layout1.jpg"
-import layoutPreview2 from "../../../../public/layouts/layout2.jpg"
-import layoutPreview3 from "../../../../public/layouts/layout3.jpg"
 import { localStorageKeys } from "../settings-dialog/localStorageKeys"
 import { defaultSettings } from "../settings-dialog/defaultSettings"
 import { AuthWall } from "../auth-wall"
-
-const layoutIcons: Partial<Record<LayoutName, StaticImageData>> = {
-  Layout0: layoutPreview0,
-  Layout1: layoutPreview1,
-  Layout2: layoutPreview2,
-  Layout3: layoutPreview3,
-  Layout4: undefined,
-}
+import { SelectLayout } from "../select-layout"
 
 export function TopMenu() {
   const searchParams = useSearchParams()
@@ -49,25 +38,22 @@ export function TopMenu() {
   const requestedStoryPrompt = (searchParams?.get('storyPrompt') as string) || ""
   const requestedLayout = (searchParams?.get('layout') as LayoutName) || defaultLayout
 
-   // const font = useStore(state => state.font)
-  // const setFont = useStore(state => state.setFont)
-  const preset = useStore(state => state.preset)
-  const prompt = useStore(state => state.prompt)
-  const layout = useStore(state => state.layout)
-  const setLayout = useStore(state => state.setLayout)
+   // const font = useStore(s => s.font)
+  // const setFont = useStore(s => s.setFont)
+  const preset = useStore(s => s.preset)
+  const prompt = useStore(s => s.prompt)
+  const layout = useStore(s => s.layout)
+  const setLayout = useStore(s => s.setLayout)
 
-  const setShowCaptions = useStore(state => state.setShowCaptions)
-  const showCaptions = useStore(state => state.showCaptions)
+  const setShowCaptions = useStore(s => s.setShowCaptions)
+  const showCaptions = useStore(s => s.showCaptions)
 
-  const currentNbPages = useStore(state => state.currentNbPages)
-  const setCurrentNbPages = useStore(state => state.setCurrentNbPages)
+  const currentNbPages = useStore(s => s.currentNbPages)
+  const setCurrentNbPages = useStore(s => s.setCurrentNbPages)
 
-  const generate = useStore(state => state.generate)
+  const generate = useStore(s => s.generate)
 
-  const isGeneratingStory = useStore(state => state.isGeneratingStory)
-  const atLeastOnePanelIsBusy = useStore(state => state.atLeastOnePanelIsBusy)
-  const isBusy = isGeneratingStory || atLeastOnePanelIsBusy
-
+  const isBusy = useIsBusy()
 
   const [lastDraftPromptA, setLastDraftPromptA] = useLocalStorage<string>(
     "AI_COMIC_FACTORY_LAST_DRAFT_PROMPT_A",
@@ -167,36 +153,12 @@ export function TopMenu() {
 
           {/* <Label className="flex text-2xs md:text-sm md:w-24">Style:</Label> */}
 
-          <Select
+          <SelectLayout
             defaultValue={defaultLayout}
-            onValueChange={(value) => { setDraftLayout(value as LayoutName) }}
+            onLayoutChange={setDraftLayout}
             disabled={isBusy}
-            >
-            <SelectTrigger className="flex-grow bg-gray-100 text-gray-700 dark:bg-gray-100 dark:text-gray-700">
-              <SelectValue className="text-2xs md:text-sm" placeholder="Layout" />
-            </SelectTrigger>
-            <SelectContent>
-              {nonRandomLayouts.map(key =>
-                <SelectItem key={key} value={key} className="w-full">
-                  <div className="space-x-6 flex flex-row items-center justify-between">
-                    <div className="flex">{
-                      (allLayoutLabels as any)[key]
-                    }</div>
-                 
-                      {(layoutIcons as any)[key]
-                        ? <Image
-                            className="rounded-sm opacity-75"
-                            src={(layoutIcons as any)[key]}
-                            width={20}
-                            height={18}
-                            alt={key}
-                        /> : null}
-              
-                  </div>
-                </SelectItem>
-              )}
-            </SelectContent>
-          </Select>
+            layouts={nonRandomLayouts}
+          />
         </div>
         <div className="flex flex-row items-center space-x-3">
         <Switch

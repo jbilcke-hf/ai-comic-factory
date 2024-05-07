@@ -10,6 +10,8 @@ import { getParam } from "@/lib/getParam"
 
 import { LayoutName, defaultLayout, getRandomLayoutName } from "../layouts"
 import { putTextInInput } from "@/lib/putTextInInput"
+import { parsePresetFromPrompts } from "@/lib/parsePresetFromPrompts"
+import { parseLayoutFromStoryboards } from "@/lib/parseLayoutFromStoryboards"
 
 export const useStore = create<{
   prompt: string
@@ -54,7 +56,7 @@ export const useStore = create<{
   setPanels: (panels: string[]) => void
   setPanelPrompt: (newPrompt: string, index: number) => void
   setShowCaptions: (showCaptions: boolean) => void
-  setLayout: (layout: LayoutName) => void
+  setLayout: (layout: LayoutName, index?: number) => void
   setLayouts: (layouts: LayoutName[]) => void
   setCaptions: (captions: string[]) => void
   setPanelCaption: (newCaption: string, index: number) => void
@@ -77,6 +79,8 @@ export const useStore = create<{
   convertClapToComic: (clap: ClapProject) => Promise<{
     currentNbPanels: number
     prompt: string
+    preset: Preset
+    layout: LayoutName
     storyPrompt: string
     stylePrompt: string
     panels: string[]
@@ -298,15 +302,19 @@ export const useStore = create<{
       ))
     })
   },
-  setLayout: (layoutName: LayoutName) => {
-    const { maxNbPages, currentNbPanelsPerPage } = get()
+  setLayout: (layoutName: LayoutName, index?: number) => {
+    const { maxNbPages, currentNbPanelsPerPage, layouts } = get()
 
-    const layouts: LayoutName[] = []
     for (let i = 0; i < maxNbPages; i++) {
-      layouts.push(
-        layoutName === "random"
-          ? getRandomLayoutName()
-          : layoutName)
+      let name = layoutName === "random" ? getRandomLayoutName() : layoutName
+
+      if (typeof index === "number" && !isNaN(index) && isFinite(index)) {
+        if (i === index) {
+          layouts[i] = name
+        }
+      } else {
+        layouts[i] = name
+      }
     }
 
     set({
@@ -511,6 +519,8 @@ export const useStore = create<{
   convertClapToComic: async (clap: ClapProject): Promise<{
     currentNbPanels: number
     prompt: string
+    preset: Preset
+    layout: LayoutName
     storyPrompt: string
     stylePrompt: string
     panels: string[]
@@ -575,9 +585,12 @@ export const useStore = create<{
       captions.push(ui.prompt)
     })
 
-   return {
+
+    return {
       currentNbPanels: shots.length,
       prompt,
+      preset: parsePresetFromPrompts(panels),
+      layout: await parseLayoutFromStoryboards(shots.map(x => x.storyboard)),
       storyPrompt,
       stylePrompt,
       panels,
@@ -595,6 +608,8 @@ export const useStore = create<{
     const {
       currentNbPanels,
       prompt,
+      preset,
+      layout,
       storyPrompt,
       stylePrompt,
       panels,
@@ -610,6 +625,8 @@ export const useStore = create<{
       currentClap,
       currentNbPanels,
       prompt,
+      preset,
+      // layout,
       panels,
       renderedScenes,
       captions,

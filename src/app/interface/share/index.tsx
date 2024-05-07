@@ -6,9 +6,9 @@ import { useState } from "react"
 
 export function Share() {
   const [isOpen, setOpen] = useState(false)
-  const preset = useStore(state => state.preset)
-  const prompt = useStore(state => state.prompt)
-  const panelGenerationStatus = useStore(state => state.panelGenerationStatus)
+  const preset = useStore(s => s.preset)
+  const prompt = useStore(s => s.prompt)
+  const panelGenerationStatus = useStore(s => s.panelGenerationStatus)
   const allStatus = Object.values(panelGenerationStatus)
   const remainingImages = allStatus.reduce((acc, s) => (acc + (s ? 1 : 0)), 0)
 

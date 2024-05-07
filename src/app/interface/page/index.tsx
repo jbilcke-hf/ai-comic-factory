@@ -7,8 +7,8 @@ import { useStore } from "@/app/store"
 import { cn } from "@/lib/utils"
 
 export function Page({ page }: { page: number }) {
-  const zoomLevel = useStore(state => state.zoomLevel)
-  const layouts = useStore(state => state.layouts)
+  const zoomLevel = useStore(s => s.zoomLevel)
+  const layouts = useStore(s => s.layouts)
 
   // attention: here we use a fallback to layouts[0]
   // if no predetermined layout exists for this page number
@@ -39,9 +39,11 @@ export function Page({ page }: { page: number }) {
   // this was used to keep track of the page HTML element,
   // for use with a HTML-to-bitmap library
   // but the CSS layout wasn't followed properly and it depended on the zoom level
+  //
+  // update: in the future if we want a good html to image convertion
   /*
 
-  const setPage = useStore(state => state.setPage)
+  const setPage = useStore(s => s.setPage)
   const pageRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

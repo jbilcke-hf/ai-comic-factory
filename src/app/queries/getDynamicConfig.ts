@@ -15,7 +15,10 @@ export async function getDynamicConfig(): Promise<DynamicConfig> {
     nbPanelsPerPage,
     nbTotalPanelsToGenerate,
     oauthClientId: getValidString(process.env.HUGGING_FACE_OAUTH_CLIENT_ID, ""),
+
+    // this doesn't work (conceptually)
     oauthRedirectUrl: getValidString(process.env.HUGGING_FACE_OAUTH_REDIRECT_URL, ""),
+
     oauthScopes: "openid profile inference-api",
     enableHuggingFaceOAuth: getValidBoolean(process.env.ENABLE_HUGGING_FACE_OAUTH, false),
     enableHuggingFaceOAuthWall: getValidBoolean(process.env.ENABLE_HUGGING_FACE_OAUTH_WALL, false),

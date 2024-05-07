@@ -1,9 +1,16 @@
 "use client"
 
+import { StaticImageData } from "next/image"
+
 import { Panel } from "@/app/interface/panel"
 import { pick } from "@/lib/pick"
 import { Grid } from "@/app/interface/grid"
 import { LayoutProps } from "@/types"
+
+import layoutPreview0 from "../../../public/layouts/layout0.jpg"
+import layoutPreview1 from "../../../public/layouts/layout1.jpg"
+import layoutPreview2 from "../../../public/layouts/layout2.jpg"
+import layoutPreview3 from "../../../public/layouts/layout3.jpg"
 
 export function Layout0({ page, nbPanels }: LayoutProps) {
   return (
@@ -439,4 +446,12 @@ export const getRandomLayoutName = (): LayoutName => {
 
 export function getRandomLayoutNames(): LayoutName[] {
   return nonRandomLayouts.sort(() => Math.random() - 0.5) as LayoutName[]
+}
+
+export const layoutIcons: Partial<Record<LayoutName, StaticImageData>> = {
+  Layout0: layoutPreview0,
+  Layout1: layoutPreview1,
+  Layout2: layoutPreview2,
+  Layout3: layoutPreview3,
+  Layout4: undefined,
 }

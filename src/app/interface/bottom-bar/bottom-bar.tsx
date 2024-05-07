@@ -29,7 +29,7 @@ function BottomBar() {
 
   const preset = useStore(s => s.preset)
   
-  const canSeeBetaFeatures = getParam<boolean>("beta", false)
+  const canSeeBetaFeatures = true // getParam<boolean>("beta", false)
 
   const allStatus = Object.values(panelGenerationStatus)
   const remainingImages = allStatus.reduce((acc, s) => (acc + (s ? 1 : 0)), 0)

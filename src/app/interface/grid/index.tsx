@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { useStore } from "@/app/store"
 
 export function Grid({ children, className }: { children: ReactNode; className: string }) {
-  const zoomLevel = useStore(state => state.zoomLevel)
+  const zoomLevel = useStore(s => s.zoomLevel)
 
   return (
     <div

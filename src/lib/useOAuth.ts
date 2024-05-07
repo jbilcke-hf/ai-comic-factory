@@ -9,6 +9,7 @@ import { getValidOAuth } from "./getValidOAuth"
 import { useDynamicConfig } from "./useDynamicConfig"
 import { useLocalStorage } from "usehooks-ts"
 import { useShouldDisplayLoginWall } from "./useShouldDisplayLoginWall"
+import { getOAuthRedirectUrl } from "./getOAuthRedirectUrl"
 
 export function useOAuth({
   debug = false
@@ -32,7 +33,10 @@ export function useOAuth({
   const [oauthResult, setOAuthResult] = usePersistedOAuth()
 
   const clientId = config.oauthClientId
-  const redirectUrl = config.oauthRedirectUrl
+
+  // const redirectUrl = config.oauthRedirectUrl
+  const redirectUrl = getOAuthRedirectUrl()
+
   const scopes = config.oauthScopes
   const enableOAuth = config.enableHuggingFaceOAuth
 

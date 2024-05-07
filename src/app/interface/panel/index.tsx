@@ -53,27 +53,27 @@ export function Panel({
 
   const [mouseOver, setMouseOver] = useState(false)
   const ref = useRef<HTMLImageElement>(null)
-  const font = useStore(state => state.font)
-  const preset = useStore(state => state.preset)
+  const font = useStore(s => s.font)
+  const preset = useStore(s => s.preset)
 
-  const setGeneratingImages = useStore(state => state.setGeneratingImages)
+  const setGeneratingImages = useStore(s => s.setGeneratingImages)
 
-  const panels = useStore(state => state.panels)
+  const panels = useStore(s => s.panels)
   const prompt = panels[panelIndex] || ""
 
-  const setPanelPrompt = useStore(state => state.setPanelPrompt)
+  const setPanelPrompt = useStore(s => s.setPanelPrompt)
 
-  const captions = useStore(state => state.captions)
+  const captions = useStore(s => s.captions)
   const caption = captions[panelIndex] || ""
-  const setPanelCaption = useStore(state => state.setPanelCaption)
+  const setPanelCaption = useStore(s => s.setPanelCaption)
   
-  const zoomLevel = useStore(state => state.zoomLevel)
+  const zoomLevel = useStore(s => s.zoomLevel)
 
-  const addToUpscaleQueue = useStore(state => state.addToUpscaleQueue)
+  const addToUpscaleQueue = useStore(s => s.addToUpscaleQueue)
 
   const [_isPending, startTransition] = useTransition()
-  const renderedScenes = useStore(state => state.renderedScenes)
-  const setRendered = useStore(state => state.setRendered)
+  const renderedScenes = useStore(s => s.renderedScenes)
+  const setRendered = useStore(s => s.setRendered)
 
   const rendered = renderedScenes[panelIndex] || getInitialRenderedScene()
 
@@ -287,6 +287,8 @@ export function Panel({
     if (!prompt.length) { return }
 
     const renderedScene: RenderedScene | undefined = useStore.getState().renderedScenes[panelIndex]
+
+    // console.log("renderedScene:", renderedScene)
 
     // I'm trying to find a rule to handle the case were we load a .clap file
     // I think we should trash all the Panel objects for this to work properly 
