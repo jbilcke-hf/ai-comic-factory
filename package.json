@@ -59,6 +59,7 @@
     "react-contenteditable": "^3.3.7",
     "react-dom": "18.3.1",
     "react-draggable": "^4.4.6",
+    "react-hook-consent": "^3.5.3",
     "react-icons": "^4.11.0",
     "react-konva": "^18.2.10",
     "react-virtualized-auto-sizer": "^1.0.20",
