@@ -15,7 +15,8 @@ import { useLocalStorage } from "usehooks-ts"
 import { localStorageKeys } from "../settings-dialog/localStorageKeys"
 import { defaultSettings } from "../settings-dialog/defaultSettings"
 import { getParam } from "@/lib/getParam"
-import { Input } from "@/components/ui/input"
+import { Advert } from "../advert"
+
 
 function BottomBar() {
   // deprecated, as HTML-to-bitmap didn't work that well for us
@@ -132,10 +133,7 @@ function BottomBar() {
       )}>
         <About />
         <Discord />
-       {/* 
-       Thank you clip factory for your service 🫡
-       <AIClipFactory />
-       */}
+       <Advert />
       </div>
       <div className={cn(
       `flex flex-row`,
@@ -188,6 +186,7 @@ function BottomBar() {
           >
           {remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save`}
         </Button> : null}
+        {/*
           <Button
             onClick={handlePrint}
             disabled={!prompt?.length}
@@ -199,6 +198,7 @@ function BottomBar() {
               remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `PDF`
             }</span>
         </Button>
+          */}
         <Share />
       </div>
     </div>

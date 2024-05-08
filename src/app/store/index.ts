@@ -655,14 +655,14 @@ export const useStore = create<{
 
     const [stylePrompt, storyPrompt] = prompt.split("||").map(x => x.trim())
 
-    const cleanStylePrompt = stylePrompt.replace(/([^a-z0-9, ]+)/gi, "_")
+    const cleanStylePrompt = (stylePrompt || "").replace(/([^a-z0-9, ]+)/gi, "_")
 
-    const firstPartOfStory = storyPrompt.split(",").shift() || ""
+    const firstPartOfStory = (storyPrompt || "").split(",").shift() || ""
     const cleanStoryPrompt = firstPartOfStory.replace(/([^a-z0-9, ]+)/gi, "_")
 
     const cleanName = `${cleanStoryPrompt.slice(0, 22)} (${cleanStylePrompt.slice(0, 22) || "default style"})`
 
-    anchor.download = `${cleanName}.clap`
+    anchor.download = `AI Comic Factory - ${cleanName}.clap`
 
     document.body.appendChild(anchor) // Append to the body (could be removed once clicked)
     anchor.click() // Trigger the download

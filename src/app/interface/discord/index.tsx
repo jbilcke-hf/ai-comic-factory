@@ -13,7 +13,7 @@ export function Discord() {
       href="https://discord.gg/AEruz9B92B"
       target="_blank">
       <div><FaDiscord size={24} /></div>
-      <div className="text-sm ml-1.5">Community</div>
+      <div className="text-sm ml-1.5">Discord</div>
     </a>
   )
 }
