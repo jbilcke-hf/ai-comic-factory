@@ -133,10 +133,7 @@ function BottomBar() {
       )}>
         <About />
         <Discord />
-        {/* 
-        let's put it back once we have music
         <Advert />
-        */}
       </div>
       <div className={cn(
       `flex flex-row`,
