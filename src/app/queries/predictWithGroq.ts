@@ -20,6 +20,8 @@ export async function predict({
     "mixtral-8x7b-32768"
   }`
 
+  if (!groqApiKey) { throw new Error(`cannot call Groq without an API key`) }
+  
   const groq = new Groq({
     apiKey: groqApiKey,
   })

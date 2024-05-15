@@ -20,6 +20,7 @@ export async function predict({
     process.env.LLM_ANTHROPIC_API_MODEL ||
     "claude-3-opus-20240229"
   }`
+  if (!anthropicApiKey) { throw new Error(`cannot call Anthropic without an API key`) }
   
   const anthropic = new Anthropic({
     apiKey: anthropicApiKey,

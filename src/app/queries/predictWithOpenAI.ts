@@ -21,6 +21,9 @@ export async function predict({
     "gpt-4-turbo"
   }`
 
+  if (!openaiApiKey) { throw new Error(`cannot call OpenAI without an API key`) }
+  
+
   const openaiApiBaseUrl = `${process.env.LLM_OPENAI_API_BASE_URL || "https://api.openai.com/v1"}`
 
   const openai = new OpenAI({
