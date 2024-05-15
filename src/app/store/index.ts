@@ -564,16 +564,16 @@ export const useStore = create<{
       panels.push(storyboard.prompt)
 
       const renderedScene: RenderedScene = {
-        renderId: storyboard.id,
+        renderId: storyboard?.id || "",
         status: "pending",
         assetUrl: "", 
-        alt: storyboard.prompt,
+        alt: storyboard?.prompt || "",
         error: "",
         maskUrl: "",
         segments: []
       }
 
-      if (storyboard.assetUrl) {
+      if (storyboard?.assetUrl) {
         renderedScene.assetUrl = storyboard.assetUrl
         renderedScene.status = "pregenerated" // <- special trick to indicate that it should not be re-generated
       }
@@ -582,7 +582,7 @@ export const useStore = create<{
 
       panelGenerationStatus[id] = false
       
-      captions.push(ui.prompt)
+      captions.push(ui?.prompt || "")
     })
 
 
