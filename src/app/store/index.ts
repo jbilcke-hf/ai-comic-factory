@@ -1,7 +1,7 @@
 "use client"
 
 import { create } from "zustand"
-import { ClapProject, ClapSegment, ClapSegmentFilteringMode, filterSegments, newClap, newSegment, parseClap, serializeClap } from "@aitube/clap"
+import { ClapProject, ClapMediaOrientation, ClapSegment, ClapSegmentCategory, ClapSegmentStatus, ClapOutputType, ClapSegmentFilteringMode, filterSegments, newClap, newSegment, parseClap, serializeClap } from "@aitube/clap"
 
 import { FontName } from "@/lib/fonts"
 import { Preset, PresetName, defaultPreset, getPreset, getRandomPreset } from "@/app/engine/presets"
@@ -446,7 +446,7 @@ export const useStore = create<{
         prompt: prompt,
         synopsis: "",
         licence: "",
-        orientation: "landscape",
+        orientation: ClapMediaOrientation.LANDSCAPE,
         width: 512,
         height: 288,
         isInteractive: false,
@@ -468,33 +468,33 @@ export const useStore = create<{
         track: 1,
         startTimeInMs: currentElapsedTimeInMs,
         assetDurationInMs: defaultSegmentDurationInMs,
-        category: "storyboard",
+        category: ClapSegmentCategory.STORYBOARD,
         prompt: panel,
-        outputType: "image",
+        outputType: ClapOutputType.IMAGE,
         assetUrl: renderedScene?.assetUrl || "",
-        status: "completed"
+        status: ClapSegmentStatus.COMPLETED,
       }))
   
       clap.segments.push(newSegment({
         track: 2,
         startTimeInMs: currentElapsedTimeInMs,
         assetDurationInMs: defaultSegmentDurationInMs,
-        category: "interface",
+        category: ClapSegmentCategory.INTERFACE,
         prompt: caption,
         // assetUrl: `data:text/plain;base64,${btoa(title)}`,
         assetUrl: caption,
-        outputType: "text",
-        status: "completed"
+        outputType: ClapOutputType.TEXT,
+        status: ClapSegmentStatus.COMPLETED,
       }))
   
       clap.segments.push(newSegment({
         track: 3,
         startTimeInMs: currentElapsedTimeInMs,
         assetDurationInMs: defaultSegmentDurationInMs,
-        category: "dialogue",
+        category: ClapSegmentCategory.DIALOGUE,
         prompt: caption,
-        outputType: "audio",
-        status: "to_generate"
+        outputType: ClapOutputType.AUDIO,
+        status: ClapSegmentStatus.TO_GENERATE,
       }))
   
       // the presence of a camera is mandatory
@@ -502,10 +502,10 @@ export const useStore = create<{
         track: 4,
         startTimeInMs: currentElapsedTimeInMs,
         assetDurationInMs: defaultSegmentDurationInMs,
-        category: "camera",
+        category: ClapSegmentCategory.CAMERA,
         prompt: "movie still",
-        outputType: "text",
-        status: "completed"
+        outputType: ClapOutputType.TEXT,
+        status: ClapSegmentStatus.COMPLETED,
       }))
   
       currentElapsedTimeInMs += defaultSegmentDurationInMs
@@ -537,7 +537,7 @@ export const useStore = create<{
 
     const panelGenerationStatus: Record<number, boolean> = {}
 
-    const cameraShots = clap.segments.filter(s => s.category === "camera")
+    const cameraShots = clap.segments.filter(s => s.category === ClapSegmentCategory.CAMERA)
 
     const shots = cameraShots.map(cameraShot => ({
       camera: cameraShot,
@@ -545,13 +545,13 @@ export const useStore = create<{
         ClapSegmentFilteringMode.START,
         cameraShot,
         clap.segments,
-        "storyboard"
+        ClapSegmentCategory.STORYBOARD,
       ).at(0) as (ClapSegment | undefined),
       ui: filterSegments(
         ClapSegmentFilteringMode.START,
         cameraShot,
         clap.segments,
-        "interface"
+        ClapSegmentCategory.INTERFACE,
       ).at(0) as (ClapSegment | undefined)
     })).filter(item => item.storyboard && item.ui) as {
       camera: ClapSegment
@@ -655,14 +655,14 @@ export const useStore = create<{
 
     const [stylePrompt, storyPrompt] = prompt.split("||").map(x => x.trim())
 
-    const cleanStylePrompt = (stylePrompt || "").replace(/([^a-z0-9, ]+)/gi, "_")
+    const cleanStylePrompt = (stylePrompt || "").replace(/([^a-z0-9, ]+)/gi, " ")
 
     const firstPartOfStory = (storyPrompt || "").split(",").shift() || ""
-    const cleanStoryPrompt = firstPartOfStory.replace(/([^a-z0-9, ]+)/gi, "_")
+    const cleanStoryPrompt = firstPartOfStory.replace(/([^a-z0-9, ]+)/gi, " ")
 
-    const cleanName = `${cleanStoryPrompt.slice(0, 22)} (${cleanStylePrompt.slice(0, 22) || "default style"})`
+    const cleanName = `${cleanStoryPrompt.slice(0, 90)} (${cleanStylePrompt.slice(0, 90) || "default style"})`
 
-    anchor.download = `AI Comic Factory - ${cleanName}.clap`
+    anchor.download = `${cleanName}.clap`
 
     document.body.appendChild(anchor) // Append to the body (could be removed once clicked)
     anchor.click() // Trigger the download
