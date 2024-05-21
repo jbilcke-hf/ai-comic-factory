@@ -186,7 +186,7 @@ function BottomBar() {
           >
           {remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save`}
         </Button> : null}
-        {/*
+     
           <Button
             onClick={handlePrint}
             disabled={!prompt?.length}
@@ -198,8 +198,8 @@ function BottomBar() {
               remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `PDF`
             }</span>
         </Button>
-          */}
-        <Share />
+  
+       <Share />
       </div>
     </div>
   )
