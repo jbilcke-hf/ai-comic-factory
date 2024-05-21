@@ -8,8 +8,8 @@ export function Advert() {
       onClick={() => {
         window.open("https://huggingface.co/spaces/jbilcke-hf/ai-stories-factory", "_blank")
       }}>
-      <span className="hidden md:inline">Try my new Space</span>
-      <span className="inline md:hidden">Try my new Space</span>
+      <span className="hidden md:inline">Make AI stories</span>
+      <span className="inline md:hidden">Make AI stories</span>
     </Button>
   )
 }
