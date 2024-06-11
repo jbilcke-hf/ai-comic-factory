@@ -9,9 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@aitube/clap": "0.0.23",
+    "@aitube/clap": "0.0.26",
     "@anthropic-ai/sdk": "^0.19.1",
-    "@huggingface/hub": "^0.14.2",
+    "@huggingface/hub": "^0.15.1",
     "@huggingface/inference": "^2.6.1",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-avatar": "^1.0.3",
@@ -65,7 +65,7 @@
     "react-virtualized-auto-sizer": "^1.0.20",
     "replicate": "^0.29.0",
     "sbd": "^1.0.19",
-    "sharp": "^0.33.2",
+    "sharp": "^0.33.4",
     "tailwind-merge": "^2.2.2",
     "tailwindcss": "3.4.1",
     "tailwindcss-animate": "^1.0.6",
@@ -74,8 +74,8 @@
     "use-file-picker": "^2.1.2",
     "usehooks-ts": "2.9.1",
     "uuid": "^9.0.0",
-    "yaml": "^2.4.2",
-    "zustand": "^4.4.1"
+    "yaml": "^2.4.5",
+    "zustand": "^4.5.1"
   },
   "devDependencies": {
     "@types/qs": "^6.9.7",
