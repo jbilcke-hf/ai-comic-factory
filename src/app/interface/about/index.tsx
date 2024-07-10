@@ -8,8 +8,8 @@ import { Login } from "../login"
 const APP_NAME = `AI Comic Factory`
 const APP_DOMAIN = `aicomicfactory.app`
 const APP_URL = `https://aicomicfactory.app`
-const APP_VERSION = `1.4`
-const APP_RELEASE_DATE = `May 2024`
+const APP_VERSION = `1.5`
+const APP_RELEASE_DATE = `July 2024`
 
 const ExternalLink = ({ url, children }: { url: string; children: ReactNode }) => {
   return (
