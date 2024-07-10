@@ -6,7 +6,7 @@ colorTo: yellow
 sdk: docker
 pinned: true
 app_port: 3000
-disable_embedding: true
+disable_embedding: false
 short_description: Create your own AI comic with a single prompt
 hf_oauth: true
 hf_oauth_expiration_minutes: 43200
