@@ -96,11 +96,15 @@ export function Panel({
   
   let delay = enableRateLimiter ? (1000 + (500 * panelIndex)) : 1000
 
+  const isBeta = false
+  
   const addSpeechBubble = async () => {
     if (!renderedRef.current) { return }
 
     // story generation failed
     if (speech.trim() === "...") { return }
+
+    if (!isBeta) { return }
 
     console.log('Generating speech bubble...')
     try {

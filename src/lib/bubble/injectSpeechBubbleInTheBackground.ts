@@ -1,9 +1,21 @@
 import { ImageSegmenter, FilesetResolver } from "@mediapipe/tasks-vision"
 
+interface BoundingBox {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * Injects speech bubbles into the background of an image.
+ * @param params - The parameters for injecting speech bubbles.
+ * @returns A Promise that resolves to a base64-encoded string of the modified image.
+ */
 export async function injectSpeechBubbleInTheBackground(params: {
   inputImageInBase64: string;
   text?: string;
-  shape?: "oval" | "rectangular" |  "cloud" | "thought";
+  shape?: "oval" | "rectangular" | "cloud" | "thought";
   line?: "handdrawn" | "straight" | "bubble" | "chaotic";
   font?: string;
   debug?: boolean;
@@ -17,22 +29,17 @@ export async function injectSpeechBubbleInTheBackground(params: {
     debug = false,
   } = params;
 
-  // If no text is provided, return the original image
   if (!text) {
     return inputImageInBase64;
   }
 
-  // Load the image
   const image = await loadImage(inputImageInBase64);
-
-  // Set up canvas
   const canvas = document.createElement('canvas');
   canvas.width = image.width;
   canvas.height = image.height;
   const ctx = canvas.getContext('2d')!;
   ctx.drawImage(image, 0, 0);
 
-  // Set up MediaPipe Image Segmenter
   const vision = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
   );
@@ -46,30 +53,28 @@ export async function injectSpeechBubbleInTheBackground(params: {
   });
 
   const segmentationResult = imageSegmenter.segment(image);
-  let characterBoundingBox: { top: number, left: number, width: number, height: number } | null = null;
+  let characterBoundingBox: BoundingBox | null = null;
 
   if (segmentationResult.categoryMask) {
     const mask = segmentationResult.categoryMask.getAsUint8Array();
-    const detectedItems = analyzeSegmentationMask(mask, image.width, image.height);
-    console.log("Detected items:", detectedItems);
-
-    if (detectedItems.length > 0) {
-      characterBoundingBox = findCharacterBoundingBox(mask, image.width, image.height);
-    }
+    characterBoundingBox = findCharacterBoundingBox(mask, image.width, image.height);
 
     if (debug) {
       drawSegmentationMask(ctx, mask, image.width, image.height);
     }
   }
 
-  const bubbleLocation = characterBoundingBox 
-    ? { x: characterBoundingBox.left + characterBoundingBox.width / 2, y: characterBoundingBox.top }
-    : { x: image.width / 2, y: image.height / 2 };
+  const bubbles = splitTextIntoBubbles(text);
+  const bubbleLocations = calculateBubbleLocations(bubbles.length, image.width, image.height, characterBoundingBox);
 
-  drawSpeechBubble(ctx, bubbleLocation, text, shape, line, font, !!characterBoundingBox, image.width, image.height, characterBoundingBox);
+  bubbles.forEach((bubbleText, index) => {
+    const bubbleLocation = bubbleLocations[index];
+    drawSpeechBubble(ctx, bubbleLocation, bubbleText, shape, line, font, characterBoundingBox, image.width, image.height);
+  });
 
   return canvas.toDataURL('image/png');
 }
+
 function loadImage(base64: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -79,7 +84,26 @@ function loadImage(base64: string): Promise<HTMLImageElement> {
   });
 }
 
-
+function findCharacterBoundingBox(mask: Uint8Array, width: number, height: number): BoundingBox {
+  let minX = width, minY = height, maxX = 0, maxY = 0;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const index = y * width + x;
+      if (mask[index] > 0) {
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
+    }
+  }
+  return {
+    top: minY,
+    left: minX,
+    width: maxX - minX,
+    height: maxY - minY
+  };
+}
 
 function analyzeSegmentationMask(mask: Uint8Array, width: number, height: number): string[] {
   const categories = new Set<number>();
@@ -91,21 +115,47 @@ function analyzeSegmentationMask(mask: Uint8Array, width: number, height: number
   return Array.from(categories).map(c => `unknown-${c}`);
 }
 
-function findMainCharacterLocation(mask: Uint8Array, width: number, height: number): { x: number, y: number } {
-  let sumX = 0, sumY = 0, count = 0;
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const index = y * width + x;
-      if (mask[index] > 0) {
-        sumX += x;
-        sumY += y;
-        count++;
-      }
-    }
-  }
-  return count > 0 ? { x: sumX / count, y: sumY / count } : { x: width / 2, y: height / 2 };
+function splitTextIntoBubbles(text: string): string[] {
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  return sentences.map(sentence => sentence.trim());
 }
 
+function calculateBubbleLocations(
+  bubbleCount: number, 
+  imageWidth: number, 
+  imageHeight: number, 
+  characterBoundingBox: BoundingBox | null
+): { x: number, y: number }[] {
+  const locations: { x: number, y: number }[] = [];
+  const padding = 50;
+  const availableWidth = imageWidth - padding * 2;
+  const availableHeight = imageHeight - padding * 2;
+  const maxAttempts = 50;
+  
+  for (let i = 0; i < bubbleCount; i++) {
+    let x, y;
+    let attempts = 0;
+    do {
+      x = Math.random() * availableWidth + padding;
+      y = (i / bubbleCount) * availableHeight + padding;
+      attempts++;
+      
+      if (attempts >= maxAttempts) {
+        console.warn(`Could not find non-overlapping position for bubble ${i} after ${maxAttempts} attempts.`);
+        break;
+      }
+    } while (characterBoundingBox && isOverlapping({ x, y }, characterBoundingBox));
+    
+    locations.push({ x, y });
+  }
+  
+  return locations;
+}
+
+function isOverlapping(point: { x: number, y: number }, box: BoundingBox): boolean {
+  return point.x >= box.left && point.x <= box.left + box.width &&
+         point.y >= box.top && point.y <= box.top + box.height;
+}
 
 function drawSegmentationMask(ctx: CanvasRenderingContext2D, mask: Uint8Array, width: number, height: number) {
   const imageData = ctx.getImageData(0, 0, width, height);
@@ -159,45 +209,48 @@ function drawSpeechBubble(
   shape: "oval" | "rectangular" | "cloud" | "thought",
   line: "handdrawn" | "straight" | "bubble" | "chaotic",
   font: string,
-  characterDetected: boolean,
+  characterBoundingBox: BoundingBox | null,
   imageWidth: number,
-  imageHeight: number,
-  characterBoundingBox: { top: number, left: number, width: number, height: number } | null
+  imageHeight: number
 ) {
   const bubbleWidth = Math.min(300, imageWidth * 0.4);
   const bubbleHeight = Math.min(150, imageHeight * 0.3);
   const padding = 20;
   
-  const fontSize = Math.max(15, Math.min(30, 500 / text.length)); // Increased font size by 25%
+  const fontSize = 20;
   ctx.font = `${fontSize}px ${font}`;
   
-  const wrappedText = wrapText(ctx, text, bubbleWidth - padding * 2);
-  const textDimensions = measureTextDimensions(ctx, wrappedText);
+  const wrappedText = wrapText(ctx, text, bubbleWidth - padding * 2, fontSize);
+  const textDimensions = measureTextDimensions(ctx, wrappedText, fontSize);
   
   const finalWidth = Math.max(bubbleWidth, textDimensions.width + padding * 2);
   const finalHeight = Math.max(bubbleHeight, textDimensions.height + padding * 2);
   
   const bubbleLocation = {
-    x: Math.max(finalWidth / 2, Math.min(imageWidth - finalWidth / 2, location.x)),
-    y: Math.max(finalHeight / 2, Math.min(imageHeight - finalHeight / 2, location.y - finalHeight))
+    x: Math.max(finalWidth / 2 + padding, Math.min(imageWidth - finalWidth / 2 - padding, location.x)),
+    y: Math.max(finalHeight / 2 + padding, Math.min(imageHeight - finalHeight / 2 - padding, location.y))
   };
 
   ctx.fillStyle = 'white';
   ctx.strokeStyle = 'black';
   ctx.lineWidth = 2;
 
+  let tailTarget = null;
+  if (characterBoundingBox) {
+    tailTarget = {
+      x: characterBoundingBox.left + characterBoundingBox.width / 2,
+      y: characterBoundingBox.top + characterBoundingBox.height * 0.2
+    };
+  }
+
   ctx.beginPath();
-  drawBubbleShape(ctx, shape, bubbleLocation, finalWidth, finalHeight, location);
+  drawBubbleShape(ctx, shape, bubbleLocation, finalWidth, finalHeight, tailTarget);
   ctx.fill();
   ctx.stroke();
 
-  applyLineStyle(ctx, line);
-  
-  const tailTarget = characterBoundingBox 
-    ? { x: characterBoundingBox.left + characterBoundingBox.width / 2, y: characterBoundingBox.top + characterBoundingBox.height * 0.2 }
-    : location;
-  
-  drawTail(ctx, bubbleLocation, finalWidth, finalHeight, tailTarget, shape);
+  if (tailTarget) {
+    drawTail(ctx, bubbleLocation, finalWidth, finalHeight, tailTarget, shape);
+  }
 
   ctx.fillStyle = 'black';
   ctx.textAlign = 'center';
@@ -211,7 +264,7 @@ function drawBubbleShape(
   bubbleLocation: { x: number, y: number },
   width: number,
   height: number,
-  tailTarget: { x: number, y: number }
+  tailTarget: { x: number, y: number } | null
 ) {
   switch (shape) {
     case "oval":
@@ -295,79 +348,45 @@ function drawThoughtBubble(ctx: CanvasRenderingContext2D, location: { x: number,
 function drawTail(
   ctx: CanvasRenderingContext2D,
   bubbleLocation: { x: number, y: number },
-  width: number,
-  height: number,
+  bubbleWidth: number,
+  bubbleHeight: number,
   tailTarget: { x: number, y: number },
   shape: string
 ) {
-  const tailLength = Math.min(50, height / 2);
-  const startX = bubbleLocation.x + (tailTarget.x > bubbleLocation.x ? width / 4 : -width / 4);
-  const startY = bubbleLocation.y + height / 2;
-
-  ctx.beginPath();
-  ctx.moveTo(startX, startY);
+  const tailWidth = 20;
+  const tailHeight = 30;
   
-  if (shape === "thought") {
-    const bubbleCount = 3;
-    for (let i = 0; i < bubbleCount; i++) {
-      const t = (i + 1) / (bubbleCount + 1);
-      const x = startX + (tailTarget.x - startX) * t;
-      const y = startY + (tailTarget.y - startY) * t;
-      const radius = 5 * (1 - t);
-      ctx.lineTo(x - radius, y);
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
-    }
-  } else {
-    const controlX = (startX + tailTarget.x) / 2;
-    const controlY = (startY + tailTarget.y + 20) / 2;
-    ctx.quadraticCurveTo(controlX, controlY, tailTarget.x, tailTarget.y);
-    ctx.quadraticCurveTo(controlX, controlY, startX + (tailTarget.x > bubbleLocation.x ? -10 : 10), startY);
-  }
+  ctx.beginPath();
+  ctx.moveTo(bubbleLocation.x, bubbleLocation.y + bubbleHeight / 2);
+  
+  const controlPoint1 = {
+    x: bubbleLocation.x + (tailTarget.x - bubbleLocation.x) / 3,
+    y: bubbleLocation.y + bubbleHeight / 2
+  };
+  
+  const controlPoint2 = {
+    x: bubbleLocation.x + (tailTarget.x - bubbleLocation.x) * 2 / 3,
+    y: tailTarget.y
+  };
+  
+  ctx.bezierCurveTo(
+    controlPoint1.x, controlPoint1.y,
+    controlPoint2.x, controlPoint2.y,
+    tailTarget.x, tailTarget.y
+  );
+  
+  ctx.bezierCurveTo(
+    controlPoint2.x + tailWidth, controlPoint2.y,
+    controlPoint1.x + tailWidth, controlPoint1.y,
+    bubbleLocation.x + tailWidth, bubbleLocation.y + bubbleHeight / 2
+  );
+  
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
 }
 
-function findCharacterBoundingBox(mask: Uint8Array, width: number, height: number): { top: number, left: number, width: number, height: number } {
-  let minX = width, minY = height, maxX = 0, maxY = 0;
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const index = y * width + x;
-      if (mask[index] > 0) {
-        minX = Math.min(minX, x);
-        minY = Math.min(minY, y);
-        maxX = Math.max(maxX, x);
-        maxY = Math.max(maxY, y);
-      }
-    }
-  }
-  return {
-    top: minY,
-    left: minX,
-    width: maxX - minX,
-    height: maxY - minY
-  };
-}
-
-function applyLineStyle(ctx: CanvasRenderingContext2D, style: string) {
-  switch (style) {
-    case "handdrawn":
-      ctx.setLineDash([5, 5]);
-      break;
-    case "straight":
-      ctx.setLineDash([]);
-      break;
-    case "bubble":
-      ctx.setLineDash([0, 10]);
-      ctx.lineCap = "round";
-      break;
-    case "chaotic":
-      ctx.setLineDash([10, 5, 2, 5]);
-      break;
-  }
-}
-
-function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
+function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, lineHeight: number): string[] {
   const words = text.split(' ');
   const lines: string[] = [];
   let currentLine = '';
@@ -376,7 +395,7 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
     const testLine = currentLine + (currentLine ? ' ' : '') + word;
     const metrics = ctx.measureText(testLine);
     
-    if (metrics.width > maxWidth || word.endsWith('.') || word.endsWith(',')) {
+    if (metrics.width > maxWidth) {
       lines.push(currentLine);
       currentLine = word;
     } else {
@@ -391,10 +410,8 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
   return lines;
 }
 
-
-function measureTextDimensions(ctx: CanvasRenderingContext2D, lines: string[]): { width: number, height: number } {
+function measureTextDimensions(ctx: CanvasRenderingContext2D, lines: string[], lineHeight: number): { width: number, height: number } {
   let maxWidth = 0;
-  const lineHeight = ctx.measureText('M').width * 1.2;
   const height = lineHeight * lines.length;
 
   for (const line of lines) {
@@ -405,15 +422,13 @@ function measureTextDimensions(ctx: CanvasRenderingContext2D, lines: string[]): 
   return { width: maxWidth, height };
 }
 
-function drawFormattedText(ctx: CanvasRenderingContext2D, lines: string[], x: number, y: number, maxWidth: number, fontSize: number) {
-  const lineHeight = fontSize * 1.2;
+function drawFormattedText(ctx: CanvasRenderingContext2D, lines: string[], x: number, y: number, maxWidth: number, lineHeight: number) {
   const totalHeight = lineHeight * lines.length;
   let startY = y - totalHeight / 2 + lineHeight / 2;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const lineY = startY + i * lineHeight;
-    const maxLineWidth = Math.min(maxWidth, maxWidth * (1 - Math.abs(i - (lines.length - 1) / 2) / lines.length));
-    ctx.fillText(line, x, lineY, maxLineWidth);
+    ctx.fillText(line, x, lineY, maxWidth);
   }
 }

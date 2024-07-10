@@ -369,7 +369,7 @@ export async function newRender({
         },
         body: JSON.stringify({
           prompt,
-          // negativePrompt, unused for now
+          negativePrompt: "speech, bubble, speech bubble, caption",
 
           // for a future version of the comic factory
           identityImage: "",
