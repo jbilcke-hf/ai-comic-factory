@@ -3,8 +3,10 @@ import { GeneratedPanel } from "@/types"
 export function dirtyGeneratedPanelCleaner({
   panel,
   instructions,
+  speech,
   caption
 }: GeneratedPanel): GeneratedPanel {
+  let newSpeech = `${speech || ""}`.split(":").pop()?.trim() || ""
   let newCaption = `${caption || ""}`.split(":").pop()?.trim() || ""
   let newInstructions = (
     // need to remove from LLM garbage here, too
@@ -34,6 +36,7 @@ export function dirtyGeneratedPanelCleaner({
   return {
     panel,
     instructions: newInstructions,
+    speech: newSpeech,
     caption: newCaption,
   }
 }

@@ -26,8 +26,10 @@ export const useStore = create<{
   currentNbPanels: number
   maxNbPanels: number
   panels: string[]
+  speeches: string[]
   captions: string[]
   upscaleQueue: Record<string, RenderedScene>
+  showSpeeches: boolean
   showCaptions: boolean
   renderedScenes: Record<string, RenderedScene>
   layout: LayoutName
@@ -55,9 +57,12 @@ export const useStore = create<{
   setPreset: (preset: Preset) => void
   setPanels: (panels: string[]) => void
   setPanelPrompt: (newPrompt: string, index: number) => void
-  setShowCaptions: (showCaptions: boolean) => void
   setLayout: (layout: LayoutName, index?: number) => void
   setLayouts: (layouts: LayoutName[]) => void
+  setShowSpeeches: (showSpeeches: boolean) => void
+  setSpeeches: (speeches: string[]) => void
+  setPanelSpeech: (newSpeech: string, index: number) => void
+  setShowCaptions: (showCaptions: boolean) => void
   setCaptions: (captions: string[]) => void
   setPanelCaption: (newCaption: string, index: number) => void
   setZoomLevel: (zoomLevel: number) => void
@@ -85,6 +90,7 @@ export const useStore = create<{
     stylePrompt: string
     panels: string[]
     renderedScenes: Record<string, RenderedScene>
+    speeches: string[]
     captions: string[]
   }>
   loadClap: (blob: Blob) => Promise<void>
@@ -107,9 +113,11 @@ export const useStore = create<{
   maxNbPanels: 4,
 
   panels: [],
+  speeches: [],
   captions: [],
   upscaleQueue: {} as Record<string, RenderedScene>,
   renderedScenes: {} as Record<string, RenderedScene>,
+  showSpeeches: getParam("showSpeeches", false),
   showCaptions: getParam("showCaptions", false),
 
   // deprecated?
@@ -284,6 +292,24 @@ export const useStore = create<{
       ))
     })
   },
+  setSpeeches: (speeches: string[]) => {
+    set({
+      speeches,
+    })
+  },
+  setShowSpeeches: (showSpeeches: boolean) => {
+    set({
+      showSpeeches,
+    })
+  },
+  setPanelSpeech: (newSpeech, index) => {
+    const { speeches } = get()
+    set({
+      speeches: speeches.map((c, i) => (
+        index === i ? newSpeech : c
+      ))
+    })
+  },
   setCaptions: (captions: string[]) => {
     set({
       captions,
@@ -324,6 +350,7 @@ export const useStore = create<{
       currentNbPages: 1,
       currentNbPanels: currentNbPanelsPerPage,
       panels: [],
+      speeches: [],
       captions: [],
       upscaleQueue: {},
       renderedScenes: {},
@@ -408,6 +435,7 @@ export const useStore = create<{
       currentNbPages: 1,
       currentNbPanels: currentNbPanelsPerPage,
       panels: [],
+      speeches: [],
       captions: [],
       upscaleQueue: {},
       renderedScenes: {},
@@ -431,6 +459,7 @@ export const useStore = create<{
       prompt,
       panels,
       renderedScenes,
+      speeches,
       captions
     } = get()
 
@@ -459,7 +488,7 @@ export const useStore = create<{
     for (let i = 0; i < panels.length; i++) {
 
       const panel = panels[i]
-
+      const speech = speeches[i]
       const caption = captions[i]
 
       const renderedScene = renderedScenes[`${i}`]
@@ -492,7 +521,7 @@ export const useStore = create<{
         startTimeInMs: currentElapsedTimeInMs,
         assetDurationInMs: defaultSegmentDurationInMs,
         category: ClapSegmentCategory.DIALOGUE,
-        prompt: caption,
+        prompt: speech,
         outputType: ClapOutputType.AUDIO,
         status: ClapSegmentStatus.TO_GENERATE,
       }))
@@ -525,6 +554,7 @@ export const useStore = create<{
     stylePrompt: string
     panels: string[]
     renderedScenes: Record<string, RenderedScene>
+    speeches: string[]
     captions: string[]
   }> => {
 
@@ -534,6 +564,7 @@ export const useStore = create<{
     const panels: string[] = []
     const renderedScenes: Record<string, RenderedScene> = {}
     const captions: string[] = []
+    const speeches: string[] = []
 
     const panelGenerationStatus: Record<number, boolean> = {}
 
@@ -552,14 +583,21 @@ export const useStore = create<{
         cameraShot,
         clap.segments,
         ClapSegmentCategory.INTERFACE,
+      ).at(0) as (ClapSegment | undefined),
+      dialogue: filterSegments(
+        ClapSegmentFilteringMode.START,
+        cameraShot,
+        clap.segments,
+        ClapSegmentCategory.DIALOGUE,
       ).at(0) as (ClapSegment | undefined)
     })).filter(item => item.storyboard && item.ui) as {
       camera: ClapSegment
       storyboard: ClapSegment
       ui: ClapSegment
+      dialogue: ClapSegment
     }[]
 
-    shots.forEach(({ camera, storyboard, ui }, id) => {
+    shots.forEach(({ camera, storyboard, ui, dialogue }, id) => {
 
       panels.push(storyboard.prompt)
 
@@ -582,6 +620,8 @@ export const useStore = create<{
 
       panelGenerationStatus[id] = false
       
+      speeches.push(dialogue?.prompt || "")
+
       captions.push(ui?.prompt || "")
     })
 
@@ -595,6 +635,7 @@ export const useStore = create<{
       stylePrompt,
       panels,
       renderedScenes,
+      speeches,
       captions,
 
     }
@@ -614,6 +655,7 @@ export const useStore = create<{
       stylePrompt,
       panels,
       renderedScenes,
+      speeches,
       captions,
     } = await convertClapToComic(currentClap)
 
@@ -629,6 +671,7 @@ export const useStore = create<{
       // layout,
       panels,
       renderedScenes,
+      speeches,
       captions,
       currentNbPages: Math.round(currentNbPanels / currentNbPanelsPerPage),
       upscaleQueue: {},

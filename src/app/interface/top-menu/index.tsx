@@ -45,6 +45,9 @@ export function TopMenu() {
   const layout = useStore(s => s.layout)
   const setLayout = useStore(s => s.setLayout)
 
+  const setShowSpeeches = useStore(s => s.setShowSpeeches)
+  const showSpeeches = useStore(s => s.showSpeeches)
+
   const setShowCaptions = useStore(s => s.setShowCaptions)
   const showCaptions = useStore(s => s.showCaptions)
 
@@ -168,6 +171,16 @@ export function TopMenu() {
         <Label className="text-gray-200 dark:text-gray-200">
           <span className="hidden md:inline">Caption</span>
           <span className="inline md:hidden">Cap.</span>
+        </Label>
+        </div>
+        <div className="flex flex-row items-center space-x-3">
+        <Switch
+          checked={showSpeeches}
+          onCheckedChange={setShowSpeeches}
+        />
+        <Label className="text-gray-200 dark:text-gray-200">
+          <span className="hidden md:inline">Bubbles</span>
+          <span className="inline md:hidden">Bub.</span>
         </Label>
         </div>
         {/*

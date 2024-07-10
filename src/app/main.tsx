@@ -49,8 +49,11 @@ export default function Main() {
 
   // do we need those?
   const renderedScenes = useStore(s => s.renderedScenes)
-  const captions = useStore(s => s.captions)
 
+  const speeches = useStore(s => s.speeches)
+  const setSpeeches = useStore(s => s.setSpeeches)
+
+  const captions = useStore(s => s.captions)
   const setCaptions = useStore(s => s.setCaptions)
 
   const zoomLevel = useStore(s => s.zoomLevel)
@@ -101,6 +104,7 @@ export default function Main() {
   const ref = useRef({
     existingPanels: [] as GeneratedPanel[],
     newPanelsPrompts: [] as string[],
+    newSpeeches: [] as string[],
     newCaptions: [] as string[],
     prompt: "",
     preset: "",
@@ -142,6 +146,7 @@ export default function Main() {
       ref.current = {
         existingPanels: [],
         newPanelsPrompts: [],
+        newSpeeches: [],
         newCaptions: [],
         prompt,
         preset: preset?.label || "",
@@ -214,6 +219,7 @@ export default function Main() {
           const endAt = currentPanel + nbPanelsToGenerate
           for (let p = startAt; p < endAt; p++) {
             ref.current.newCaptions.push(ref.current.existingPanels[p]?.caption.trim() || "...")
+            ref.current.newSpeeches.push(ref.current.existingPanels[p]?.speech.trim() || "...")
             const newPanel = joinWords([
     
               // what we do here is that ideally we give full control to the LLM for prompting,
@@ -231,6 +237,7 @@ export default function Main() {
 
           // update the frontend
           // console.log("updating the frontend..")
+          setSpeeches(ref.current.newSpeeches)
           setCaptions(ref.current.newCaptions)
           setPanels(ref.current.newPanelsPrompts)
           setGeneratingStory(false)

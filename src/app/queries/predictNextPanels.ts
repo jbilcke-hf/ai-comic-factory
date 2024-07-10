@@ -31,7 +31,7 @@ export const predictNextPanels = async ({
   // return mockGeneratedPanels
 
   const existingPanelsTemplate = existingPanels.length
-    ? ` To help you, here are the previous panels and their captions (note: if you see an anomaly here eg. no caption or the same description repeated multiple times, do not hesitate to fix the story): ${JSON.stringify(existingPanels, null, 2)}`
+    ? ` To help you, here are the previous panels, their speeches and captions (note: if you see an anomaly here eg. no speech, no caption or the same description repeated multiple times, do not hesitate to fix the story): ${JSON.stringify(existingPanels, null, 2)}`
     : ''
 
   const firstNextOrLast =
@@ -55,9 +55,9 @@ export const predictNextPanels = async ({
 
   let result = ""
 
-  // we don't require a lot of token for our task
-  // but to be safe, let's count ~130 tokens per panel
-  const nbTokensPerPanel = 130
+  // we don't require a lot of token for our task,
+  // but to be safe, let's count ~200 tokens per panel
+  const nbTokensPerPanel = 200
 
   const nbMaxNewTokens = nbPanelsToGenerate * nbTokensPerPanel
 
@@ -115,6 +115,7 @@ export const predictNextPanels = async ({
       .map((cap, i) => ({
         panel: i,
         caption: cap,
+        speech: cap,
         instructions: cap,
       }))
     )

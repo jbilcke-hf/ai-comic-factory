@@ -14,15 +14,18 @@ export function dirtyGeneratedPanelsParser(input: string): GeneratedPanel[] {
 
   const results = jsonData.map((item, i) => {
     let panel = i
+    let speech = item.speech ? item.speech.trim() : ''
     let caption = item.caption ? item.caption.trim() : ''
     let instructions = item.instructions ? item.instructions.trim() : ''
-    if (!instructions && caption) {
+    if (!instructions && !caption && speech) {
+      instructions = speech
+    } else if (!instructions && caption) {
       instructions = caption
     } 
     if (!caption && instructions) {
       caption = instructions
     }
-    return { panel, caption, instructions }
+    return { panel, speech, caption, instructions }
   })
 
   return results

@@ -48,6 +48,7 @@ export const getStoryContinuation = async ({
       panels.push({
         panel: startAt + i,
         instructions: `${panelCandidates[i]?.instructions || ""}`,
+        speech: `${panelCandidates[i]?.speech || ""}`,
         caption: `${panelCandidates[i]?.caption || ""}`,
       })
     }
@@ -64,6 +65,7 @@ export const getStoryContinuation = async ({
           userStoryPrompt,
           `${".".repeat(p)}`,
         ]),
+        speech: "...",
         caption: "(Sorry, LLM generation failed: using degraded mode)"
       })
     }

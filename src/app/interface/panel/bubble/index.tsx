@@ -15,6 +15,7 @@ export function Bubble({ children, onChange }: {
    
   const ref = useRef<HTMLDivElement>(null)
   const zoomLevel = useStore(s => s.zoomLevel)
+  const showSpeeches = useStore(s => s.showSpeeches)
   const showCaptions = useStore(s => s.showCaptions)
 
   const text = useRef(`${children || ''}`)

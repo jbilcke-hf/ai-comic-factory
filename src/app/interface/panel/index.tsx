@@ -2,21 +2,22 @@
 
 import { useEffect, useRef, useState, useTransition } from "react"
 import { RxReload, RxPencil2 } from "react-icons/rx"
+import { useLocalStorage } from "usehooks-ts"
 
 import { RenderedScene, RenderingModelVendor } from "@/types"
-
 import { getRender, newRender } from "@/app/engine/render"
 import { useStore } from "@/app/store"
-
+import { injectSpeechBubbleInTheBackground } from "@/lib/bubble/injectSpeechBubbleInTheBackground"
 import { cn } from "@/lib/utils"
 import { getInitialRenderedScene } from "@/lib/getInitialRenderedScene"
 import { Progress } from "@/app/interface/progress"
+
 import { EditModal } from "../edit-modal"
-import { Bubble } from "./bubble"
 import { getSettings } from "../settings-dialog/getSettings"
-import { useLocalStorage } from "usehooks-ts"
 import { localStorageKeys } from "../settings-dialog/localStorageKeys"
 import { defaultSettings } from "../settings-dialog/defaultSettings"
+
+import { Bubble } from "./bubble"
 
 export function Panel({
   page,
@@ -35,21 +36,17 @@ export function Panel({
   // panel id, between 0 and (nbPanels - 1)
   panel: number
 
-
   className?: string
   width?: number
   height?: number
  }) {
-
   // index of the panel in the whole app
   const panelIndex = page * nbPanels + panel
-
 
   // the panel Id must be unique across all pages
   const panelId = `${panelIndex}`
 
   // console.log(`panel/index.tsx: <Panel panelId=${panelId}> rendered again!`)
-
 
   const [mouseOver, setMouseOver] = useState(false)
   const ref = useRef<HTMLImageElement>(null)
@@ -63,6 +60,10 @@ export function Panel({
 
   const setPanelPrompt = useStore(s => s.setPanelPrompt)
 
+  const speeches = useStore(s => s.speeches)
+  const speech = speeches[panelIndex] || ""
+  const setPanelSpeech = useStore(s => s.setPanelSpeech)
+  
   const captions = useStore(s => s.captions)
   const caption = captions[panelIndex] || ""
   const setPanelCaption = useStore(s => s.setPanelCaption)
@@ -95,6 +96,28 @@ export function Panel({
   
   let delay = enableRateLimiter ? (1000 + (500 * panelIndex)) : 1000
 
+  const addSpeechBubble = async () => {
+    if (!renderedRef.current) { return }
+
+    // story generation failed
+    if (speech.trim() === "...") { return }
+
+    console.log('Generating speech bubble...')
+    try {
+      const result = await injectSpeechBubbleInTheBackground({
+        inputImageInBase64: renderedRef.current.assetUrl,
+        text: speech,
+        shape: "oval",
+        line: "straight", // "straight", "bubble", "chaotic"
+        //  font?: string;
+        // debug: true,
+      })
+      renderedRef.current.assetUrl = result
+      setRendered(panelId, renderedRef.current)
+    } catch (err) {
+      console.log(`error: failed to inject the speech bubble: ${err}`)
+    }
+  }
   /*
   console.log("panel/index.tsx: DEBUG: " + JSON.stringify({
     page,
@@ -204,6 +227,7 @@ export function Panel({
           if (newRendered.status === "completed") {
             setGeneratingImages(panelId, false)
             addToUpscaleQueue(panelId, newRendered)
+            addSpeechBubble()
           } else if (!newRendered.status || newRendered.status === "error") {
             setGeneratingImages(panelId, false)
           } else {
@@ -274,6 +298,7 @@ export function Panel({
           console.log("panel finished!")
           setGeneratingImages(panelId, false)
           addToUpscaleQueue(panelId, newRendered)
+          addSpeechBubble()
   
         }
       } catch (err) {

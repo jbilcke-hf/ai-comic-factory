@@ -89,6 +89,7 @@ export interface ImageAnalysisResponse {
 export type GeneratedPanel = {
   panel: number
   instructions: string
+  speech: string
   caption: string
 }
 
