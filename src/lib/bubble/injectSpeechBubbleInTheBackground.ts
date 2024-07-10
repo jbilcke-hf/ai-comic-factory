@@ -1,4 +1,5 @@
 import { ImageSegmenter, FilesetResolver } from "@mediapipe/tasks-vision"
+import { actionman } from "../fonts";
 
 interface BoundingBox {
   top: number;
@@ -25,7 +26,7 @@ export async function injectSpeechBubbleInTheBackground(params: {
     text,
     shape = "oval",
     line = "handdrawn",
-    font = "Arial",
+    font = actionman.style.fontFamily,
     debug = false,
   } = params;
 
@@ -116,8 +117,11 @@ function analyzeSegmentationMask(mask: Uint8Array, width: number, height: number
 }
 
 function splitTextIntoBubbles(text: string): string[] {
-  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
-  return sentences.map(sentence => sentence.trim());
+  // Define a regular expression pattern
+  const pattern = /(?:[A-Z][a-z]*\.\s*)*(?:[^.!?\s]+[^.!?]*[.!?]+)|\S+/g;
+  
+  const matches = text.match(pattern) || [text];
+  return matches.map(sentence => sentence.trim());
 }
 
 function calculateBubbleLocations(
@@ -215,7 +219,7 @@ function drawSpeechBubble(
 ) {
   const bubbleWidth = Math.min(300, imageWidth * 0.4);
   const bubbleHeight = Math.min(150, imageHeight * 0.3);
-  const padding = 20;
+  const padding = 24;
   
   const fontSize = 20;
   ctx.font = `${fontSize}px ${font}`;
@@ -232,7 +236,9 @@ function drawSpeechBubble(
   };
 
   ctx.fillStyle = 'white';
-  ctx.strokeStyle = 'black';
+
+  // let's disable the border for now
+  ctx.strokeStyle = 'white'; // 'black'; 
   ctx.lineWidth = 2;
 
   let tailTarget = null;
@@ -353,34 +359,60 @@ function drawTail(
   tailTarget: { x: number, y: number },
   shape: string
 ) {
-  const tailWidth = 20;
+  // Calculate new maximum length for tail
+  const bubbleCenterX = bubbleLocation.x;
+  const bubbleCenterY = bubbleLocation.y;
+  const maxTailLength = Math.max(bubbleHeight, bubbleWidth) * 0.6;
+
+  const tailBaseWidth = 30; // 50% larger than before
   const tailHeight = 30;
-  
+
+  // Calculate the length from bubble center to tail target
+  const deltaX = tailTarget.x - bubbleCenterX;
+  const deltaY = tailTarget.y - bubbleCenterY;
+  const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+  // Normalize the length if it exceeds the max tail length
+  const limitedDistance = Math.min(distance, maxTailLength);
+  const tailEndX = bubbleCenterX + (deltaX / distance) * limitedDistance;
+  const tailEndY = bubbleCenterY + (deltaY / distance) * limitedDistance;
+
   ctx.beginPath();
-  ctx.moveTo(bubbleLocation.x, bubbleLocation.y + bubbleHeight / 2);
-  
+  ctx.moveTo(bubbleCenterX, bubbleCenterY);
+
   const controlPoint1 = {
-    x: bubbleLocation.x + (tailTarget.x - bubbleLocation.x) / 3,
-    y: bubbleLocation.y + bubbleHeight / 2
+    x: bubbleCenterX + deltaX / 3,
+    y: bubbleCenterY + deltaY / 3
   };
-  
+
   const controlPoint2 = {
-    x: bubbleLocation.x + (tailTarget.x - bubbleLocation.x) * 2 / 3,
-    y: tailTarget.y
+    x: bubbleCenterX + (deltaX * 2) / 3,
+    y: bubbleCenterY + (deltaY * 2) / 3
   };
-  
+
   ctx.bezierCurveTo(
     controlPoint1.x, controlPoint1.y,
     controlPoint2.x, controlPoint2.y,
-    tailTarget.x, tailTarget.y
+    tailEndX, tailEndY
   );
+
+  // Mirror to create the width at base
+  const mirroredControlPoint1 = {
+    x: controlPoint1.x + tailBaseWidth / 3,
+    y: controlPoint1.y
+  };
   
+  const mirroredControlPoint2 = {
+    x: controlPoint2.x + (tailBaseWidth * 2) / 3,
+    y: controlPoint2.y
+  };
+
   ctx.bezierCurveTo(
-    controlPoint2.x + tailWidth, controlPoint2.y,
-    controlPoint1.x + tailWidth, controlPoint1.y,
-    bubbleLocation.x + tailWidth, bubbleLocation.y + bubbleHeight / 2
+    mirroredControlPoint2.x, mirroredControlPoint2.y,
+    mirroredControlPoint1.x, mirroredControlPoint1.y,
+    bubbleCenterX + tailBaseWidth, bubbleCenterY
   );
-  
+
   ctx.closePath();
   ctx.fill();
   ctx.stroke();

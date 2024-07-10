@@ -179,8 +179,8 @@ export function TopMenu() {
           onCheckedChange={setShowSpeeches}
         />
         <Label className="text-gray-200 dark:text-gray-200">
-          <span className="hidden md:inline">Bubbles</span>
-          <span className="inline md:hidden">Bub.</span>
+          <span className="hidden md:inline">Beta</span>
+          <span className="inline md:hidden">Beta</span>
         </Label>
         </div>
         {/*

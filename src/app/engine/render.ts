@@ -84,6 +84,8 @@ export async function newRender({
 
   const placeholder = "<USE YOUR OWN TOKEN>"
 
+  const negativePrompt = "speech bubble, caption, subtitle"
+
   // console.log("settings:", JSON.stringify(settings, null, 2))
 
   if (
@@ -315,6 +317,7 @@ export async function newRender({
               inputs: Buffer.from(blob).toString('base64'),
               parameters: {
                 prompt: positivePrompt,
+                negative_prompt: negativePrompt,
                 num_inference_steps: nbInferenceSteps,
                 guidance_scale: guidanceScale,
                 width,
@@ -369,7 +372,7 @@ export async function newRender({
         },
         body: JSON.stringify({
           prompt,
-          negativePrompt: "speech, bubble, speech bubble, caption",
+          negativePrompt,
 
           // for a future version of the comic factory
           identityImage: "",

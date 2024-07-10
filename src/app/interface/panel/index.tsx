@@ -60,6 +60,8 @@ export function Panel({
 
   const setPanelPrompt = useStore(s => s.setPanelPrompt)
 
+  const showSpeeches = useStore(s => s.showSpeeches)
+
   const speeches = useStore(s => s.speeches)
   const speech = speeches[panelIndex] || ""
   const setPanelSpeech = useStore(s => s.setPanelSpeech)
@@ -96,17 +98,16 @@ export function Panel({
   
   let delay = enableRateLimiter ? (1000 + (500 * panelIndex)) : 1000
 
-  const isBeta = false
-  
+
   const addSpeechBubble = async () => {
     if (!renderedRef.current) { return }
 
     // story generation failed
     if (speech.trim() === "...") { return }
 
-    if (!isBeta) { return }
+    if (!showSpeeches) { return }
 
-    console.log('Generating speech bubble...')
+    console.log('Generating speech bubbles (this is experimental!)')
     try {
       const result = await injectSpeechBubbleInTheBackground({
         inputImageInBase64: renderedRef.current.assetUrl,
