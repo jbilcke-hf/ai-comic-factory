@@ -28,6 +28,7 @@ import { localStorageKeys } from "../settings-dialog/localStorageKeys"
 import { defaultSettings } from "../settings-dialog/defaultSettings"
 import { AuthWall } from "../auth-wall"
 import { SelectLayout } from "../select-layout"
+import { getLocalStorageShowSpeeches } from "@/lib/getLocalStorageShowSpeeches"
 
 export function TopMenu() {
   const searchParams = useSearchParams()
@@ -68,6 +69,7 @@ export function TopMenu() {
     requestedStoryPrompt
   )
 
+
   // TODO should be in the store
   const [draftPromptA, setDraftPromptA] = useState(lastDraftPromptA)
   const [draftPromptB, setDraftPromptB] = useState(lastDraftPromptB)
@@ -90,6 +92,11 @@ export function TopMenu() {
   useEffect(() => { if (lastDraftPromptA !== draftPromptA) { setDraftPromptA(lastDraftPromptA) } }, [lastDraftPromptA])
   useEffect(() => { if (lastDraftPromptB !== draftPromptB) { setLastDraftPromptB(draftPromptB) } }, [draftPromptB])
   useEffect(() => { if (lastDraftPromptB !== draftPromptB) { setDraftPromptB(lastDraftPromptB) } }, [lastDraftPromptB])
+
+  // we need a use effect to properly read the local storage
+  useEffect(() => {
+    setShowSpeeches(getLocalStorageShowSpeeches(true))
+  }, [])
 
   const handleSubmit = () => {
     if (enableOAuthWall && hasGeneratedAtLeastOnce && !isLoggedIn) {
@@ -169,18 +176,19 @@ export function TopMenu() {
           onCheckedChange={setShowCaptions}
         />
         <Label className="text-gray-200 dark:text-gray-200">
-          <span className="hidden md:inline">Caption</span>
-          <span className="inline md:hidden">Cap.</span>
+          <span className="hidden lg:inline">📖&nbsp;Captions</span>
+          <span className="inline lg:hidden">📖</span>
         </Label>
         </div>
         <div className="flex flex-row items-center space-x-3">
         <Switch
           checked={showSpeeches}
           onCheckedChange={setShowSpeeches}
+          defaultChecked={showSpeeches}
         />
         <Label className="text-gray-200 dark:text-gray-200">
-          <span className="hidden md:inline">Beta</span>
-          <span className="inline md:hidden">Beta</span>
+          <span className="hidden lg:inline">💬&nbsp;Bubbles</span>
+          <span className="inline lg:hidden">💬</span>
         </Label>
         </div>
         {/*

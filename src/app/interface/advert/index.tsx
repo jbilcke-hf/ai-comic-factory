@@ -9,7 +9,7 @@ export function Advert() {
         window.open("https://huggingface.co/spaces/jbilcke-hf/ai-stories-factory", "_blank")
       }}>
       <span className="hidden md:inline">Make AI stories</span>
-      <span className="inline md:hidden">Make AI stories</span>
+      <span className="inline md:hidden">...</span>
     </Button>
   )
 }

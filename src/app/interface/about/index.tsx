@@ -28,7 +28,7 @@ export function About() {
       <DialogTrigger asChild>
         <Button variant="outline">
           <span className="hidden md:inline">About</span>
-          <span className="inline md:hidden">About</span>
+          <span className="inline md:hidden">?</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full sm:max-w-[500px] md:max-w-[600px] overflow-y-scroll h-[100vh] sm:h-[550px]">

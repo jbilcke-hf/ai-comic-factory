@@ -12,6 +12,7 @@ import { LayoutName, defaultLayout, getRandomLayoutName } from "../layouts"
 import { putTextInInput } from "@/lib/putTextInInput"
 import { parsePresetFromPrompts } from "@/lib/parsePresetFromPrompts"
 import { parseLayoutFromStoryboards } from "@/lib/parseLayoutFromStoryboards"
+import { getLocalStorageShowSpeeches } from "@/lib/getLocalStorageShowSpeeches"
 
 export const useStore = create<{
   prompt: string
@@ -96,6 +97,11 @@ export const useStore = create<{
   loadClap: (blob: Blob) => Promise<void>
   downloadClap: () => Promise<void>
 }>((set, get) => ({
+
+  // -------- note --------------------------------------------------
+  // do not read the local storage in this block, results might be empty
+  // ----------------------------------------------------------------
+
   prompt:
     (getParam("stylePrompt", "") || getParam("storyPrompt", ""))
      ? `${getParam("stylePrompt", "")}||${getParam("storyPrompt", "")}`
@@ -117,7 +123,7 @@ export const useStore = create<{
   captions: [],
   upscaleQueue: {} as Record<string, RenderedScene>,
   renderedScenes: {} as Record<string, RenderedScene>,
-  showSpeeches: getParam("showSpeeches", false),
+  showSpeeches: true,
   showCaptions: getParam("showCaptions", false),
 
   // deprecated?
@@ -301,6 +307,11 @@ export const useStore = create<{
     set({
       showSpeeches,
     })
+    try {
+      localStorage.setItem("AI_COMIC_FACTORY_SHOW_SPEECHES", `${showSpeeches || false}`)
+    } catch (err) {
+      console.error(`failed to persist "showSpeeches" for value "${showSpeeches}"`)
+    }
   },
   setPanelSpeech: (newSpeech, index) => {
     const { speeches } = get()

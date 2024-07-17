@@ -59,7 +59,7 @@ export async function injectSpeechBubbleInTheBackground(params: {
   if (segmentationResult.categoryMask) {
     const mask = segmentationResult.categoryMask.getAsUint8Array();
     characterBoundingBox = findCharacterBoundingBox(mask, image.width, image.height);
-
+    console.log(segmentationResult)
     if (debug) {
       drawSegmentationMask(ctx, mask, image.width, image.height);
     }
@@ -208,60 +208,160 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
 
 function drawSpeechBubble(
   ctx: CanvasRenderingContext2D,
-  location: { x: number, y: number },
+  location: { x: number; y: number },
   text: string,
   shape: "oval" | "rectangular" | "cloud" | "thought",
   line: "handdrawn" | "straight" | "bubble" | "chaotic",
   font: string,
   characterBoundingBox: BoundingBox | null,
   imageWidth: number,
-  imageHeight: number
+  imageHeight: number,
+  safetyMargin: number = 0.1 // Default safety margin is 10%
 ) {
-  const bubbleWidth = Math.min(300, imageWidth * 0.4);
-  const bubbleHeight = Math.min(150, imageHeight * 0.3);
   const padding = 24;
+  const borderPadding = Math.max(10, Math.min(imageWidth, imageHeight) * safetyMargin);
   
   const fontSize = 20;
   ctx.font = `${fontSize}px ${font}`;
   
-  const wrappedText = wrapText(ctx, text, bubbleWidth - padding * 2, fontSize);
+  // Adjust maximum width to account for border padding
+  const maxBubbleWidth = imageWidth - 2 * borderPadding;
+  const wrappedText = wrapText(ctx, text, maxBubbleWidth - padding * 2, fontSize);
   const textDimensions = measureTextDimensions(ctx, wrappedText, fontSize);
   
-  const finalWidth = Math.max(bubbleWidth, textDimensions.width + padding * 2);
-  const finalHeight = Math.max(bubbleHeight, textDimensions.height + padding * 2);
+  // Adjust bubble size based on text content
+  const finalWidth = Math.min(Math.max(textDimensions.width + padding * 2, 100), maxBubbleWidth);
+  const finalHeight = Math.min(Math.max(textDimensions.height + padding * 2, 50), imageHeight - 2 * borderPadding);
   
-  const bubbleLocation = {
-    x: Math.max(finalWidth / 2 + padding, Math.min(imageWidth - finalWidth / 2 - padding, location.x)),
-    y: Math.max(finalHeight / 2 + padding, Math.min(imageHeight - finalHeight / 2 - padding, location.y))
-  };
-
-  ctx.fillStyle = 'white';
-
-  // let's disable the border for now
-  ctx.strokeStyle = 'white'; // 'black'; 
-  ctx.lineWidth = 2;
+  const bubbleLocation = adjustBubbleLocation(location, finalWidth, finalHeight, characterBoundingBox, imageWidth, imageHeight, borderPadding);
 
   let tailTarget = null;
   if (characterBoundingBox) {
     tailTarget = {
       x: characterBoundingBox.left + characterBoundingBox.width / 2,
-      y: characterBoundingBox.top + characterBoundingBox.height * 0.2
+      y: characterBoundingBox.top + characterBoundingBox.height * 0.3
     };
   }
 
+  // Draw the main bubble
+  ctx.fillStyle = 'white';
+  ctx.strokeStyle = 'black';
+  ctx.lineWidth = 2;
   ctx.beginPath();
   drawBubbleShape(ctx, shape, bubbleLocation, finalWidth, finalHeight, tailTarget);
   ctx.fill();
   ctx.stroke();
 
+  // Draw the tail
   if (tailTarget) {
     drawTail(ctx, bubbleLocation, finalWidth, finalHeight, tailTarget, shape);
   }
 
+  // Draw a white oval to blend the tail with the bubble
+  ctx.fillStyle = 'white';
+  ctx.beginPath();
+  drawBubbleShape(ctx, shape, bubbleLocation, finalWidth, finalHeight, null);
+  ctx.fill();
+
+  // Draw the text
   ctx.fillStyle = 'black';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   drawFormattedText(ctx, wrappedText, bubbleLocation.x, bubbleLocation.y, finalWidth - padding * 2, fontSize);
+}
+
+function drawTail(
+  ctx: CanvasRenderingContext2D,
+  bubbleLocation: { x: number; y: number },
+  bubbleWidth: number,
+  bubbleHeight: number,
+  tailTarget: { x: number; y: number },
+  shape: string
+) {
+  const bubbleCenterX = bubbleLocation.x;
+  const bubbleCenterY = bubbleLocation.y;
+  const tailBaseWidth = 40;
+
+  // Calculate the distance from bubble center to tail target
+  const deltaX = tailTarget.x - bubbleCenterX;
+  const deltaY = tailTarget.y - bubbleCenterY;
+  const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+  // Set the tail length to 30% of the distance
+  const tailLength = distance * 0.3;
+
+  // Calculate the tail end point
+  const tailEndX = bubbleCenterX + (deltaX / distance) * tailLength;
+  const tailEndY = bubbleCenterY + (deltaY / distance) * tailLength;
+
+  // Calculate the angle of the tail
+  const angle = Math.atan2(deltaY, deltaX);
+
+  // Calculate the base points of the tail
+  const perpAngle = angle + Math.PI / 2;
+  const basePoint1 = {
+    x: bubbleCenterX + Math.cos(perpAngle) * tailBaseWidth / 2,
+    y: bubbleCenterY + Math.sin(perpAngle) * tailBaseWidth / 2
+  };
+  const basePoint2 = {
+    x: bubbleCenterX - Math.cos(perpAngle) * tailBaseWidth / 2,
+    y: bubbleCenterY - Math.sin(perpAngle) * tailBaseWidth / 2
+  };
+
+  // Calculate control points for the Bézier curves
+  const controlPointDistance = tailLength * 0.3;
+  const controlPoint1 = {
+    x: basePoint1.x + Math.cos(angle) * controlPointDistance,
+    y: basePoint1.y + Math.sin(angle) * controlPointDistance
+  };
+  const controlPoint2 = {
+    x: basePoint2.x + Math.cos(angle) * controlPointDistance,
+    y: basePoint2.y + Math.sin(angle) * controlPointDistance
+  };
+
+  // Draw the tail
+  ctx.beginPath();
+  ctx.moveTo(basePoint1.x, basePoint1.y);
+  ctx.quadraticCurveTo(controlPoint1.x, controlPoint1.y, tailEndX, tailEndY);
+  ctx.quadraticCurveTo(controlPoint2.x, controlPoint2.y, basePoint2.x, basePoint2.y);
+  ctx.closePath();
+
+  // Fill and stroke the tail
+  ctx.fillStyle = 'white';
+  ctx.fill();
+  ctx.strokeStyle = 'black';
+  ctx.stroke();
+}
+
+function adjustBubbleLocation(
+  location: { x: number; y: number },
+  width: number,
+  height: number,
+  characterBoundingBox: BoundingBox | null,
+  imageWidth: number,
+  imageHeight: number,
+  borderPadding: number
+): { x: number; y: number } {
+  let adjustedX = location.x;
+  let adjustedY = location.y;
+
+  // Ensure the bubble doesn't overlap with the character
+  if (characterBoundingBox) {
+    if (
+      adjustedX > characterBoundingBox.left &&
+      adjustedX < characterBoundingBox.left + characterBoundingBox.width
+    ) {
+      adjustedX = characterBoundingBox.left > imageWidth / 2
+        ? characterBoundingBox.left - width / 2 - 10
+        : characterBoundingBox.left + characterBoundingBox.width + width / 2 + 10;
+    }
+  }
+
+  // Ensure the bubble (including text) is fully visible
+  adjustedX = Math.max(width / 2 + borderPadding, Math.min(imageWidth - width / 2 - borderPadding, adjustedX));
+  adjustedY = Math.max(height / 2 + borderPadding, Math.min(imageHeight - height / 2 - borderPadding, adjustedY));
+
+  return { x: adjustedX, y: adjustedY };
 }
 
 function drawBubbleShape(
@@ -349,73 +449,6 @@ function drawCloudBubble(ctx: CanvasRenderingContext2D, location: { x: number, y
 function drawThoughtBubble(ctx: CanvasRenderingContext2D, location: { x: number, y: number }, width: number, height: number) {
   drawCloudBubble(ctx, location, width, height);
   // The tail for thought bubbles is handled in the drawTail function
-}
-
-function drawTail(
-  ctx: CanvasRenderingContext2D,
-  bubbleLocation: { x: number, y: number },
-  bubbleWidth: number,
-  bubbleHeight: number,
-  tailTarget: { x: number, y: number },
-  shape: string
-) {
-  // Calculate new maximum length for tail
-  const bubbleCenterX = bubbleLocation.x;
-  const bubbleCenterY = bubbleLocation.y;
-  const maxTailLength = Math.max(bubbleHeight, bubbleWidth) * 0.6;
-
-  const tailBaseWidth = 30; // 50% larger than before
-  const tailHeight = 30;
-
-  // Calculate the length from bubble center to tail target
-  const deltaX = tailTarget.x - bubbleCenterX;
-  const deltaY = tailTarget.y - bubbleCenterY;
-  const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-  // Normalize the length if it exceeds the max tail length
-  const limitedDistance = Math.min(distance, maxTailLength);
-  const tailEndX = bubbleCenterX + (deltaX / distance) * limitedDistance;
-  const tailEndY = bubbleCenterY + (deltaY / distance) * limitedDistance;
-
-  ctx.beginPath();
-  ctx.moveTo(bubbleCenterX, bubbleCenterY);
-
-  const controlPoint1 = {
-    x: bubbleCenterX + deltaX / 3,
-    y: bubbleCenterY + deltaY / 3
-  };
-
-  const controlPoint2 = {
-    x: bubbleCenterX + (deltaX * 2) / 3,
-    y: bubbleCenterY + (deltaY * 2) / 3
-  };
-
-  ctx.bezierCurveTo(
-    controlPoint1.x, controlPoint1.y,
-    controlPoint2.x, controlPoint2.y,
-    tailEndX, tailEndY
-  );
-
-  // Mirror to create the width at base
-  const mirroredControlPoint1 = {
-    x: controlPoint1.x + tailBaseWidth / 3,
-    y: controlPoint1.y
-  };
-  
-  const mirroredControlPoint2 = {
-    x: controlPoint2.x + (tailBaseWidth * 2) / 3,
-    y: controlPoint2.y
-  };
-
-  ctx.bezierCurveTo(
-    mirroredControlPoint2.x, mirroredControlPoint2.y,
-    mirroredControlPoint1.x, mirroredControlPoint1.y,
-    bubbleCenterX + tailBaseWidth, bubbleCenterY
-  );
-
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
 }
 
 function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, lineHeight: number): string[] {
