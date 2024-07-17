@@ -1,4 +1,4 @@
-import { ImageSegmenter, FilesetResolver } from "@mediapipe/tasks-vision"
+import { ImageSegmenter, FilesetResolver, ImageSegmenterResult } from "@mediapipe/tasks-vision"
 import { actionman } from "../fonts";
 
 interface BoundingBox {
@@ -53,7 +53,7 @@ export async function injectSpeechBubbleInTheBackground(params: {
     outputConfidenceMasks: false
   });
 
-  const segmentationResult = imageSegmenter.segment(image);
+  const segmentationResult: ImageSegmenterResult = imageSegmenter.segment(image);
   let characterBoundingBox: BoundingBox | null = null;
 
   if (segmentationResult.categoryMask) {
@@ -85,24 +85,61 @@ function loadImage(base64: string): Promise<HTMLImageElement> {
   });
 }
 
-function findCharacterBoundingBox(mask: Uint8Array, width: number, height: number): BoundingBox {
-  let minX = width, minY = height, maxX = 0, maxY = 0;
+function findCharacterBoundingBox(mask: Uint8Array, width: number, height: number): BoundingBox | null {
+  let shapes: BoundingBox[] = [];
+  let visited = new Set<number>();
+
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const index = y * width + x;
-      if (mask[index] > 0) {
-        minX = Math.min(minX, x);
-        minY = Math.min(minY, y);
-        maxX = Math.max(maxX, x);
-        maxY = Math.max(maxY, y);
+      if (mask[index] > 0 && !visited.has(index)) {
+        let shape = floodFill(mask, width, height, x, y, visited);
+        shapes.push(shape);
       }
     }
   }
+
+  // Sort shapes by area (descending) and filter out small shapes
+  shapes = shapes
+    .filter(shape => (shape.width * shape.height) > (width * height * 0.01))
+    .sort((a, b) => (b.width * b.height) - (a.width * a.height));
+
+  // Find the most vertically rectangular shape
+  let mostVerticalShape = shapes.reduce((prev, current) => {
+    let prevRatio = prev.height / prev.width;
+    let currentRatio = current.height / current.width;
+    return currentRatio > prevRatio ? current : prev;
+  });
+
+  return mostVerticalShape || null;
+}
+
+function floodFill(mask: Uint8Array, width: number, height: number, startX: number, startY: number, visited: Set<number>): BoundingBox {
+  let queue = [[startX, startY]];
+  let minX = startX, maxX = startX, minY = startY, maxY = startY;
+
+  while (queue.length > 0) {
+    let [x, y] = queue.pop()!;
+    let index = y * width + x;
+
+    if (x < 0 || x >= width || y < 0 || y >= height || mask[index] === 0 || visited.has(index)) {
+      continue;
+    }
+
+    visited.add(index);
+    minX = Math.min(minX, x);
+    maxX = Math.max(maxX, x);
+    minY = Math.min(minY, y);
+    maxY = Math.max(maxY, y);
+
+    queue.push([x+1, y], [x-1, y], [x, y+1], [x, y-1]);
+  }
+
   return {
-    top: minY,
     left: minX,
-    width: maxX - minX,
-    height: maxY - minY
+    top: minY,
+    width: maxX - minX + 1,
+    height: maxY - minY + 1
   };
 }
 
@@ -134,13 +171,21 @@ function calculateBubbleLocations(
   const padding = 50;
   const availableWidth = imageWidth - padding * 2;
   const availableHeight = imageHeight - padding * 2;
-  const maxAttempts = 50;
+  const maxAttempts = 100;
   
   for (let i = 0; i < bubbleCount; i++) {
     let x, y;
     let attempts = 0;
     do {
-      x = Math.random() * availableWidth + padding;
+      // Adjust x to avoid the middle of the character
+      if (characterBoundingBox) {
+        const characterMiddle = characterBoundingBox.left + characterBoundingBox.width / 2;
+        const leftSide = Math.random() * (characterMiddle - padding - padding);
+        const rightSide = characterMiddle + Math.random() * (imageWidth - characterMiddle - padding - padding);
+        x = Math.random() < 0.5 ? leftSide : rightSide;
+      } else {
+        x = Math.random() * availableWidth + padding;
+      }
       y = (i / bubbleCount) * availableHeight + padding;
       attempts++;
       
@@ -224,8 +269,8 @@ function drawSpeechBubble(
   const fontSize = 20;
   ctx.font = `${fontSize}px ${font}`;
   
-  // Adjust maximum width to account for border padding
-  const maxBubbleWidth = imageWidth - 2 * borderPadding;
+  // Adjust maximum width to account for border padding and limit to 33% of image width
+  const maxBubbleWidth = Math.min(imageWidth - 2 * borderPadding, imageWidth * 0.33);
   const wrappedText = wrapText(ctx, text, maxBubbleWidth - padding * 2, fontSize);
   const textDimensions = measureTextDimensions(ctx, wrappedText, fontSize);
   
@@ -347,13 +392,12 @@ function adjustBubbleLocation(
 
   // Ensure the bubble doesn't overlap with the character
   if (characterBoundingBox) {
-    if (
-      adjustedX > characterBoundingBox.left &&
-      adjustedX < characterBoundingBox.left + characterBoundingBox.width
-    ) {
-      adjustedX = characterBoundingBox.left > imageWidth / 2
-        ? characterBoundingBox.left - width / 2 - 10
-        : characterBoundingBox.left + characterBoundingBox.width + width / 2 + 10;
+    const characterMiddle = characterBoundingBox.left + characterBoundingBox.width / 2;
+    if (Math.abs(adjustedX - characterMiddle) < width / 2) {
+      // If the bubble is in the middle of the character, move it to the side
+      adjustedX = adjustedX < characterMiddle 
+        ? Math.max(width / 2 + borderPadding, characterBoundingBox.left - width / 2 - 10)
+        : Math.min(imageWidth - width / 2 - borderPadding, characterBoundingBox.left + characterBoundingBox.width + width / 2 + 10);
     }
   }
 
