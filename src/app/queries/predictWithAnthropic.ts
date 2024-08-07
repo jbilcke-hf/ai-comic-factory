@@ -40,7 +40,7 @@ export async function predict({
       max_tokens: nbMaxNewTokens,
     })
 
-    return res.content[0]?.text || ""
+    return (res.content[0] as any)?.text || ""
   } catch (err) {
     console.error(`error during generation: ${err}`)
     return ""
