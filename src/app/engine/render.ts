@@ -192,17 +192,18 @@ export async function newRender({
       if (!replicateApiKey || `${replicateApiKey || ""}`.length < 8) {
         throw new Error(`invalid replicateApiKey, you need to configure your REPLICATE_API_TOKEN in order to use the REPLICATE rendering engine`)
       }
+
       if (!replicateApiModel) {
         throw new Error(`invalid replicateApiModel, you need to configure your REPLICATE_API_MODEL in order to use the REPLICATE rendering engine`)
       }
-      if (!replicateApiModelVersion) {
-        throw new Error(`invalid replicateApiModelVersion, you need to configure your REPLICATE_API_MODEL_VERSION in order to use the REPLICATE rendering engine`)
-      }
+
       const replicate = new Replicate({ auth: replicateApiKey })
 
       const seed = generateSeed()
       const prediction = await replicate.predictions.create({
-        version: replicateApiModelVersion,
+        model: replicateApiModelVersion
+          ? `${replicateApiModel}:${replicateApiModelVersion}`
+          : `${replicateApiModel}`,
         input: {
           prompt: [
             "beautiful",
@@ -223,7 +224,7 @@ export async function newRender({
   
       // no need to reply straight away as images take time to generate, this isn't instantaneous
       // also our friends at Replicate won't like it if we spam them with requests
-      await sleep(4000)
+      await sleep(1000)
 
       return {
         renderId: prediction.id,
