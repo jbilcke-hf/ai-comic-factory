@@ -161,7 +161,7 @@ export default function Main() {
 
       // we have to limit the size of the prompt, otherwise the rest of the style won't be followed
 
-      let limitedStylePrompt = stylePrompt.trim().slice(0, 77).trim()
+      let limitedStylePrompt = stylePrompt.trim().slice(0, 256).trim()
       if (limitedStylePrompt.length !== stylePrompt.length) {
         console.log("Sorry folks, the style prompt was cut to:", limitedStylePrompt)
       }

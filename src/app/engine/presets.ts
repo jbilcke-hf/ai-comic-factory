@@ -23,7 +23,7 @@ export interface Preset {
   negativePrompt: (prompt: string) => string[]
 }
 
-// ATTENTION!! negative prompts are not supported by the VideoChain API yet
+// ATTENTION!! negative prompts are not supported by all providers
 
 export const presets: Record<string, Preset> = {
   random: {
@@ -64,33 +64,55 @@ export const presets: Record<string, Preset> = {
   */
   japanese_manga: {
     id: "japanese_manga",
-    label: "Japanese",
+    label: "Manga",
     family: "asian",
     color: "grayscale",
     font: "actionman",
     llmPrompt: "japanese manga",
     imagePrompt: (prompt: string) => [
-      `grayscale`,
-      `detailed drawing`,
-      `japanese manga`,
-      prompt,
-      // "single panel",
-      // "manga",
-      //  "japanese",
-      // "intricate",
-      // "detailed",
-      // "drawing"
+      `Monochrome Japanese manga of ${
+      prompt
+      }. The drawing style is a monochrome japanese seinen manga, in black & white with rich and intricate drawing details. There is no text, no signature, no watermark.`
     ],
     negativePrompt: () => [
+      "signature",
+      "watermark",
+      "copyright",
       "franco-belgian comic",
-      "color album",
-      "color",
+      "comic",
       "american comic",
       "photo",
-      "painting",
       "3D render"
     ],
   },
+  manga_dark: {
+    id: "manga_dark",
+    label: "Manga (dark)",
+    family: "asian",
+    color: "grayscale",
+    font: "actionman",
+    llmPrompt: "japanese horror manga",
+    imagePrompt: (prompt: string) => [
+      `Monochrome horror Japanese Seinen manga of ${
+      prompt
+      }.  The drawing style is a lowlit, dark monochrome japanese seinen manga in the style of Uzimaki, very serious and horrifying, in black & white with rich and intricate drawing details. The scene is depressing and foreboding. There is no text, no signature, no watermark.`
+    ],
+    negativePrompt: () => [
+      "signature",
+      "watermark",
+      "copyright",
+      "happy",
+      "joyous",
+      "cute",
+      "franco-belgian comic",
+      "comic",
+      "american comic",
+      "photo",
+      "3D render"
+    ],
+  },
+  /*
+  doesn't work with Flux.1 schnell
   nihonga: {
     id: "nihonga",
     label: "Nihonga",
@@ -99,24 +121,70 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "japanese manga",
     imagePrompt: (prompt: string) => [
-      `japanese nihonga painting about ${prompt}`,
-      "Nihonga",
-      "ancient japanese painting",
-      "intricate",
-      "detailed",
-      "detailed painting"
-      // "drawing"
+      `Vintage Japanese Nihonga panel from 1895, handpainted in the style of Hishida Shunsō with faded colors, it represents a simplified ${
+      prompt
+      }. The scene is set in 1400 in feudal Japan, in the style of Kawai Gyokudō. Water color painting, faded colors. We see traditional japanese elements of the daily life. Asymmetric scene composition. Painted in the style of Yokoyama Taikan, Uemura Shōen, Tomioka Tessai. There is no text, no signature, no watermark.`
     ],
     negativePrompt: () => [
+      "modern",
+      "signature",
+      "watermark",
+      "copyright",
       "franco-belgian comic",
-      "color album",
-      "color",
       "manga",
       "comic",
       "american comic",
       "photo",
-      "painting",
       "3D render"
+    ],
+  },
+  */
+  anime: {
+    id: "anime",
+    label: "Anime",
+    family: "asian",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "japanese manga",
+    imagePrompt: (prompt: string) => [
+      `Japanese Ghibli Studio Anime screenshot of ${
+      prompt
+      }. Anime drawing, inspired by Ghibli studios. Asymmetric cinematic camera shot. The photo style is similar to the Akira movie, with rich and intricate drawing details. Scene has a negative space and asymmetrical balance. There is no text, no signature, no watermark.`
+    ],
+    negativePrompt: () => [
+      "signature",
+      "watermark",
+      "copyright",
+      "franco-belgian comic",
+      "black & white",
+      "comic",
+      "american comic",
+      "painting",
+      "photo",
+      "3D render"
+    ],
+  },
+  cinematic: {
+    id: "cinematic",
+    label: "Cinematic",
+    family: "american",
+    color: "color",
+    font: "actionman",
+    llmPrompt: "movie",
+    imagePrompt: (prompt: string) => [
+      `Cinematic photography shot in 4K IMAX of ${prompt}.  Asymmetric cinematic camera shot, lens distortion, hollywood cinematic style, trending on netflix, professional color grading with soft bokeh, crisp and sharp details, super realistic with rich and intricate drawing details. Scene has a negative space and asymmetrical balance. We feel something, the scene is emotional. There is no text, no signature, no watermark.`,
+    ],
+    negativePrompt: () => [
+      "black banding",
+      "manga",
+      "drawing",
+      "anime",
+      "painting",
+      "3D render",
+      "CGI",
+      "fake",
+      "blurry",
+      "cropped"
     ],
   },
   franco_belgian: {
@@ -130,7 +198,7 @@ export const presets: Record<string, Preset> = {
       "bande dessinée",
       "franco-belgian comic",
        prompt,
-      "comic album",
+      "comic album in the graphic style of spirou and gaston lagaffe etc.",
       "detailed drawing"
       // "color drawing"
     ],
@@ -153,10 +221,8 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "american comic",
     imagePrompt: (prompt: string) => [
-      "digital color comicbook style",
-      `modern american comic`,
-      prompt,
-      "detailed drawing"
+      `modern american comic panel about ${prompt}`,
+      "color comicbook, detailed drawing with intricate details"
       //"single panel",
       // "2010s",
       // "digital print",
@@ -207,6 +273,10 @@ export const presets: Record<string, Preset> = {
     ],
   },
   */
+
+  /*
+  it doesn't render well on Flux
+
   american_comic_50: {
     id: "american_comic_50",
     label: "American (1950)",
@@ -237,6 +307,8 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
+  */
+
   /*
   american_comic_60: {
     label: "American (1960)",
@@ -270,6 +342,9 @@ export const presets: Record<string, Preset> = {
   */
 
   
+  /*
+  doesn't work well with Flux
+
   flying_saucer: {
     id: "flying_saucer",
     label: "Flying saucer",
@@ -278,10 +353,7 @@ export const presets: Record<string, Preset> = {
     font: "actionman",
     llmPrompt: "new pulp science fiction",
     imagePrompt: (prompt: string) => [
-      `vintage science fiction`,
-      // "40s",
-      "color pulp comic panel",
-      "1940",
+      `vintage pulp sci-fi coming from 1940s, scanned page with yellowing and defects`,
       `${prompt}`,
       "detailed drawing"
       // "single panel",
@@ -290,7 +362,8 @@ export const presets: Record<string, Preset> = {
     negativePrompt: () => [
       "manga",
       "anime",
-      "american comic",
+      "modern",
+      "digital",
       "grayscale",
       "monochrome",
       "photo",
@@ -298,6 +371,7 @@ export const presets: Record<string, Preset> = {
       "3D render"
     ],
   },
+  */
  
   humanoid: {
     id: "humanoid",
@@ -667,7 +741,7 @@ export const presets: Record<string, Preset> = {
 
 export type PresetName = keyof typeof presets
 
-export const defaultPreset: PresetName = "american_comic_50"
+export const defaultPreset: PresetName = "american_comic_90"
 
 export const nonRandomPresets = Object.keys(presets).filter(p => p !== "random")
 

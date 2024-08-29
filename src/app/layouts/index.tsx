@@ -12,6 +12,19 @@ import layoutPreview1 from "../../../public/layouts/layout1.jpg"
 import layoutPreview2 from "../../../public/layouts/layout2.jpg"
 import layoutPreview3 from "../../../public/layouts/layout3.jpg"
 
+// note: values must be disible by 8
+
+
+const MAX = 8 * 160 // 1280
+const MID = 8 * 120 // 960
+const MIN = 8 * 80 // 640
+
+// those settings give a high quality,
+// but it make things slower as well
+// const MAX = 8 * 200 // 1600
+// const MID = 8 * 150 // 1200
+// const MIN = 8 * 100 // 800
+
 export function Layout0({ page, nbPanels }: LayoutProps) {
   return (
     <Grid className="grid-cols-2 grid-rows-2">
@@ -20,8 +33,8 @@ export function Layout0({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={0}
-          width={1024}
-          height={1024}
+          width={MAX}
+          height={MAX}
         />
       </div>
       <div className="bg-zinc-100  col-span-1 row-span-1">
@@ -29,8 +42,8 @@ export function Layout0({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={1}
-          width={1024}
-          height={1024}
+          width={MAX}
+          height={MAX}
         />
       </div>
       <div className="bg-gray-100  col-span-1 row-span-1">
@@ -38,8 +51,8 @@ export function Layout0({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={2}
-          width={1024}
-          height={1024}
+          width={MAX}
+          height={MAX}
         />
       </div>
       <div className="bg-slate-100 col-span-1 row-span-1">
@@ -47,8 +60,8 @@ export function Layout0({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={3}
-          width={1024}
-          height={1024}
+          width={MAX}
+          height={MAX}
         />
       </div>
     </Grid>
@@ -63,8 +76,8 @@ export function Layout1({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={0}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
       <div className="bg-zinc-100 row-span-2">
@@ -72,8 +85,8 @@ export function Layout1({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={1}
-          width={768}
-          height={1024}
+          width={MID}
+          height={MAX}
         />
       </div>
       <div className="bg-gray-100 row-span-2 col-span-1">
@@ -81,8 +94,8 @@ export function Layout1({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={2}
-          width={768}
-          height={1024}
+          width={MID}
+          height={MAX}
         />
       </div>
       <div className="bg-slate-100">
@@ -90,8 +103,8 @@ export function Layout1({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={3}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
     </Grid>
@@ -106,8 +119,8 @@ export function Layout2_todo({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={0}
-          width={768}
-          height={1024}
+          width={MID}
+          height={MAX}
         />
       </div>
       <div className="bg-slate-100">
@@ -115,8 +128,8 @@ export function Layout2_todo({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={1}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
       <div className="bg-stone-100">
@@ -124,8 +137,8 @@ export function Layout2_todo({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={2}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
       <div className="bg-zinc-100 row-span-1 col-span-1">
@@ -133,8 +146,8 @@ export function Layout2_todo({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={3}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
     </Grid>
@@ -149,8 +162,8 @@ export function Layout3_todo({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={0}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
       <div className="bg-zinc-100 col-span-2 row-span-2">
@@ -158,8 +171,8 @@ export function Layout3_todo({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={1}
-          width={768}
-          height={1024}
+          width={MID}
+          height={MAX}
         />
       </div>
       <div className="col-span-3 grid grid-cols-2 gap-2">
@@ -168,8 +181,8 @@ export function Layout3_todo({ page, nbPanels }: LayoutProps) {
             page={page}
             nbPanels={nbPanels}
             panel={2}
-            width={768}
-            height={758}
+            width={MAX}
+            height={MAX}
           />
         </div>
         <div className="bg-slate-100">
@@ -177,8 +190,8 @@ export function Layout3_todo({ page, nbPanels }: LayoutProps) {
             page={page}
             nbPanels={nbPanels}
             panel={3}
-            width={768}
-            height={758}
+            width={MAX}
+            height={MAX}
           />
         </div>
       </div>
@@ -194,8 +207,8 @@ export function Layout4_todo({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={0}
-          width={768}
-          height={1024}
+          width={MID}
+          height={MAX}
         />
       </div>
       <div className="bg-gray-100 row-span-1 col-span-1">
@@ -203,8 +216,8 @@ export function Layout4_todo({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={1}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
       <div className="bg-zinc-100 row-span-2">
@@ -212,8 +225,8 @@ export function Layout4_todo({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={2}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
       <div className="bg-stone-100">
@@ -221,8 +234,8 @@ export function Layout4_todo({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={3}
-          width={768}
-          height={1024}
+          width={MID}
+          height={MAX}
         />
       </div>
     </Grid>
@@ -238,8 +251,8 @@ export function Layout2({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={0}
-          width={768}
-          height={1024}
+          width={MID}
+          height={MAX}
         />
       </div>
       <div className="bg-zinc-100 col-span-1 row-span-1">
@@ -247,8 +260,8 @@ export function Layout2({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={1}
-          width={768}
-          height={1024}
+          width={MID}
+          height={MAX}
         />
       </div>
       <div className="bg-stone-100 row-span-2 col-span-1">
@@ -256,8 +269,8 @@ export function Layout2({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={2}
-          width={512}
-          height={1024}
+          width={MIN}
+          height={MAX}
         />
       </div>
       <div className="bg-slate-100 row-span-1 col-span-2">
@@ -265,8 +278,8 @@ export function Layout2({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={3}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
     </Grid>
@@ -281,8 +294,8 @@ export function Layout3({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={0}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
       <div className="bg-zinc-100 col-span-1 row-span-1">
@@ -290,8 +303,8 @@ export function Layout3({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={1}
-          width={768}
-          height={1024}
+          width={MID}
+          height={MAX}
         />
       </div>
       <div className="bg-stone-100 row-span-1 col-span-1">
@@ -299,8 +312,8 @@ export function Layout3({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={2}
-          width={768}
-          height={1024}
+          width={MID}
+          height={MAX}
         />
       </div>
       <div className="bg-slate-100 row-span-1 col-span-2">
@@ -308,8 +321,8 @@ export function Layout3({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={3}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
     </Grid>
@@ -325,8 +338,8 @@ export function Layout4({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={0}
-          width={512}
-          height={1024}
+          width={MIN}
+          height={MAX}
         />
       </div>
       <div className="bg-zinc-100 col-start-3 col-end-9 row-start-3 row-end-4">
@@ -334,8 +347,8 @@ export function Layout4({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={1}
-          width={1024}
-          height={768}
+          width={MAX}
+          height={MID}
         />
       </div>
       <div className="bg-stone-100 col-start-2 col-end-8 row-start-4 row-end-6">
@@ -343,8 +356,8 @@ export function Layout4({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={2}
-          width={768}
-          height={1024}
+          width={MID}
+          height={MAX}
         />
       </div>
       <div className="bg-slate-100 col-start-1 col-end-9 row-start-6 row-end-8">
@@ -352,8 +365,8 @@ export function Layout4({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={3}
-          width={1024}
-          height={512}
+          width={MAX}
+          height={MIN}
         />
       </div>
     </Grid>
@@ -369,8 +382,8 @@ export function Layout5({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={0}
-          width={1024}
-          height={1024}
+          width={MAX}
+          height={MAX}
         />
       </div>
       <div className="bg-zinc-100">
@@ -378,8 +391,8 @@ export function Layout5({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={1}
-          width={1024}
-          height={1024}
+          width={MAX}
+          height={MAX}
         />
       </div>
       <div className="bg-stone-100">
@@ -387,8 +400,8 @@ export function Layout5({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={2}
-          width={1024}
-          height={1024}
+          width={MAX}
+          height={MAX}
         />
       </div>
       <div className="bg-slate-100">
@@ -396,8 +409,8 @@ export function Layout5({ page, nbPanels }: LayoutProps) {
           page={page}
           nbPanels={nbPanels}
           panel={3}
-          width={1024}
-          height={1024}
+          width={MAX}
+          height={MAX}
         />
       </div>
     </Grid>

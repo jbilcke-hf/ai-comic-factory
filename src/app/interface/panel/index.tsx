@@ -120,7 +120,7 @@ export function Panel({
       renderedRef.current.assetUrl = result
       setRendered(panelId, renderedRef.current)
     } catch (err) {
-      console.log(`error: failed to inject the speech bubble: ${err}`)
+      console.log(`error: failed to inject the speech bubble:`, err)
     }
   }
   /*
@@ -255,7 +255,7 @@ export function Panel({
           return
         }
       })
-    }, enableRateLimiter ? 1000 * panel : 0)
+    }, enableRateLimiter ? 700 * panel : 0)
   }
 
 

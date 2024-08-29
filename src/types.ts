@@ -106,7 +106,6 @@ export type LLMEngine =
   | "ANTHROPIC"
 
 export type RenderingEngine =
-  | "VIDEOCHAIN"
   | "OPENAI"
   | "REPLICATE"
   | "INFERENCE_API"

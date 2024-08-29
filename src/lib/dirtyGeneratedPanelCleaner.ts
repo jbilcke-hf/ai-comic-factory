@@ -27,7 +27,7 @@ export function dirtyGeneratedPanelCleaner({
   )
 
   // we have to crop the instructions unfortunately, otherwise the style will disappear
-  // newInstructions = newInstructions.slice(0, 77)
+  // newInstructions = newInstructions.slice(0, 256)
   // EDIT: well actually the instructions are already at the end of the prompt,
   // so we can let SDXL do this cropping job for us
 

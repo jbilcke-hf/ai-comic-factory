@@ -714,7 +714,7 @@ export const useStore = create<{
     const firstPartOfStory = (storyPrompt || "").split(",").shift() || ""
     const cleanStoryPrompt = firstPartOfStory.replace(/([^a-z0-9, ]+)/gi, " ")
 
-    const cleanName = `${cleanStoryPrompt.slice(0, 90)} (${cleanStylePrompt.slice(0, 90) || "default style"})`
+    const cleanName = `${cleanStoryPrompt.slice(0, 120)} (${cleanStylePrompt.slice(0, 120) || "default style"})`
 
     anchor.download = `${cleanName}.clap`
 

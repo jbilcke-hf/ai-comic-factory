@@ -73,7 +73,7 @@ ${comicFileMd}`;
 
     // console.log("descriptionMd:", descriptionMd)
 
-    const slicedStory = storyPrompt.slice(0, 77)
+    const slicedStory = storyPrompt.slice(0, 256)
 
     const params = new URLSearchParams({
       title: `[Comic] ${
@@ -81,7 +81,7 @@ ${comicFileMd}`;
       }${
         slicedStory !== storyPrompt ? '...' : ''
       }${
-        stylePrompt ? `(${stylePrompt.slice(0, 77)
+        stylePrompt ? `(${stylePrompt.slice(0, 256)
       })` : ''}`,
       description: descriptionMd,
       });

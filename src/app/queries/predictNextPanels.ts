@@ -76,7 +76,7 @@ export const predictNextPanels = async ({
   } catch (err) {
     // console.log(`prediction of the story failed, trying again..`)
     // this should help throttle things on a bit on the LLM API side
-    await sleep(2000)
+    await sleep(3000)
 
     try {
       result = `${await predict({

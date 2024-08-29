@@ -15,7 +15,9 @@ hf_oauth_scopes: [inference-api]
 
 # AI Comic Factory
 
-Last release: AI Comic Factory 1.2
+Last release: AI Comic Factory 1.7
+
+*SDXL is not supported anymore, please use Flux.1, thank you.*
 
 The AI Comic Factory will soon have an official website: [aicomicfactory.app](https://aicomicfactory.app)
 
@@ -23,28 +25,23 @@ For more information about my other projects please check [linktr.ee/FLNGR](http
 
 ## Running the project at home
 
-First, I would like to highlight that everything is open-source (see [here](https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory/tree/main), [here](https://huggingface.co/spaces/jbilcke-hf/VideoChain-API/tree/main), [here](https://huggingface.co/spaces/hysts/SD-XL/tree/main), [here](https://github.com/huggingface/text-generation-inference)).
-
-However the project isn't a monolithic Space that can be duplicated and ran immediately:
-it requires various components to run for the frontend, backend, LLM, SDXL etc.
+The project requires various components to run for the frontend, backend, LLM, SDXL etc.
 
 If you try to duplicate the project, open the `.env` you will see it requires some variables.
 
 Provider config:
 - `LLM_ENGINE`: can be one of `INFERENCE_API`, `INFERENCE_ENDPOINT`, `OPENAI`, `GROQ`, `ANTHROPIC`
-- `RENDERING_ENGINE`: can be one of: "INFERENCE_API", "INFERENCE_ENDPOINT", "REPLICATE", "VIDEOCHAIN", "OPENAI" for now, unless you code your custom solution
+- `RENDERING_ENGINE`: can be one of: "INFERENCE_API", "INFERENCE_ENDPOINT", "REPLICATE", "OPENAI" for now, unless you code your custom solution
 
 Auth config:
 - `AUTH_HF_API_TOKEN`:  if you decide to use Hugging Face for the LLM engine (inference api model or a custom inference endpoint)
 - `AUTH_OPENAI_API_KEY`: to use OpenAI for the LLM engine
 - `AUTH_GROQ_API_KEY`: to use Groq for the LLM engine
 - `AUTH_ANTHROPIC_API_KEY`: to use Anthropic (Claude) for the LLM engine
-- `AUTH_VIDEOCHAIN_API_TOKEN`: secret token to access the VideoChain API server
 - `AUTH_REPLICATE_API_TOKEN`: in case you want to use Replicate.com
 
 Rendering config:
 - `RENDERING_HF_INFERENCE_ENDPOINT_URL`: necessary if you decide to use a custom inference endpoint
-- `RENDERING_REPLICATE_API_MODEL_VERSION`: url to the VideoChain API server
 - `RENDERING_HF_INFERENCE_ENDPOINT_URL`: optional, default to nothing
 - `RENDERING_HF_INFERENCE_API_BASE_MODEL`: optional, defaults to "stabilityai/stable-diffusion-xl-base-1.0"
 - `RENDERING_HF_INFERENCE_API_REFINER_MODEL`: optional, defaults to "stabilityai/stable-diffusion-xl-refiner-1.0"
@@ -154,7 +151,7 @@ Another option could be to disable the LLM completely and replace it with anothe
 
 It is possible that I modify the AI Comic Factory to make it easier in the future (eg. add support for Claude or Replicate)
 
-## The Rendering API
+## Rendering Images
 
 This API is used to generate the panel images. This is an API I created for my various projects at Hugging Face.
 
@@ -163,13 +160,9 @@ I haven't written documentation for it yet, but basically it is "just a wrapper 
 - The [hysts/SD-XL](https://huggingface.co/spaces/hysts/SD-XL?duplicate=true) Space by [@hysts](https://huggingface.co/hysts)
 - And other APIs for making videos, adding audio etc.. but you won't need them for the AI Comic Factory
 
-### Option 1: Deploy VideoChain yourself
+### Option 1:  Use the Hugging Face Inference API
 
-You will have to [clone](https://huggingface.co/spaces/jbilcke-hf/VideoChain-API?duplicate=true) the [source-code](https://huggingface.co/spaces/jbilcke-hf/VideoChain-API/tree/main)
-
-Unfortunately, I haven't had the time to write the documentation for VideoChain yet.
-(When I do I will update this document to point to the VideoChain's README)
-
+This is the default mode. You only need a valid Hugging Face token to use the API.
 
 ### Option 2: Use Replicate
 

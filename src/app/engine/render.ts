@@ -22,9 +22,6 @@ const serverReplicateApiModel = `${process.env.RENDERING_REPLICATE_API_MODEL || 
 const serverReplicateApiModelVersion = `${process.env.RENDERING_REPLICATE_API_MODEL_VERSION || ""}`
 const serverReplicateApiModelTrigger = `${process.env.RENDERING_REPLICATE_API_MODEL_TRIGGER || ""}`
 
-const videochainToken = `${process.env.AUTH_VIDEOCHAIN_API_TOKEN || ""}`
-const videochainApiUrl = `${process.env.RENDERING_VIDEOCHAIN_API_URL || ""}`
-
 const serverOpenaiApiKey = `${process.env.AUTH_OPENAI_API_KEY || ""}`
 const serverOpenaiApiBaseUrl = `${process.env.RENDERING_OPENAI_API_BASE_URL || "https://api.openai.com/v1"}`
 const serverOpenaiApiModel = `${process.env.RENDERING_OPENAI_API_MODEL || "dall-e-3"}`
@@ -212,7 +209,7 @@ export async function newRender({
             prompt,
             "award winning",
             "high resolution"
-          ].filter(x => x).join(", "),
+          ].filter(x => x).join(". "),
           width,
           height,
           seed,
@@ -244,9 +241,6 @@ export async function newRender({
       }
       if (renderingEngine === "INFERENCE_API" && !huggingfaceInferenceApiModel) {
         throw new Error(`invalid huggingfaceInferenceApiModel, you need to configure your RENDERING_HF_INFERENCE_API_BASE_MODEL in order to use the INFERENCE_API rendering engine`)
-      }
-      if (renderingEngine === "INFERENCE_API" && !huggingfaceInferenceApiModelRefinerModel) {
-        throw new Error(`invalid huggingfaceInferenceApiModelRefinerModel, you need to configure your RENDERING_HF_INFERENCE_API_REFINER_MODEL in order to use the INFERENCE_API rendering engine`)
       }
 
       const baseModelUrl = renderingEngine === "INFERENCE_ENDPOINT"
@@ -301,10 +295,10 @@ export async function newRender({
 
       let assetUrl = `data:${contentType};base64,${Buffer.from(blob).toString('base64')}`
       
-      // note: there is no "refiner" step yet for custom inference endpoint
-      // you probably don't need it anyway, as you probably want to deploy an all-in-one model instead for perf reasons
+
+      // note: the refiner step is optional, mostly something used in older models like SDXL
       
-      if (renderingEngine === "INFERENCE_API") {
+      if (renderingEngine === "INFERENCE_API" && huggingfaceInferenceApiModelRefinerModel) {
         try {
           const refinerModelUrl = `https://api-inference.huggingface.co/models/${huggingfaceInferenceApiModelRefinerModel}`
 
@@ -363,56 +357,7 @@ export async function newRender({
         segments: []
       } as RenderedScene
     } else {
-  
-      const res = await fetch(`${videochainApiUrl}${videochainApiUrl.endsWith("/") ? "" : "/"}render`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${videochainToken}`,
-        },
-        body: JSON.stringify({
-          prompt,
-          negativePrompt,
-
-          // for a future version of the comic factory
-          identityImage: "",
-
-          nbFrames,
-
-          nbSteps: nbInferenceSteps, // 20 = fast, 30 = better, 50 = best
-          actionnables: [], // ["text block"],
-          segmentation: "disabled", // "firstframe", // one day we will remove this param, to make it automatic
-          width,
-          height,
-
-          // no need to upscale right now as we generate tiny panels
-          // maybe later we can provide an "export" button to PDF
-          // unfortunately there are too many requests for upscaling,
-          // the server is always down
-          upscalingFactor: 1, // 2,
-
-          // let's completely disable turbo mode, it doesn't work well for drawings and comics,
-          // basically all the people I talked to said it sucked
-          turbo: false, // settings.renderingUseTurbo,
-
-          // analyzing doesn't work yet, it seems..
-          analyze: false, // analyze: true,
-
-          cache: "ignore"
-        } as Partial<RenderRequest>),
-        cache: 'no-store',
-      // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
-      // next: { revalidate: 1 }
-      })
-
-      if (res.status !== 200) {
-        throw new Error('Failed to fetch data')
-      }
-      
-      const response = (await res.json()) as RenderedScene
-
-      return response
+      throw new Error(`rendering engine "${renderingEngine}" is not supported`)
     }
   } catch (err) {
     console.error(err)
@@ -523,24 +468,7 @@ export async function getRender(renderId: string, settings: Settings) {
         segments: []
       } as RenderedScene
     } else {
-      const res = await fetch(`${videochainApiUrl}/render/${renderId}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${videochainToken}`,
-        },
-        cache: 'no-store',
-      // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
-      // next: { revalidate: 1 }
-      })
-      
-      if (res.status !== 200) {
-        throw new Error('Failed to fetch data')
-      }
-      
-      const response = (await res.json()) as RenderedScene
-      return response
+      throw new Error(`rendering engine "${renderingEngine}" is not supported`)
     }
   } catch (err) {
     console.error(err)
@@ -555,7 +483,7 @@ export async function upscaleImage(image: string): Promise<{
   error: string
 }> {
   if (!image) {
-    const error = `cannot call the rendering API without an image, aborting..`
+    const error = `cannot upscale without an image, aborting..`
     console.error(error)
     throw new Error(error)
   }
@@ -566,28 +494,7 @@ export async function upscaleImage(image: string): Promise<{
   }
 
   try {
-    const res = await fetch(`${videochainApiUrl}/upscale`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${videochainToken}`,
-      },
-      cache: 'no-store',
-      body: JSON.stringify({ image, factor: 3 })
-    // we can also use this (see https://vercel.com/blog/vercel-cache-api-nextjs-cache)
-    // next: { revalidate: 1 }
-    })
-
-    if (res.status !== 200) {
-      throw new Error('Failed to fetch data')
-    }
-    
-    const response = (await res.json()) as {
-      assetUrl: string
-      error: string
-    }
-    return response
+    throw new Error(`Image upscaling is not supported yet. If you need it, please open a pull request to add the necessary code (eg. for Aura SR)`)
   } catch (err) {
     console.error(err)
     return defaulResult
