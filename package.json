@@ -1,6 +1,6 @@
 {
   "name": "@jbilcke/comic-factory",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@aitube/clap": "0.1.2",
+    "@aitube/clap": "0.2.4",
     "@anthropic-ai/sdk": "^0.25.0",
     "@huggingface/hub": "^0.15.1",
     "@huggingface/inference": "^2.0.0",
