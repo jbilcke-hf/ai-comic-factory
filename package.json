@@ -1,6 +1,6 @@
 {
   "name": "@jbilcke/comic-factory",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@aitube/clap": "0.1.2",
+    "@aitube/clap": "0.2.4",
     "@anthropic-ai/sdk": "^0.25.0",
     "@huggingface/hub": "^0.15.1",
     "@huggingface/inference": "^2.0.0",
@@ -49,7 +49,7 @@
     "i": "^0.3.7",
     "konva": "^9.2.2",
     "lucide-react": "^0.260.0",
-    "next": "14.2.3",
+    "next": "14.2.7",
     "npm": "^10.7.0",
     "openai": "^4.29.2",
     "pick": "^0.0.1",

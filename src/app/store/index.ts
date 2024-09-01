@@ -1,7 +1,7 @@
 "use client"
 
 import { create } from "zustand"
-import { ClapProject, ClapMediaOrientation, ClapSegment, ClapSegmentCategory, ClapSegmentStatus, ClapOutputType, ClapSegmentFilteringMode, filterSegments, newClap, newSegment, parseClap, serializeClap } from "@aitube/clap"
+import { ClapProject, ClapImageRatio, ClapSegment, ClapSegmentCategory, ClapSegmentStatus, ClapOutputType, ClapSegmentFilteringMode, filterSegments, newClap, newSegment, parseClap, serializeClap } from "@aitube/clap"
 
 import { FontName } from "@/lib/fonts"
 import { Preset, PresetName, defaultPreset, getPreset, getRandomPreset } from "@/app/engine/presets"
@@ -483,16 +483,19 @@ export const useStore = create<{
       meta: {
         title: "Untitled", // we don't need a title actually
         description: prompt,
-        prompt: prompt,
+        storyPrompt: prompt,
+        imagePrompt: "",
+        systemPrompt: "",
         synopsis: "",
         licence: "",
-        orientation: ClapMediaOrientation.LANDSCAPE,
+        imageRatio: ClapImageRatio.LANDSCAPE,
         width: 512,
         height: 288,
         isInteractive: false,
         isLoop: false,
         durationInMs: panels.length * defaultSegmentDurationInMs,
-        defaultVideoModel: "SDXL",
+        bpm: 1,
+        frameRate: 1,
       }
     })
 
@@ -508,7 +511,7 @@ export const useStore = create<{
         track: 1,
         startTimeInMs: currentElapsedTimeInMs,
         assetDurationInMs: defaultSegmentDurationInMs,
-        category: ClapSegmentCategory.STORYBOARD,
+        category: ClapSegmentCategory.IMAGE,
         prompt: panel,
         outputType: ClapOutputType.IMAGE,
         assetUrl: renderedScene?.assetUrl || "",
@@ -587,7 +590,7 @@ export const useStore = create<{
         ClapSegmentFilteringMode.START,
         cameraShot,
         clap.segments,
-        ClapSegmentCategory.STORYBOARD,
+        ClapSegmentCategory.IMAGE,
       ).at(0) as (ClapSegment | undefined),
       ui: filterSegments(
         ClapSegmentFilteringMode.START,

@@ -1,14 +1,14 @@
-import { ClapMediaOrientation } from "@aitube/clap"
+import { ClapImageRatio } from "@aitube/clap"
 
 export interface ImageDimension {
   width: number
   height: number
-  orientation: ClapMediaOrientation
+  orientation: ClapImageRatio
 }
 
 export async function getImageDimension(src: string): Promise<ImageDimension> {
   if (!src) {
-    return { width: 0, height: 0, orientation:  ClapMediaOrientation.SQUARE }
+    return { width: 0, height: 0, orientation:  ClapImageRatio.SQUARE }
   }
   const img = new Image()
   img.src = src
@@ -16,11 +16,11 @@ export async function getImageDimension(src: string): Promise<ImageDimension> {
   const width = img.width
   const height = img.height
 
-  let orientation = ClapMediaOrientation.SQUARE
+  let orientation = ClapImageRatio.SQUARE
   if (width > height) { 
-    orientation = ClapMediaOrientation.LANDSCAPE
+    orientation = ClapImageRatio.LANDSCAPE
   } else if (width < height) {
-    orientation = ClapMediaOrientation.PORTRAIT
+    orientation = ClapImageRatio.PORTRAIT
   }
   return { width, height, orientation }
 }
