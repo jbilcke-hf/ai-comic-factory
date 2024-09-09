@@ -245,9 +245,6 @@ export async function newRender({
       if (renderingEngine === "INFERENCE_API" && !huggingfaceInferenceApiModel) {
         throw new Error(`invalid huggingfaceInferenceApiModel, you need to configure your RENDERING_HF_INFERENCE_API_BASE_MODEL in order to use the INFERENCE_API rendering engine`)
       }
-      if (renderingEngine === "INFERENCE_API" && !huggingfaceInferenceApiModelRefinerModel) {
-        throw new Error(`invalid huggingfaceInferenceApiModelRefinerModel, you need to configure your RENDERING_HF_INFERENCE_API_REFINER_MODEL in order to use the INFERENCE_API rendering engine`)
-      }
 
       const baseModelUrl = renderingEngine === "INFERENCE_ENDPOINT"
         ? huggingfaceApiUrl
@@ -304,7 +301,7 @@ export async function newRender({
       // note: there is no "refiner" step yet for custom inference endpoint
       // you probably don't need it anyway, as you probably want to deploy an all-in-one model instead for perf reasons
       
-      if (renderingEngine === "INFERENCE_API") {
+      if (renderingEngine === "INFERENCE_API" && huggingfaceInferenceApiModelRefinerModel) {
         try {
           const refinerModelUrl = `https://api-inference.huggingface.co/models/${huggingfaceInferenceApiModelRefinerModel}`
 
