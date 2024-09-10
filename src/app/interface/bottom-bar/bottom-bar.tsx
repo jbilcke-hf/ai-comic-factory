@@ -30,7 +30,7 @@ function BottomBar() {
 
   const preset = useStore(s => s.preset)
   
-  const canSeeBetaFeatures = true // getParam<boolean>("beta", false)
+  const canSeeBetaFeatures = false // getParam<boolean>("beta", false)
 
   const allStatus = Object.values(panelGenerationStatus)
   const remainingImages = allStatus.reduce((acc, s) => (acc + (s ? 1 : 0)), 0)
@@ -176,13 +176,6 @@ function BottomBar() {
            </Button>
         </div>
           */}
-
-          {/* 
-          
-          let's disable project saving/loading for now:
-          the priority is to repair the comic factory
-          --------
-
           {canSeeBetaFeatures ? <Button
             onClick={openFilePicker}
             disabled={remainingImages > 0}
@@ -191,7 +184,6 @@ function BottomBar() {
             onClick={downloadClap}
             disabled={remainingImages > 0}
           >
-          */}
           {remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save`}
         </Button> : null}
      
