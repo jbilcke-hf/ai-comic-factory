@@ -176,6 +176,13 @@ function BottomBar() {
            </Button>
         </div>
           */}
+
+          {/* 
+          
+          let's disable project saving/loading for now:
+          the priority is to repair the comic factory
+          --------
+
           {canSeeBetaFeatures ? <Button
             onClick={openFilePicker}
             disabled={remainingImages > 0}
@@ -184,6 +191,7 @@ function BottomBar() {
             onClick={downloadClap}
             disabled={remainingImages > 0}
           >
+          */}
           {remainingImages ? `${allStatus.length - remainingImages}/${allStatus.length} ⌛` : `Save`}
         </Button> : null}
      
