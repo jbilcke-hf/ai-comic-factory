@@ -420,7 +420,7 @@ export const allLayoutLabels = {
   Layout1: "Grid 1",
   Layout2: "Grid 2",
   Layout3: "Grid 3",
-  // Layout4: "Blocks 1",
+  Layout4: "Blocks 1",
 }
 
 // note for reference: A4 (297mm x 210mm)
