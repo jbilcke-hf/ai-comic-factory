@@ -17,9 +17,18 @@ hf_oauth_scopes: [inference-api]
 
 Last release: AI Comic Factory 1.2
 
-The AI Comic Factory will soon have an official website: [aicomicfactory.app](https://aicomicfactory.app)
+The AI Comic Factory has an official website: [aicomicfactory.app](https://aicomicfactory.app)
 
 For more information about my other projects please check [linktr.ee/FLNGR](https://linktr.ee/FLNGR).
+
+## Funding
+
+If you like the AI Comic Factory, let me know!
+I am always creating new spaces and exploring new ideas for demos, meaning I don't have much time to take care of all of them (I wish I could clone myself or ask robots to do it).
+
+If you appreciate the AI Comic Factory and would like to leave a tip, that would be very kind 🫶
+
+<a href="https://www.buymeacoffee.com/flngr" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
 ## Running the project at home
 
