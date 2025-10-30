@@ -1,9 +1,9 @@
 import { LLMVendor, RenderingModelVendor, Settings } from "@/types"
 
 export const defaultSettings: Settings = {
-  renderingModelVendor: "SERVER" as RenderingModelVendor,
+  renderingModelVendor: "REPLICATE" as RenderingModelVendor,
   renderingUseTurbo: false,
-  llmVendor: "SERVER" as LLMVendor,
+  llmVendor: "GROQ" as LLMVendor,
   huggingFaceOAuth: "",
   huggingfaceApiKey: "",
   huggingfaceInferenceApiModel: "stabilityai/stable-diffusion-xl-base-1.0",

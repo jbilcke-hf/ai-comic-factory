@@ -195,7 +195,7 @@ export function SettingsDialog() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="SERVER">Default Hugging Face server (free but limited capacity, not always online)</SelectItem>
+                <SelectItem value="SERVER" disabled className="opacity-50 cursor-not-allowed">Free Hugging Face server (unavailable)</SelectItem>
                 <SelectItem value="HUGGINGFACE">Custom Inference API model (pro hugging face account recommended)</SelectItem>
                 <SelectItem value="REPLICATE">Custom Replicate model (will bill your own account)</SelectItem>
                 <SelectItem value="OPENAI">DALL·E 3 by OpenAI (partial support, will bill your own account)</SelectItem>
@@ -349,7 +349,7 @@ export function SettingsDialog() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="SERVER">Default Hugging Face server (free but limited capacity, not always online)</SelectItem>
+                <SelectItem value="SERVER" disabled className="opacity-50 cursor-not-allowed">Free Hugging Face server (unavailable)</SelectItem>
                 <SelectItem value="GROQ">Open-source models on Groq (will bill your own account)</SelectItem>
                 <SelectItem value="ANTHROPIC">Claude by Anthropic (will bill your own account)</SelectItem>
                 <SelectItem value="OPENAI">ChatGPT by OpenAI (will bill your own account)</SelectItem>
